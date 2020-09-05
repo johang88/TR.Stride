@@ -14,7 +14,6 @@ Implementation of https://github.com/sebh/UnrealEngineSkyAtmosphere
 ### Issues
 Quite a few ... 
 
-* Fast atmospheric perspective is bugged and recommended to be turned off.
 * Transparent objects not supported
 * Requires BindDepthAsResourceDuringTransparentRendering to be disabled
 * Some weird issues that requires skuview lut resolution to be hardcoded, meaning that it can't easily be changed

@@ -3,16 +3,13 @@
 
 shader AtmosphereRenderSkyCommon<bool MultiScatteringApproximationEnabled> : AtmosphereCommon, AtmosphereParametersBase, Math
 {
-	static const float AP_SLICE_COUNT = 32.0f;
-	static const float AP_KM_PER_SLICE = 4.0f;
-
 	float AerialPerspectiveDepthToSlice(float depth)
 	{
-		return depth * (1.0f / AP_KM_PER_SLICE);
+		return depth * AerialPerspectiveSlicesAndDistancePerSlice.w;
 	}
 	float AerialPerspectiveSliceToDepth(float slice)
 	{
-		return slice * AP_KM_PER_SLICE;
+		return slice * AerialPerspectiveSlicesAndDistancePerSlice.y;
 	}
 
     stage Texture2D TransmittanceLutTexture;

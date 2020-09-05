@@ -445,11 +445,17 @@ namespace TR.Stride.Atmosphere
             parameters.Set(AtmosphereParametersBaseKeys.AerialPespectiveViewDistanceScale, component.AerialPerspectiveDistanceScale);
 
             // Lut settings
-            parameters.Set(AtmosphereParametersBaseKeys.MultipleScatteringFactor, 1.0f);
+            parameters.Set(AtmosphereParametersBaseKeys.MultipleScatteringFactor, component.MultipleScatteringFactor);
 
             parameters.Set(AtmosphereParametersBaseKeys.MultiScatteringLutResolution, CalculateResolutionVector(_multiScatteringTexture));
             parameters.Set(AtmosphereParametersBaseKeys.SkyViewLutResolution, CalculateResolutionVector(_skyViewLutTexture));
             parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutResolution, CalculateResolutionVector(_transmittanceLutTexture));
+
+            parameters.Set(AtmosphereParametersBaseKeys.AerialPerspectiveSlicesAndDistancePerSlice,
+                new Vector4(
+                    _atmosphereCameraScatteringVolumeTexture.Depth, component.AtmosphereScatteringVolumeKmPerSlice,
+                    1.0f / _atmosphereCameraScatteringVolumeTexture.Depth, 1.0f / component.AtmosphereScatteringVolumeKmPerSlice
+                    ));
 
             // Misc
             parameters.Set(AtmosphereParametersBaseKeys.SunDirection, -lightDirection);

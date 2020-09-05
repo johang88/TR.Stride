@@ -72,7 +72,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 				Weight = saturate(Slice * 2.0);
 				Slice = 0.5;
 			}
-			float w = sqrt(Slice / AP_SLICE_COUNT);	// squared distribution
+			float w = sqrt(Slice * AerialPerspectiveSlicesAndDistancePerSlice.z);	// squared distribution
 
 			const float4 AP = Weight * AtmosphereCameraScatteringVolume.SampleLevel(samplerLinearClamp, float3(pixPos / float2(Resolution), w), 0);
 			L.rgb += AP.rgb;

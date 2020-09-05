@@ -50,6 +50,14 @@ namespace TR.Stride.Atmosphere
         /// </summary>
         [DataMember(201)] public float StrideToAtmosphereUnitScale { get; set; } = 1.0f / 1000.0f;
 
+        [DataMember(300)] public float MultipleScatteringFactor { get; set; } = 1.0f;
+
+        /// <summary>
+        /// Adjust this depending on the scale of your scene,
+        /// if you have a small aerial perspective scale then you probably want lower values
+        /// </summary>
+        [DataMember(301)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
+
         public override void Update()
         {
             var dt = (float)Game.UpdateTime.Elapsed.TotalSeconds;

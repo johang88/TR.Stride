@@ -68,7 +68,7 @@ Hierarchy:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
                         Position: {X: -15.1852064, Y: 48.50744, Z: -23.5119686}
-                        Rotation: {X: -0.19110097, Y: -0.0502496, Z: 0.0458300039, W: 0.979211152}
+                        Rotation: {X: -0.02755861, Y: -0.0570988581, Z: 0.0369476937, W: 0.997303665}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -132,7 +132,7 @@ Hierarchy:
                         RayleighScaleHeight: 8.0
                         MieScaleHeight: 1.2
                         GroundAlbedo: {R: 0.0, G: 0.0, B: 0.0}
-                        AerialPerspectiveDistanceScale: 100.0
+                        AerialPerspectiveDistanceScale: 500.0
                         StrideToAtmosphereUnitScale: 0.001
         -   Entity:
                 Id: cd498803-0c95-4a0d-a1d4-172b831e9182

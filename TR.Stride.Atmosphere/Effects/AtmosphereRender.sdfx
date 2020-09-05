@@ -3,7 +3,7 @@
 params AtmosphereParameters
 {
     bool FastSkyEnabled = true;
-    bool FastAerialPerspectiveEnabled = false; // TODO: Currently not working great for some reason
+    bool FastAerialPerspectiveEnabled = true;
     bool RenderSunDisk = true;
     bool MultiScatteringApproximationEnabled = true;
 }

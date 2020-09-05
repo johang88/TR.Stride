@@ -42,7 +42,9 @@ shader AtmosphereParametersBase
 		// Lut settings
 		stage float4 TransmittanceLutResolution;
 		stage float4 SkyViewLutResolution;
+
 		stage float4 MultiScatteringLutResolution;
+		stage float4 AerialPerspectiveSlicesAndDistancePerSlice;
 
 		stage float MultipleScatteringFactor;
 

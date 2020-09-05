@@ -30,24 +30,22 @@ shader AtmosphereRenderScatteringCameraVolume<bool MultiScatteringApproximationE
 		float4 HPos = mul(float4(ClipSpace, 1.0), InvViewProjectionMatrix);
 		float3 WorldDir = normalize(HPos.xyz / HPos.w - CameraPositionWS);
 		float earthR = Atmosphere.BottomRadius;
-		float3 earthO = float3(0.0, -earthR, 0.0);
 		float3 camPos = CameraPositionWS * ScaleToSkyUnit + float3(0, earthR, 0);
 		float3 SunDir = SunDirection;
 		float3 SunLuminance = 0.0;
 
-		float Slice = ((float(streams.SliceId) + 0.5f) / AP_SLICE_COUNT);
+		float Slice = ((float(streams.SliceId) + 0.5f) * AerialPerspectiveSlicesAndDistancePerSlice.z);
 		Slice *= Slice;	// squared distribution
-		Slice *= AP_SLICE_COUNT;
+		Slice *= AerialPerspectiveSlicesAndDistancePerSlice.x;
 
 		float3 WorldPos = camPos;
-		float viewHeight;
 
 		// Compute position from froxel information
 		float tMax = AerialPerspectiveSliceToDepth(Slice);
 		float3 newWorldPos = WorldPos + tMax * WorldDir;
 
 		// If the voxel is under the ground, make sure to offset it out on the ground.
-		viewHeight = length(newWorldPos);
+		float viewHeight = length(newWorldPos);
 		if (viewHeight <= (Atmosphere.BottomRadius + 0.01f))
 		{
 			// Apply a position offset to make sure no artefact are visible close to the earth boundaries for large voxel.
@@ -86,7 +84,7 @@ shader AtmosphereRenderScatteringCameraVolume<bool MultiScatteringApproximationE
 		const bool MieRayPhase = true;
 		const float AerialPespectiveViewDistanceScale = Atmosphere.AerialPespectiveViewDistanceScale;
 
-		SingleScatteringResult ss = IntegrateScatteredLuminance(pixPos, WorldPos, WorldDir, SunDir, Atmosphere, ground, SampleCountIni, DepthBufferValue, VariableSampleCount, MieRayPhase, tMaxMax, AerialPespectiveViewDistanceScale);
+		SingleScatteringResult ss = IntegrateScatteredLuminance(pixPos, WorldPos, WorldDir, SunDir, Atmosphere, ground, SampleCountIni, DepthBufferValue, VariableSampleCount, MieRayPhase, AerialPespectiveViewDistanceScale, tMaxMax);
 
 		const float Transmittance = dot(ss.Transmittance, float3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f));
 
