@@ -1,0 +1,7 @@
+!Texture
+Id: f5857ffd-e6fa-4db3-aa86-702838ebfb53
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/Ground037_2K-JPG/Ground037_2K_Normal.jpg
+Type: !NormalMapTextureType
+    InvertY: false

@@ -1,0 +1,6 @@
+!TerrainBrushAsset
+Id: d8ddd90a-6bc7-48ea-b33d-3e3ff5d70f73
+SerializedVersion: {Stride: 3.0.0.0}
+Tags: []
+Source: !file ../Resources/Brush Mountain.png
+sRGB sampling: false

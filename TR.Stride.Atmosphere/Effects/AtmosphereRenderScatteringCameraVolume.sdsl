@@ -1,0 +1,100 @@
+﻿
+
+shader AtmosphereRenderScatteringCameraVolume<bool MultiScatteringApproximationEnabled> 
+    : ShaderBase, AtmosphereFullscreenTriangle, Math, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
+{
+	stream uint RTAIndex : SV_RenderTargetArrayIndex;
+
+	[maxvertexcount(3)]
+	stage void GSMain(triangle Input input[3], inout TriangleStream<Output> triangleStream)
+	{
+		for (uint i = 0; i < 3; i++)
+		{
+			streams = input[i];
+			streams.SliceId = input[0].SliceId;
+			streams.RTAIndex = input[0].SliceId;
+
+			triangleStream.Append(streams);
+		}
+
+		triangleStream.RestartStrip();
+	}
+
+	// Can return here so the code is a bit simpler
+	float4 _PSMain()
+	{
+		float2 pixPos = streams.ShadingPosition.xy;
+		AtmosphereParameters Atmosphere = GetAtmosphereParameters();
+
+		float3 ClipSpace = float3((pixPos / float2(Resolution)) * float2(2.0, -2.0) - float2(1.0, -1.0), 0.5);
+		float4 HPos = mul(float4(ClipSpace, 1.0), InvViewProjectionMatrix);
+		float3 WorldDir = normalize(HPos.xyz / HPos.w - CameraPositionWS);
+		float earthR = Atmosphere.BottomRadius;
+		float3 earthO = float3(0.0, -earthR, 0.0);
+		float3 camPos = CameraPositionWS * ScaleToSkyUnit + float3(0, earthR, 0);
+		float3 SunDir = SunDirection;
+		float3 SunLuminance = 0.0;
+
+		float Slice = ((float(streams.SliceId) + 0.5f) / AP_SLICE_COUNT);
+		Slice *= Slice;	// squared distribution
+		Slice *= AP_SLICE_COUNT;
+
+		float3 WorldPos = camPos;
+		float viewHeight;
+
+		// Compute position from froxel information
+		float tMax = AerialPerspectiveSliceToDepth(Slice);
+		float3 newWorldPos = WorldPos + tMax * WorldDir;
+
+		// If the voxel is under the ground, make sure to offset it out on the ground.
+		viewHeight = length(newWorldPos);
+		if (viewHeight <= (Atmosphere.BottomRadius + 0.01f))
+		{
+			// Apply a position offset to make sure no artefact are visible close to the earth boundaries for large voxel.
+			newWorldPos = normalize(newWorldPos) * (Atmosphere.BottomRadius + 0.01f + 0.001f);
+			WorldDir = normalize(newWorldPos - camPos);
+			tMax = length(newWorldPos - camPos);
+		}
+		float tMaxMax = tMax;
+
+		// Move ray marching start up to top atmosphere.
+		viewHeight = length(WorldPos);
+		if (viewHeight >= Atmosphere.TopRadius)
+		{
+			float3 prevWorlPos = WorldPos;
+			if (!MoveToTopAtmosphere(WorldPos, WorldDir, Atmosphere.TopRadius))
+			{
+				// Ray is not intersecting the atmosphere
+				return float4(0.0, 0.0, 0.0, 1.0);
+			}
+
+			float LengthToAtmosphere = length(prevWorlPos - WorldPos);
+			if (tMaxMax < LengthToAtmosphere)
+			{
+				// tMaxMax for this voxel is not within earth atmosphere
+				return float4(0.0, 0.0, 0.0, 1.0);
+			}
+
+			// Now world position has been moved to the atmosphere boundary: we need to reduce tMaxMax accordingly. 
+			tMaxMax = max(0.0, tMaxMax - LengthToAtmosphere);
+		}
+
+		const bool ground = false;
+		const float SampleCountIni = max(1.0, float(streams.SliceId + 1.0f) * 2.0f);
+		const float DepthBufferValue = -1.0;
+		const bool VariableSampleCount = false;
+		const bool MieRayPhase = true;
+		const float AerialPespectiveViewDistanceScale = Atmosphere.AerialPespectiveViewDistanceScale;
+
+		SingleScatteringResult ss = IntegrateScatteredLuminance(pixPos, WorldPos, WorldDir, SunDir, Atmosphere, ground, SampleCountIni, DepthBufferValue, VariableSampleCount, MieRayPhase, tMaxMax, AerialPespectiveViewDistanceScale);
+
+		const float Transmittance = dot(ss.Transmittance, float3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f));
+
+		return float4(ss.L, 1.0f - Transmittance);
+	}
+
+    stage override void PSMain()
+    {
+		streams.ColorTarget = _PSMain();
+    }
+};

@@ -1,0 +1,21 @@
+﻿
+
+shader AtmosphereGetSunLuminence<bool RenderSunDisk> : AtmosphereCommon, AtmosphereParametersBase
+{
+	float3 GetSunLuminance(float3 WorldPos, float3 WorldDir, float PlanetRadius)
+	{
+		if (RenderSunDisk)
+		{
+			if (dot(WorldDir, SunDirection) > cos(0.5*0.505*3.14159 / 180.0))
+			{
+				float t = RaySphereIntersectNearest(WorldPos, WorldDir, float3(0.0f, 0.0f, 0.0f), PlanetRadius);
+				if (t < 0.0f) // no intersection
+				{
+					const float3 SunLuminance = 1000000.0; // arbitrary. But fine, not use when comparing the models
+					return SunLuminance;
+				}
+			}
+		}
+		return 0;
+	}
+};

@@ -1,0 +1,116 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stride.Engine" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+
+    <PackageReference Include="Stride.Video" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Physics" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Navigation" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Particles" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.UI" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Effects\AtmosphereCommon.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereFullscreenTriangle.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereGetSunLuminence.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereNewMultiScattCS.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereParametersBase.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AtmosphereParametersBase.sdsl</DependentUpon>
+    </Compile>
+    <Compile Update="Effects\AtmosphereRender.sdfx.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereRenderScatteringCameraVolume.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AtmosphereRenderScatteringCameraVolume.sdsl</DependentUpon>
+    </Compile>
+    <Compile Update="Effects\AtmosphereRenderSkyCommon.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereRenderSkyRayMarching.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AtmosphereRenderSkyRayMarching.sdsl</DependentUpon>
+    </Compile>
+    <Compile Update="Effects\AtmosphereRenderSkyViewLut.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\AtmosphereRenderTransmittanceLut.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\AtmosphereCommon.sdsl">
+      <LastGenOutput>AtmosphereCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereFullscreenTriangle.sdsl">
+      <LastGenOutput>AtmosphereFullscreenTriangle.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereGetSunLuminence.sdsl">
+      <LastGenOutput>AtmosphereGetSunLuminence.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereNewMultiScattCS.sdsl">
+      <LastGenOutput>AtmosphereNewMultiScattCS.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereParametersBase.sdsl">
+      <LastGenOutput>AtmosphereParametersBase.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereRender.sdfx">
+      <LastGenOutput>AtmosphereRender.sdfx.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereRenderScatteringCameraVolume.sdsl">
+      <LastGenOutput>AtmosphereRenderScatteringCameraVolume.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereRenderSkyCommon.sdsl">
+      <LastGenOutput>AtmosphereRenderSkyCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereRenderSkyRayMarching.sdsl">
+      <LastGenOutput>AtmosphereRenderSkyRayMarching.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereRenderSkyViewLut.sdsl">
+      <LastGenOutput>AtmosphereRenderSkyViewLut.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereRenderTransmittanceLut.sdsl">
+      <LastGenOutput>AtmosphereRenderTransmittanceLut.sdsl.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+</Project>

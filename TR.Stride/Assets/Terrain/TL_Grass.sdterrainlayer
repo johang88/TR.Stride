@@ -1,0 +1,8 @@
+!TerrainLayerAsset
+Id: 3e36f7b7-a168-4830-81fe-e79f894b5ba2
+SerializedVersion: {Stride: 3.0.0.0}
+Tags: []
+Name: New layer
+Material: a49ffbf1-d19b-4f7b-b0cc-76e1e75d184b:Terrain/Ground037_2K/Ground037_2K
+UVScale: {X: 128.0, Y: 128.0}
+BlendType: !Stride.Terrain.BlendTypes.TerrainLayerBlendTypeSplatMap,Stride.Engine {}

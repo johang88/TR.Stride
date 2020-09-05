@@ -1,0 +1,48 @@
+﻿
+
+params AtmosphereParameters
+{
+    bool FastSkyEnabled = true;
+    bool FastAerialPerspectiveEnabled = false; // TODO: Currently not working great for some reason
+    bool RenderSunDisk = true;
+    bool MultiScatteringApproximationEnabled = true;
+}
+
+effect AtmosphereRenderSkyRayMarchingEffect
+{
+    using params AtmosphereParameters;
+
+    mixin AtmosphereRenderSkyRayMarching<
+        AtmosphereParameters.FastSkyEnabled, 
+        AtmosphereParameters.FastAerialPerspectiveEnabled,
+        AtmosphereParameters.RenderSunDisk,
+        AtmosphereParameters.MultiScatteringApproximationEnabled>;
+};
+
+effect AtmosphereRenderTransmittanceLutEffect
+{
+    using params AtmosphereParameters;
+
+    mixin AtmosphereRenderTransmittanceLut<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+};
+
+effect AtmosphereNewMultiScattEffect
+{
+    using params AtmosphereParameters;
+
+    mixin AtmosphereNewMultiScattCS<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+};
+
+effect AtmosphereRenderSkyViewLutEffect
+{
+    using params AtmosphereParameters;
+
+    mixin AtmosphereRenderSkyViewLut<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+}
+
+effect AtmosphereRenderScatteringCameraVolumeEffect
+{
+    using params AtmosphereParameters;
+
+    mixin AtmosphereRenderScatteringCameraVolume<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+}
