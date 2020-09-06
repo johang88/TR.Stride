@@ -116,11 +116,12 @@ RenderFeatures:
                 TransparentRenderStage: ref!! ee0a9342-d8bb-4463-99e5-f15c4883f834
                 EffectName: null
         PipelineProcessors: {}
-    27cf112532ad91e261b05d3f2ae84e20*: !TR.Stride.Atmosphere.AtmosphereRenderFeature,TR.Stride.Atmosphere
+    931745eb482b99fe4ac1315674abadd4*: !TR.Stride.Atmosphere.AtmosphereRenderFeature,TR.Stride.Atmosphere
         RenderStageSelectors:
-            3265c5340c14baa20a2d1cdd140950a3: !Stride.Rendering.SimpleGroupToRenderStageSelector,Stride.Rendering
+            b5af1bb3f6be710694ba2f2a72702e77: !Stride.Rendering.SimpleGroupToRenderStageSelector,Stride.Rendering
                 RenderStage: ref!! ee0a9342-d8bb-4463-99e5-f15c4883f834
                 EffectName: AtmosphereRenderSkyRayMarchingEffect
+        PipelineProcessors: {}
 SharedRenderers:
     60459475d3a3adaf2d1ba5d99913ca75: !Stride.Rendering.Compositing.ForwardRenderer,Stride.Engine
         Id: 9cf51cec-34b2-4b2b-8609-816bc58fd23b
@@ -144,7 +145,7 @@ SharedRenderers:
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}
-        BindDepthAsResourceDuringTransparentRendering*: false
+        BindDepthAsResourceDuringTransparentRendering*: true
     d5b2e71c088247e21556decdce138d96: !Stride.Rendering.Compositing.ForwardRenderer,Stride.Engine
         Id: 02046533-dacf-4bc0-a247-6271c78c8940
         Clear:

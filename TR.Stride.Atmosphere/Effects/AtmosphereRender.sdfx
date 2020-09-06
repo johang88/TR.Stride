@@ -26,11 +26,11 @@ effect AtmosphereRenderTransmittanceLutEffect
     mixin AtmosphereRenderTransmittanceLut<AtmosphereParameters.MultiScatteringApproximationEnabled>;
 };
 
-effect AtmosphereNewMultiScattEffect
+effect AtmosphereMultipleScatteringTextureEffect
 {
     using params AtmosphereParameters;
 
-    mixin AtmosphereNewMultiScattCS<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+    mixin AtmosphereMultipleScatteringTextureEffectCS<AtmosphereParameters.MultiScatteringApproximationEnabled>;
 };
 
 effect AtmosphereRenderSkyViewLutEffect

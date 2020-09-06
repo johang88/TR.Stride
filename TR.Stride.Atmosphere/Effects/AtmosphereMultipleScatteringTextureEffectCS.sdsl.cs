@@ -16,7 +16,7 @@ using Buffer = Stride.Graphics.Buffer;
 
 namespace Stride.Rendering
 {
-    public static partial class AtmosphereNewMultiScattCSKeys
+    public static partial class AtmosphereMultipleScatteringTextureEffectCSKeys
     {
         public static readonly ObjectParameterKey<Texture> OutputTexture = ParameterKeys.NewObject<Texture>();
     }

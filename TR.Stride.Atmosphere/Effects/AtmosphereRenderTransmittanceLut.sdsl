@@ -1,9 +1,9 @@
 ﻿
 
 shader AtmosphereRenderTransmittanceLut<bool MultiScatteringApproximationEnabled> 
-	: ShaderBase, AtmosphereFullscreenTriangle, Math, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
+	: ShaderBase, ImageEffectShader, Math, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
 {
-    stage override void PSMain()
+    stage override float4 Shading()
     {
 		float2 pixPos = streams.ShadingPosition.xy;
 		AtmosphereParameters Atmosphere = GetAtmosphereParameters();
@@ -28,6 +28,6 @@ shader AtmosphereRenderTransmittanceLut<bool MultiScatteringApproximationEnabled
 		float3 transmittance = exp(-IntegrateScatteredLuminance(pixPos, WorldPos, WorldDir, SunDirection, Atmosphere, ground, SampleCountIni, DepthBufferValue, VariableSampleCount, MieRayPhase, AerialPespectiveViewDistanceScale).OpticalDepth);
 
 		// Optical depth to transmittance
-		streams.ColorTarget = float4(transmittance, 1.0f);
+		return float4(transmittance, 1.0f);
     }
 };

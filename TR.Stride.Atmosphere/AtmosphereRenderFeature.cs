@@ -8,45 +8,42 @@ using Stride.Rendering.Lights;
 using Stride.Engine;
 using Stride.Rendering.ComputeEffect;
 using Stride.Core;
-using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Linq;
+using Stride.Core.Storage;
+using Stride.Rendering.Images;
 
 namespace TR.Stride.Atmosphere
 {
-    public class AtmosphereRenderFeature : RootRenderFeature
+    public class AtmosphereRenderFeature : RootEffectRenderFeature
     {
-        // TODO: Implement RootEffectRenderFeature so we can get depth texture automatically assigned to us
-        // OR maybe we could render last in opaque pass, but will still have issues with depth texture as some of these methods are only supposed 
-        // to be called once per frame :/
-        // Each texture generation can be done as a sub render feature, this will keep things nice and clean
-        // we could probably use ImageEffect or some similar base class, should remove some of the pipeline management etc
-
         public TextureSettings2d TransmittanceLutSettings = new TextureSettings2d(256, 64, PixelFormat.R16G16B16A16_Float);
         public TextureSettingsSquare MultiScatteringTextureSettings = new TextureSettingsSquare(32, PixelFormat.R16G16B16A16_Float);
         public TextureSettings2d SkyViewLutSettings = new TextureSettings2d(192, 108, PixelFormat.R11G11B10_Float);
         public TextureSettingsVolume AtmosphereCameraScatteringVolumeSettings = new TextureSettingsVolume(32, 32, PixelFormat.R16G16B16A16_Float);
 
-        public override Type SupportedRenderObjectType => typeof(AtmosphereRenderObject);
-
-        private MutablePipelineState _renderSkyRayMarchingPipelineState = null;
-        private DynamicEffectInstance _renderSkyRayMarchingEffect = null;
-
-        private MutablePipelineState _renderTransmittanceLutPipelineState = null;
-        private DynamicEffectInstance _renderTransmittanceLutEffect = null;
-
-        private MutablePipelineState _renderSkyViewLutPipelineState = null;
-        private DynamicEffectInstance _renderSkyViewLutEffect = null;
-
-        private MutablePipelineState _renderAtmosphereScatteringVolumePipelineState = null;
-        private DynamicEffectInstance _renderAtmosphereScatteringVolumeEffect = null;
-
-        private ComputeEffectShader _renderNewMultiScattEffect = null;
+        public bool DrawDebugTextures { get; set; } = false;
 
         private Texture _transmittanceLutTexture = null;
         private Texture _multiScatteringTexture = null;
         private Texture _skyViewLutTexture = null;
         private Texture _atmosphereCameraScatteringVolumeTexture = null;
 
-        private Texture depthStencilROCached;
+        private ImageEffectShader _transmittanceLutEffect = null;
+        private ImageEffectShader _skyViewLutEffect = null;
+        private ComputeEffectShader _renderMultipleScatteringTextureEffect = null;
+
+        private MutablePipelineState _renderAtmosphereScatteringVolumePipelineState = null;
+        private DynamicEffectInstance _renderAtmosphereScatteringVolumeEffect = null;
+
+        private DescriptorSet[] _descriptorSets = null;
+
+        private LogicalGroupReference _atmosphereLogicalGroupKey;
+
+        private ObjectId _atmopshereLayoutHash;
+        private ParameterCollection _atmosphereParameters = new ParameterCollection();
+
+        public override Type SupportedRenderObjectType => typeof(AtmosphereRenderObject);
 
         private SpriteBatch _spriteBatch;
 
@@ -54,18 +51,14 @@ namespace TR.Stride.Atmosphere
         {
             base.InitializeCore();
 
-            // Sky view lut
             _skyViewLutTexture = Texture.New2D(Context.GraphicsDevice, SkyViewLutSettings.Width, SkyViewLutSettings.Height, SkyViewLutSettings.Format, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
-
-            _renderSkyViewLutEffect = new DynamicEffectInstance("AtmosphereRenderSkyViewLutEffect");
-            _renderSkyViewLutEffect.Initialize(Context.Services);
-
-            _renderSkyViewLutPipelineState = new MutablePipelineState(Context.GraphicsDevice);
-            _renderSkyViewLutPipelineState.State.SetDefaults();
-            _renderSkyViewLutPipelineState.State.PrimitiveType = PrimitiveType.TriangleList;
-
-            // Sky atmosphere volume
             _atmosphereCameraScatteringVolumeTexture = Texture.New3D(Context.GraphicsDevice, AtmosphereCameraScatteringVolumeSettings.Size, AtmosphereCameraScatteringVolumeSettings.Size, AtmosphereCameraScatteringVolumeSettings.Slices, AtmosphereCameraScatteringVolumeSettings.Format, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
+            _multiScatteringTexture = Texture.New2D(Context.GraphicsDevice, MultiScatteringTextureSettings.Size, MultiScatteringTextureSettings.Size, MultiScatteringTextureSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.ShaderResource);
+            _transmittanceLutTexture = Texture.New2D(Context.GraphicsDevice, TransmittanceLutSettings.Width, TransmittanceLutSettings.Height, TransmittanceLutSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.RenderTarget | TextureFlags.ShaderResource);
+
+            _transmittanceLutEffect = new ImageEffectShader("AtmosphereRenderTransmittanceLutEffect");
+            _skyViewLutEffect = new ImageEffectShader("AtmosphereRenderSkyViewLutEffect");
+            _renderMultipleScatteringTextureEffect = new ComputeEffectShader(Context) { ShaderSourceName = "AtmosphereMultipleScatteringTextureEffect" };
 
             _renderAtmosphereScatteringVolumeEffect = new DynamicEffectInstance("AtmosphereRenderScatteringCameraVolumeEffect");
             _renderAtmosphereScatteringVolumeEffect.Initialize(Context.Services);
@@ -74,55 +67,15 @@ namespace TR.Stride.Atmosphere
             _renderAtmosphereScatteringVolumePipelineState.State.SetDefaults();
             _renderAtmosphereScatteringVolumePipelineState.State.PrimitiveType = PrimitiveType.TriangleList;
 
-            // Multiscattering texture
-            _renderNewMultiScattEffect = new ComputeEffectShader(Context) { ShaderSourceName = "AtmosphereNewMultiScattEffect" };
-            _multiScatteringTexture = Texture.New2D(Context.GraphicsDevice, MultiScatteringTextureSettings.Size, MultiScatteringTextureSettings.Size, MultiScatteringTextureSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.ShaderResource);
+            _atmosphereLogicalGroupKey = CreateDrawLogicalGroup("Atmosphere");
 
-            // Transmittance lut
-            _transmittanceLutTexture = Texture.New2D(Context.GraphicsDevice, TransmittanceLutSettings.Width, TransmittanceLutSettings.Height, TransmittanceLutSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.RenderTarget | TextureFlags.ShaderResource);
-
-            _renderTransmittanceLutEffect = new DynamicEffectInstance("AtmosphereRenderTransmittanceLutEffect");
-            _renderTransmittanceLutEffect.Initialize(Context.Services);
-
-            _renderTransmittanceLutPipelineState = new MutablePipelineState(Context.GraphicsDevice);
-            _renderTransmittanceLutPipelineState.State.SetDefaults();
-            _renderTransmittanceLutPipelineState.State.PrimitiveType = PrimitiveType.TriangleList;
-
-            // Sky ray march effect
-            _renderSkyRayMarchingEffect = new DynamicEffectInstance("AtmosphereRenderSkyRayMarchingEffect");
-            _renderSkyRayMarchingEffect.Initialize(Context.Services);
-
-            _renderSkyRayMarchingPipelineState = new MutablePipelineState(Context.GraphicsDevice);
-
-            var state = _renderSkyRayMarchingPipelineState.State;
-
-            state.SetDefaults();
-
-            state.DepthStencilState = new DepthStencilStateDescription(false, false);
-
-            state.BlendState.AlphaToCoverageEnable = false;
-            state.BlendState.IndependentBlendEnable = false;
-
-            ref var blendState0 = ref state.BlendState.RenderTarget0;
-
-            blendState0.BlendEnable = true;
-
-            blendState0.ColorSourceBlend = Blend.One;
-            blendState0.ColorDestinationBlend = Blend.InverseSourceAlpha;
-            blendState0.ColorBlendFunction = BlendFunction.Add;
-
-            blendState0.AlphaSourceBlend = Blend.Zero;
-            blendState0.AlphaDestinationBlend = Blend.One;
-            blendState0.AlphaBlendFunction = BlendFunction.Add;
-
-            state.PrimitiveType = PrimitiveType.TriangleList;
-
-            // Debug utils
             _spriteBatch = new SpriteBatch(Context.GraphicsDevice);
         }
 
         public override void Unload()
         {
+            base.Unload();
+
             _multiScatteringTexture?.Dispose();
             _multiScatteringTexture = null;
 
@@ -135,73 +88,188 @@ namespace TR.Stride.Atmosphere
             _atmosphereCameraScatteringVolumeTexture?.Dispose();
             _atmosphereCameraScatteringVolumeTexture = null;
 
-            base.Unload();
+            _transmittanceLutEffect?.Dispose();
+            _transmittanceLutEffect = null;
+
+            _skyViewLutEffect?.Dispose();
+            _skyViewLutEffect = null;
+
+            _renderMultipleScatteringTextureEffect?.Dispose();
+            _renderMultipleScatteringTextureEffect = null;
+
+            _renderAtmosphereScatteringVolumeEffect?.Dispose();
+            _renderAtmosphereScatteringVolumeEffect = null;
+
+            _spriteBatch?.Dispose();
+            _spriteBatch = null;
+        }
+
+        protected override void ProcessPipelineState(RenderContext context, RenderNodeReference renderNodeReference, ref RenderNode renderNode, RenderObject renderObject, PipelineStateDescription pipelineState)
+        {
+            base.ProcessPipelineState(context, renderNodeReference, ref renderNode, renderObject, pipelineState);
+
+            pipelineState.DepthStencilState = new DepthStencilStateDescription(false, false);
+
+            pipelineState.BlendState.AlphaToCoverageEnable = false;
+            pipelineState.BlendState.IndependentBlendEnable = false;
+
+            ref var blendState0 = ref pipelineState.BlendState.RenderTarget0;
+
+            blendState0.BlendEnable = true;
+
+            blendState0.ColorSourceBlend = Blend.One;
+            blendState0.ColorDestinationBlend = Blend.InverseSourceAlpha;
+            blendState0.ColorBlendFunction = BlendFunction.Add;
+
+            blendState0.AlphaSourceBlend = Blend.Zero;
+            blendState0.AlphaDestinationBlend = Blend.One;
+            blendState0.AlphaBlendFunction = BlendFunction.Add;
+
+            pipelineState.PrimitiveType = PrimitiveType.TriangleList;
         }
 
         public override void Draw(RenderDrawContext context, RenderView renderView, RenderViewStage renderViewStage, int startIndex, int endIndex)
         {
             base.Draw(context, renderView, renderViewStage, startIndex, endIndex);
 
-            var graphicsDevice = context.GraphicsDevice;
-            var graphicsContext = context.GraphicsContext;
             var commandList = context.GraphicsContext.CommandList;
 
-            var depthStencilSRV = GetDepthSRV(context);
+            // Only one atmosphere is supported, so we can cheat
+            if (startIndex == endIndex)
+                return;
 
-            using (context.QueryManager.BeginProfile(Color.Blue, ProfilingKeys.Atmosphere))
+            var index = startIndex;
+
+            var renderNodeReference = renderViewStage.SortedRenderNodes[index].RenderNode;
+            var renderNode = GetRenderNode(renderNodeReference);
+            var renderObject = (AtmosphereRenderObject)renderNode.RenderObject;
+
+            if (renderObject.Component.Sun == null)
+                return;
+
+            if (!(renderObject.Component.Sun.Type is LightDirectional light))
+                return;
+
+            var renderEffect = GetRenderNode(renderNodeReference).RenderEffect;
+            if (renderEffect.Effect == null)
+                return;
+
+            // Update parameters
+            var drawLayout = renderNode.RenderEffect.Reflection?.PerDrawLayout;
+            if (drawLayout == null)
+                return;
+
+            var drawAtmosphere = drawLayout.GetLogicalGroup(_atmosphereLogicalGroupKey);
+            if (drawAtmosphere.Hash == ObjectId.Empty)
+                return;
+
+            if (_atmopshereLayoutHash != drawAtmosphere.Hash)
             {
-                for (int index = startIndex; index < endIndex; index++)
+                _atmopshereLayoutHash = drawAtmosphere.Hash;
+
+                var atmosphereParameterLayout = new ParameterCollectionLayout();
+                atmosphereParameterLayout.ProcessLogicalGroup(drawLayout, ref drawAtmosphere);
+
+                _atmosphereParameters.UpdateLayout(atmosphereParameterLayout);
+            }
+
+            SetParameters(renderView, renderObject.Component, _atmosphereParameters);
+            _atmosphereParameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, _transmittanceLutTexture);
+
+            renderNode.Resources.UpdateLogicalGroup(ref drawAtmosphere, _atmosphereParameters);
+
+            // Set texture resources
+            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 0, _transmittanceLutTexture);
+            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 1, _skyViewLutTexture);
+            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 2, _multiScatteringTexture);
+            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 3, _atmosphereCameraScatteringVolumeTexture);
+
+            // Update cbuffer
+            var resourceGroupOffset = ComputeResourceGroupOffset(renderNodeReference);
+            renderEffect.Reflection.BufferUploader.Apply(commandList, ResourceGroupPool, resourceGroupOffset);
+
+            // Bind descriptor sets
+            if (_descriptorSets == null || _descriptorSets.Length < EffectDescriptorSetSlotCount)
+            {
+                _descriptorSets = new DescriptorSet[EffectDescriptorSetSlotCount];
+            }
+
+            for (int i = 0; i < _descriptorSets.Length; ++i)
+            {
+                var resourceGroup = ResourceGroupPool[resourceGroupOffset++];
+                if (resourceGroup != null)
                 {
-                    var renderNodeReference = renderViewStage.SortedRenderNodes[index].RenderNode;
-                    var renderNode = GetRenderNode(renderNodeReference);
-                    var renderObject = (AtmosphereRenderObject)renderNode.RenderObject;
-
-                    if (renderObject.Component.Sun == null)
-                        continue;
-
-                    if (!(renderObject.Component.Sun.Type is LightDirectional light))
-                        continue;
-
-                    RenderTransmittanceLut(context, renderView, renderObject.Component);
-                    RenderNewMultiScattering(context, renderView, renderObject.Component);
-                    RenderSkyViewLut(context, renderView, renderObject.Component);
-                    RenderAtmosphereCameraScatteringVolume(context, renderView, renderObject.Component);
-
-                    using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.RayMarching))
-                    {
-                        commandList.ResourceBarrierTransition(_multiScatteringTexture, GraphicsResourceState.PixelShaderResource);
-                        commandList.ResourceBarrierTransition(_transmittanceLutTexture, GraphicsResourceState.PixelShaderResource);
-                        commandList.ResourceBarrierTransition(_skyViewLutTexture, GraphicsResourceState.PixelShaderResource);
-                        commandList.ResourceBarrierTransition(_atmosphereCameraScatteringVolumeTexture, GraphicsResourceState.PixelShaderResource);
-
-                        // Refresh shader, might have changed during runtime
-                        _renderSkyRayMarchingEffect.UpdateEffect(graphicsDevice);
-
-                        _renderSkyRayMarchingPipelineState.State.RootSignature = _renderSkyRayMarchingEffect.RootSignature;
-                        _renderSkyRayMarchingPipelineState.State.EffectBytecode = _renderSkyRayMarchingEffect.Effect.Bytecode;
-
-                        _renderSkyRayMarchingPipelineState.State.Output.CaptureState(commandList);
-                        _renderSkyRayMarchingPipelineState.Update();
-
-                        commandList.SetPipelineState(_renderSkyRayMarchingPipelineState.CurrentState);
-
-                        var parameters = _renderSkyRayMarchingEffect.Parameters;
-                        SetParameters(renderView, renderObject.Component, parameters);
-
-                        parameters.Set(AtmosphereRenderSkyCommonKeys.MultiScatTexture, _multiScatteringTexture);
-                        parameters.Set(AtmosphereRenderSkyCommonKeys.TransmittanceLutTexture, _transmittanceLutTexture);
-                        parameters.Set(AtmosphereRenderSkyCommonKeys.SkyViewLutTexture, _skyViewLutTexture);
-                        parameters.Set(AtmosphereRenderSkyCommonKeys.AtmosphereCameraScatteringVolume, _atmosphereCameraScatteringVolumeTexture);
-                        parameters.Set(AtmosphereRenderSkyCommonKeys.ViewDepthTexture, depthStencilSRV);
-
-                        _renderSkyRayMarchingEffect.Apply(graphicsContext);
-
-                        commandList.Draw(3, 0);
-                    }
+                    _descriptorSets[i] = resourceGroup.DescriptorSet;
                 }
+            }
 
-                // Debug Draw
-                _spriteBatch.Begin(graphicsContext, SpriteSortMode.Immediate);
+            // Transmittance LUT
+            using (context.PushRenderTargetsAndRestore())
+            {
+                SetParameters(renderView, renderObject.Component, _transmittanceLutEffect.Parameters);
+                
+                _transmittanceLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.Resolution, new Vector2(_transmittanceLutTexture.Width, _transmittanceLutTexture.Height));
+
+                _transmittanceLutEffect.SetOutput(_transmittanceLutTexture);
+                _transmittanceLutEffect.Draw(context, "Atmosphere.Transmittance LUT");
+            }
+
+            commandList.ResourceBarrierTransition(_transmittanceLutTexture, GraphicsResourceState.PixelShaderResource);
+
+            // Multi scattering texture
+            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.MultiScatteringTexture))
+            {
+                commandList.ResourceBarrierTransition(_multiScatteringTexture, GraphicsResourceState.UnorderedAccess);
+
+                SetParameters(renderView, renderObject.Component, _renderMultipleScatteringTextureEffect.Parameters);
+
+                _renderMultipleScatteringTextureEffect.Parameters.Set(AtmosphereMultipleScatteringTextureEffectCSKeys.OutputTexture, _multiScatteringTexture);
+                _renderMultipleScatteringTextureEffect.Parameters.Set(AtmosphereParametersBaseKeys.SunIlluminance, new Vector3(1, 1, 1));
+                _renderMultipleScatteringTextureEffect.Parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, _transmittanceLutTexture);
+
+                _renderMultipleScatteringTextureEffect.ThreadGroupCounts = new Int3(_multiScatteringTexture.Width, _multiScatteringTexture.Height, 1);
+                _renderMultipleScatteringTextureEffect.ThreadNumbers = new Int3(1, 1, 64);
+
+                _renderMultipleScatteringTextureEffect.Draw(context);
+            }
+
+            commandList.ResourceBarrierTransition(_multiScatteringTexture, GraphicsResourceState.PixelShaderResource);
+
+            // Sky view LUT
+            using (context.PushRenderTargetsAndRestore())
+            {
+                SetParameters(renderView, renderObject.Component, _skyViewLutEffect.Parameters);
+                
+                _skyViewLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.Resolution, new Vector2(_skyViewLutTexture.Width, _skyViewLutTexture.Height));
+                _skyViewLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, _transmittanceLutTexture);
+                _skyViewLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.MultiScatTexture, _multiScatteringTexture);
+
+                _skyViewLutEffect.SetOutput(_skyViewLutTexture);
+                _skyViewLutEffect.Draw(context, "Atmosphere.Sky View LUT");
+            }
+
+            commandList.ResourceBarrierTransition(_skyViewLutTexture, GraphicsResourceState.PixelShaderResource);
+
+            // Atmosphere camera scattering volume
+            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.ScatteringCameraVolume))
+            {
+                RenderAtmosphereCameraScatteringVolume(context, renderView, renderObject.Component);
+            }
+
+            commandList.ResourceBarrierTransition(_atmosphereCameraScatteringVolumeTexture, GraphicsResourceState.PixelShaderResource);
+
+            // Ray march atmosphere render
+            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.RayMarching))
+            {
+                commandList.SetPipelineState(renderEffect.PipelineState);
+                commandList.SetDescriptorSets(0, _descriptorSets);
+
+                commandList.Draw(3, 0);
+            }
+
+            if (DrawDebugTextures)
+            {
+                _spriteBatch.Begin(context.GraphicsContext, SpriteSortMode.Immediate);
 
                 var y = renderView.ViewSize.Y - 20 - _transmittanceLutTexture.Height;
                 _spriteBatch.Draw(_transmittanceLutTexture, new Vector2(20, y));
@@ -214,183 +282,51 @@ namespace TR.Stride.Atmosphere
 
                 _spriteBatch.End();
             }
-
-            context.Resolver.ReleaseDepthStenctilAsShaderResource(depthStencilSRV);
-        }
-
-        private void RenderNewMultiScattering(RenderDrawContext context, RenderView renderView, AtmosphereComponent component)
-        {
-            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.MultiScatteringTexture))
-            {
-                var commandList = context.GraphicsContext.CommandList;
-
-                commandList.ResourceBarrierTransition(_multiScatteringTexture, GraphicsResourceState.UnorderedAccess);
-                commandList.ResourceBarrierTransition(_transmittanceLutTexture, GraphicsResourceState.PixelShaderResource);
-
-                var parameters = _renderNewMultiScattEffect.Parameters;
-                SetParameters(renderView, component, parameters);
-
-                parameters.Set(AtmosphereNewMultiScattCSKeys.OutputTexture, _multiScatteringTexture);
-                parameters.Set(AtmosphereParametersBaseKeys.SunIlluminance, new Vector3(1, 1, 1));
-                parameters.Set(AtmosphereRenderSkyCommonKeys.TransmittanceLutTexture, _transmittanceLutTexture);
-
-                _renderNewMultiScattEffect.ThreadGroupCounts = new Int3(_multiScatteringTexture.Width, _multiScatteringTexture.Height, 1);
-                _renderNewMultiScattEffect.ThreadNumbers = new Int3(1, 1, 64);
-
-                _renderNewMultiScattEffect.Draw(context);
-            }
         }
 
         private void RenderAtmosphereCameraScatteringVolume(RenderDrawContext context, RenderView renderView, AtmosphereComponent component)
         {
-            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.ScatteringCameraVolume))
+            // Not using ImageEffectShader as we have custom geometry shader and need to use DrawInstanced with custom parameters
+
+            var graphicsDevice = context.GraphicsDevice;
+            var graphicsContext = context.GraphicsContext;
+            var commandList = context.GraphicsContext.CommandList;
+
+            _renderAtmosphereScatteringVolumeEffect.UpdateEffect(graphicsDevice);
+
+            _renderAtmosphereScatteringVolumePipelineState.State.RootSignature = _renderAtmosphereScatteringVolumeEffect.RootSignature;
+            _renderAtmosphereScatteringVolumePipelineState.State.EffectBytecode = _renderAtmosphereScatteringVolumeEffect.Effect.Bytecode;
+
+            using (context.PushRenderTargetsAndRestore())
             {
-                var graphicsDevice = context.GraphicsDevice;
-                var graphicsContext = context.GraphicsContext;
-                var commandList = context.GraphicsContext.CommandList;
+                commandList.ResourceBarrierTransition(_atmosphereCameraScatteringVolumeTexture, GraphicsResourceState.RenderTarget);
 
-                _renderAtmosphereScatteringVolumeEffect.UpdateEffect(graphicsDevice);
+                commandList.SetRenderTarget(null, _atmosphereCameraScatteringVolumeTexture);
 
-                _renderAtmosphereScatteringVolumePipelineState.State.RootSignature = _renderAtmosphereScatteringVolumeEffect.RootSignature;
-                _renderAtmosphereScatteringVolumePipelineState.State.EffectBytecode = _renderAtmosphereScatteringVolumeEffect.Effect.Bytecode;
+                var oldViewport = commandList.Viewport;
+                commandList.SetViewport(new Viewport(0, 0, _atmosphereCameraScatteringVolumeTexture.Width, _atmosphereCameraScatteringVolumeTexture.Height));
 
-                using (context.PushRenderTargetsAndRestore())
-                {
-                    commandList.ResourceBarrierTransition(_atmosphereCameraScatteringVolumeTexture, GraphicsResourceState.RenderTarget);
-                    commandList.ResourceBarrierTransition(_transmittanceLutTexture, GraphicsResourceState.PixelShaderResource);
-                    commandList.ResourceBarrierTransition(_multiScatteringTexture, GraphicsResourceState.PixelShaderResource);
-                    commandList.ResourceBarrierTransition(_skyViewLutTexture, GraphicsResourceState.PixelShaderResource);
+                _renderAtmosphereScatteringVolumePipelineState.State.Output.CaptureState(commandList);
+                _renderAtmosphereScatteringVolumePipelineState.Update();
 
-                    commandList.SetRenderTarget(null, _atmosphereCameraScatteringVolumeTexture);
+                commandList.SetPipelineState(_renderAtmosphereScatteringVolumePipelineState.CurrentState);
 
-                    var oldViewport = commandList.Viewport;
-                    commandList.SetViewport(new Viewport(0, 0, _atmosphereCameraScatteringVolumeTexture.Width, _atmosphereCameraScatteringVolumeTexture.Height));
+                var parameters = _renderAtmosphereScatteringVolumeEffect.Parameters;
 
-                    _renderAtmosphereScatteringVolumePipelineState.State.Output.CaptureState(commandList);
-                    _renderAtmosphereScatteringVolumePipelineState.Update();
+                SetParameters(renderView, component, parameters);
 
-                    commandList.SetPipelineState(_renderAtmosphereScatteringVolumePipelineState.CurrentState);
+                parameters.Set(AtmosphereParametersBaseKeys.Resolution, new Vector2(_atmosphereCameraScatteringVolumeTexture.Width, _atmosphereCameraScatteringVolumeTexture.Height));
 
-                    var parameters = _renderAtmosphereScatteringVolumeEffect.Parameters;
+                parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, _transmittanceLutTexture);
+                parameters.Set(AtmosphereParametersBaseKeys.MultiScatTexture, _multiScatteringTexture);
+                parameters.Set(AtmosphereParametersBaseKeys.SkyViewLutTexture, _skyViewLutTexture);
 
-                    SetParameters(renderView, component, parameters);
+                _renderAtmosphereScatteringVolumeEffect.Apply(graphicsContext);
 
-                    parameters.Set(AtmosphereCommonKeys.Resolution, new Vector2(_atmosphereCameraScatteringVolumeTexture.Width, _atmosphereCameraScatteringVolumeTexture.Height));
+                commandList.DrawInstanced(3, _atmosphereCameraScatteringVolumeTexture.Depth);
 
-                    parameters.Set(AtmosphereRenderSkyCommonKeys.TransmittanceLutTexture, _transmittanceLutTexture);
-                    parameters.Set(AtmosphereRenderSkyCommonKeys.MultiScatTexture, _multiScatteringTexture);
-                    parameters.Set(AtmosphereRenderSkyCommonKeys.SkyViewLutTexture  , _skyViewLutTexture);
-
-                    _renderAtmosphereScatteringVolumeEffect.Apply(graphicsContext);
-
-                    commandList.DrawInstanced(3, _atmosphereCameraScatteringVolumeTexture.Depth);
-
-                    commandList.SetViewport(oldViewport);
-                }
+                commandList.SetViewport(oldViewport);
             }
-        }
-
-        private void RenderSkyViewLut(RenderDrawContext context, RenderView renderView, AtmosphereComponent component)
-        {
-            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.SkyViewLut))
-            {
-                var graphicsDevice = context.GraphicsDevice;
-                var graphicsContext = context.GraphicsContext;
-                var commandList = context.GraphicsContext.CommandList;
-
-                _renderSkyViewLutEffect.UpdateEffect(graphicsDevice);
-
-                _renderSkyViewLutPipelineState.State.RootSignature = _renderSkyViewLutEffect.RootSignature;
-                _renderSkyViewLutPipelineState.State.EffectBytecode = _renderSkyViewLutEffect.Effect.Bytecode;
-
-                using (context.PushRenderTargetsAndRestore())
-                {
-                    commandList.ResourceBarrierTransition(_skyViewLutTexture, GraphicsResourceState.RenderTarget);
-                    commandList.ResourceBarrierTransition(_transmittanceLutTexture, GraphicsResourceState.PixelShaderResource);
-                    commandList.ResourceBarrierTransition(_multiScatteringTexture, GraphicsResourceState.PixelShaderResource);
-
-                    commandList.SetRenderTarget(null, _skyViewLutTexture);
-
-                    var oldViewport = commandList.Viewport;
-                    commandList.SetViewport(new Viewport(0, 0, _skyViewLutTexture.Width, _skyViewLutTexture.Height));
-
-                    _renderSkyViewLutPipelineState.State.Output.CaptureState(commandList);
-                    _renderSkyViewLutPipelineState.Update();
-
-                    commandList.SetPipelineState(_renderSkyViewLutPipelineState.CurrentState);
-
-                    var parameters = _renderSkyViewLutEffect.Parameters;
-
-                    SetParameters(renderView, component, parameters);
-                    
-                    parameters.Set(AtmosphereCommonKeys.Resolution, new Vector2(_skyViewLutTexture.Width, _skyViewLutTexture.Height));
-
-                    parameters.Set(AtmosphereRenderSkyCommonKeys.TransmittanceLutTexture, _transmittanceLutTexture);
-                    parameters.Set(AtmosphereRenderSkyCommonKeys.MultiScatTexture, _multiScatteringTexture);
-
-                    _renderSkyViewLutEffect.Apply(graphicsContext);
-
-                    commandList.Draw(3, 0);
-
-                    commandList.SetViewport(oldViewport);
-                }
-            }
-        }
-
-        private void RenderTransmittanceLut(RenderDrawContext context, RenderView renderView, AtmosphereComponent component)
-        {
-            using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.TransmittanceLut))
-            {
-                var graphicsDevice = context.GraphicsDevice;
-                var graphicsContext = context.GraphicsContext;
-                var commandList = context.GraphicsContext.CommandList;
-
-                // Refresh shader, might have changed during runtime
-                _renderTransmittanceLutEffect.UpdateEffect(graphicsDevice);
-
-                _renderTransmittanceLutPipelineState.State.RootSignature = _renderTransmittanceLutEffect.RootSignature;
-                _renderTransmittanceLutPipelineState.State.EffectBytecode = _renderTransmittanceLutEffect.Effect.Bytecode;
-
-                using (context.PushRenderTargetsAndRestore())
-                {
-                    commandList.ResourceBarrierTransition(_transmittanceLutTexture, GraphicsResourceState.RenderTarget);
-                    commandList.SetRenderTarget(null, _transmittanceLutTexture);
-
-                    var oldViewport = commandList.Viewport;
-                    commandList.SetViewport(new Viewport(0, 0, TransmittanceLutSettings.Width, TransmittanceLutSettings.Height));
-
-                    _renderTransmittanceLutPipelineState.State.Output.CaptureState(commandList);
-                    _renderTransmittanceLutPipelineState.Update();
-
-                    commandList.SetPipelineState(_renderTransmittanceLutPipelineState.CurrentState);
-
-                    var parameters = _renderTransmittanceLutEffect.Parameters;
-
-                    SetParameters(renderView, component, parameters);
-                    parameters.Set(AtmosphereCommonKeys.Resolution, new Vector2(TransmittanceLutSettings.Width, TransmittanceLutSettings.Height));
-
-                    _renderTransmittanceLutEffect.Apply(graphicsContext);
-
-                    commandList.Draw(3, 0);
-
-                    commandList.SetViewport(oldViewport);
-                }
-            }
-        }
-
-        private Texture GetDepthSRV(RenderDrawContext context)
-        {
-            // We require depth not to be exposed to transparent render targets as this fails otherwise
-            // TODO: Remove once we implement RootEffectRenderFeature
-            var depthStencil = context.CommandList.DepthStencilBuffer;
-            var depthStencilSRV = context.Resolver.ResolveDepthStencil(context.CommandList.DepthStencilBuffer);
-
-            context.CommandList.SetRenderTargets(null, context.CommandList.RenderTargetCount, context.CommandList.RenderTargets);
-
-            depthStencilROCached = context.Resolver.GetDepthStencilAsRenderTarget(depthStencil, depthStencilROCached);
-            context.CommandList.SetRenderTargets(depthStencilROCached, context.CommandList.RenderTargetCount, context.CommandList.RenderTargets);
-
-            return depthStencilSRV;
         }
 
         private void SetParameters(RenderView renderView, AtmosphereComponent component, ParameterCollection parameters)
@@ -430,7 +366,7 @@ namespace TR.Stride.Atmosphere
             parameters.Set(AtmosphereParametersBaseKeys.AbsorptionDensity0LinearTerm, component.AbsorptionDensity0LinearTerm);
             parameters.Set(AtmosphereParametersBaseKeys.AbsorptionDensity1ConstantTerm, component.AbsorptionDensity1ConstantTerm);
             parameters.Set(AtmosphereParametersBaseKeys.AbsorptionDensity1LinearTerm, component.AbsorptionDensity1LinearTerm);
-            
+
             parameters.Set(AtmosphereParametersBaseKeys.RayleighScattering, rayleighScattering);
 
             parameters.Set(AtmosphereParametersBaseKeys.MiePhaseG, component.MiePhase);
@@ -459,12 +395,12 @@ namespace TR.Stride.Atmosphere
 
             // Misc
             parameters.Set(AtmosphereParametersBaseKeys.SunDirection, -lightDirection);
-            
-            parameters.Set(AtmosphereCommonKeys.InvViewProjectionMatrix, Matrix.Invert(renderView.ViewProjection));
-            parameters.Set(AtmosphereCommonKeys.CameraPositionWS, cameraPos);
-            parameters.Set(AtmosphereCommonKeys.Resolution, renderView.ViewSize);
-            parameters.Set(AtmosphereCommonKeys.RayMarchMinMaxSPP, new Vector2(4, 14));
-            parameters.Set(AtmosphereCommonKeys.ScaleToSkyUnit, component.StrideToAtmosphereUnitScale);
+
+            parameters.Set(AtmosphereParametersBaseKeys.InvViewProjectionMatrix, Matrix.Invert(renderView.ViewProjection));
+            parameters.Set(AtmosphereParametersBaseKeys.CameraPositionWS, cameraPos);
+            parameters.Set(AtmosphereParametersBaseKeys.Resolution, renderView.ViewSize);
+            parameters.Set(AtmosphereParametersBaseKeys.RayMarchMinMaxSPP, new Vector2(4, 14));
+            parameters.Set(AtmosphereParametersBaseKeys.ScaleToSkyUnit, component.StrideToAtmosphereUnitScale);
             parameters.Set(AtmosphereParametersBaseKeys.SunIlluminance, new Vector3(sunColor.R, sunColor.G, sunColor.B));
             parameters.Set(AtmosphereParametersBaseKeys.SunLuminanceFactor, component.SunLuminanceFactor);
         }

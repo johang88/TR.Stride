@@ -6,22 +6,4 @@
 // and re-save the associated .sdfx.
 // </auto-generated>
 
-using System;
-using Stride.Core;
-using Stride.Rendering;
-using Stride.Graphics;
-using Stride.Shaders;
-using Stride.Core.Mathematics;
-using Buffer = Stride.Graphics.Buffer;
-
-namespace Stride.Rendering
-{
-    public static partial class AtmosphereRenderSkyCommonKeys
-    {
-        public static readonly ObjectParameterKey<Texture> TransmittanceLutTexture = ParameterKeys.NewObject<Texture>();
-        public static readonly ObjectParameterKey<Texture> SkyViewLutTexture = ParameterKeys.NewObject<Texture>();
-        public static readonly ObjectParameterKey<Texture> ViewDepthTexture = ParameterKeys.NewObject<Texture>();
-        public static readonly ObjectParameterKey<Texture> MultiScatTexture = ParameterKeys.NewObject<Texture>();
-        public static readonly ObjectParameterKey<Texture> AtmosphereCameraScatteringVolume = ParameterKeys.NewObject<Texture>();
-    }
-}
+// Nothing to generate

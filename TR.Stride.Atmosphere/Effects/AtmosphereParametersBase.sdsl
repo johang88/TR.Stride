@@ -1,7 +1,7 @@
 ﻿
 shader AtmosphereParametersBase
 {
-	cbuffer PerFrame.Atmosphere
+	cbuffer PerDraw.Atmosphere
 	{
 		// Radius of the planet (center to ground)
 		stage float BottomRadius;
@@ -52,7 +52,21 @@ shader AtmosphereParametersBase
 		stage float3 SunDirection;
 		stage float3 SunIlluminance;
 		stage float SunLuminanceFactor;
+
+		stage float4x4 InvViewProjectionMatrix;
+		stage float3 CameraPositionWS;
+		stage float ScaleToSkyUnit = 1.0f;
+		stage float2 Resolution;
+		stage float2 RayMarchMinMaxSPP;
 	};
+
+	rgroup PerDraw.Atmosphere
+	{
+		stage Texture2D TransmittanceLutTexture;
+		stage Texture2D SkyViewLutTexture;
+		stage Texture2D<float4> MultiScatTexture;
+		stage Texture3D<float4> AtmosphereCameraScatteringVolume;
+	}
 
 	struct AtmosphereParameters
 	{

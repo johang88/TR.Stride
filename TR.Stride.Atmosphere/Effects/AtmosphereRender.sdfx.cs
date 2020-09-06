@@ -57,18 +57,18 @@ internal static partial class ShaderMixins
 }
 internal static partial class ShaderMixins
 {
-    internal partial class AtmosphereNewMultiScattEffect  : IShaderMixinBuilder
+    internal partial class AtmosphereMultipleScatteringTextureEffect  : IShaderMixinBuilder
     {
         public void Generate(ShaderMixinSource mixin, ShaderMixinContext context)
         {
-            context.Mixin(mixin, "AtmosphereNewMultiScattCS", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
+            context.Mixin(mixin, "AtmosphereMultipleScatteringTextureEffectCS", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
         }
 
         [ModuleInitializer]
         internal static void __Initialize__()
 
         {
-            ShaderMixinManager.Register("AtmosphereNewMultiScattEffect", new AtmosphereNewMultiScattEffect());
+            ShaderMixinManager.Register("AtmosphereMultipleScatteringTextureEffect", new AtmosphereMultipleScatteringTextureEffect());
         }
     }
 }

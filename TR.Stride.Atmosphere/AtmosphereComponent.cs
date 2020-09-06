@@ -12,7 +12,7 @@ using System.Text;
 namespace TR.Stride.Atmosphere
 {
     [DataContract, DefaultEntityComponentRenderer(typeof(AtmosphereEntityProcessor))]
-    public class AtmosphereComponent : SyncScript
+    public class AtmosphereComponent : ScriptComponent
     {
         [DataMember(0)] public LightComponent Sun { get; set; }
 
@@ -60,21 +60,5 @@ namespace TR.Stride.Atmosphere
         /// or it wont get captured very well close to the camera, large scales work the same but in reverse :)
         /// </summary>
         [DataMember(203)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
-
-        public override void Update()
-        {
-            var dt = (float)Game.UpdateTime.Elapsed.TotalSeconds;
-
-            if (Input.IsKeyDown(Keys.P))
-            {
-                AerialPerspectiveDistanceScale += dt * 100;
-            }
-            else if (Input.IsKeyDown(Keys.O))
-            {
-                AerialPerspectiveDistanceScale -= dt * 100;
-            }
-
-            DebugText.Print($"AerialPerspectiveDistanceScale: {AerialPerspectiveDistanceScale}", new Int2(20, 1080 - 300));
-        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿
 
-shader AtmosphereNewMultiScattCS<bool MultiScatteringApproximationEnabled> : ComputeShaderBase, AtmosphereParametersBase, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
+shader AtmosphereMultipleScatteringTextureEffectCS<bool MultiScatteringApproximationEnabled> : ComputeShaderBase, AtmosphereParametersBase, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
 {
 	stage RWTexture2D<float4>  OutputTexture;
 

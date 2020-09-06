@@ -8,20 +8,6 @@
 		AddressW = Clamp;
     };
 
-	cbuffer PerFrame.Common
-	{
-		stage float2 RayMarchMinMaxSPP;
-		// Controls the scaling of world units to sky units (km)
-		stage float ScaleToSkyUnit = 1.0f;
-	}
-
-	cbuffer PerView.Common
-	{
-		stage float4x4 InvViewProjectionMatrix;
-		stage float3 CameraPositionWS;
-		stage float2 Resolution;
-	};
-
 	float RaySphereIntersectNearest(float3 r0, float3 rd, float3 s0, float sR)
     {
         float a = dot(rd, rd);

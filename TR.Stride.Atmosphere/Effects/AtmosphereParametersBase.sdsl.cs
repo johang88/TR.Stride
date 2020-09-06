@@ -43,5 +43,14 @@ namespace Stride.Rendering
         public static readonly ValueParameterKey<Vector3> SunDirection = ParameterKeys.NewValue<Vector3>();
         public static readonly ValueParameterKey<Vector3> SunIlluminance = ParameterKeys.NewValue<Vector3>();
         public static readonly ValueParameterKey<float> SunLuminanceFactor = ParameterKeys.NewValue<float>();
+        public static readonly ValueParameterKey<Matrix> InvViewProjectionMatrix = ParameterKeys.NewValue<Matrix>();
+        public static readonly ValueParameterKey<Vector3> CameraPositionWS = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<float> ScaleToSkyUnit = ParameterKeys.NewValue<float>(1.0f);
+        public static readonly ValueParameterKey<Vector2> Resolution = ParameterKeys.NewValue<Vector2>();
+        public static readonly ValueParameterKey<Vector2> RayMarchMinMaxSPP = ParameterKeys.NewValue<Vector2>();
+        public static readonly ObjectParameterKey<Texture> TransmittanceLutTexture = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> SkyViewLutTexture = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> MultiScatTexture = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> AtmosphereCameraScatteringVolume = ParameterKeys.NewObject<Texture>();
     }
 }

@@ -33,10 +33,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Effects\AtmosphereNewMultiScattCS.sdsl.cs">
+    <Compile Update="Effects\AtmosphereMultipleScatteringTextureEffectCS.sdsl.cs">
       <DesignTime>True</DesignTime>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
+      <DependentUpon>AtmosphereMultipleScatteringTextureEffectCS.sdsl</DependentUpon>
     </Compile>
     <Compile Update="Effects\AtmosphereParametersBase.sdsl.cs">
       <DesignTime>True</DesignTime>
@@ -88,8 +89,8 @@
     <None Update="Effects\AtmosphereGetSunLuminence.sdsl">
       <LastGenOutput>AtmosphereGetSunLuminence.sdsl.cs</LastGenOutput>
     </None>
-    <None Update="Effects\AtmosphereNewMultiScattCS.sdsl">
-      <LastGenOutput>AtmosphereNewMultiScattCS.sdsl.cs</LastGenOutput>
+    <None Update="Effects\AtmosphereMultipleScatteringTextureEffectCS.sdsl">
+      <LastGenOutput>AtmosphereMultipleScatteringTextureEffectCS.sdsl.cs</LastGenOutput>
     </None>
     <None Update="Effects\AtmosphereParametersBase.sdsl">
       <LastGenOutput>AtmosphereParametersBase.sdsl.cs</LastGenOutput>

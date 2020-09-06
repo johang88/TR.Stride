@@ -12,12 +12,6 @@ shader AtmosphereRenderSkyCommon<bool MultiScatteringApproximationEnabled> : Atm
 		return slice * AerialPerspectiveSlicesAndDistancePerSlice.y;
 	}
 
-    stage Texture2D TransmittanceLutTexture;
-    stage Texture2D SkyViewLutTexture;
-    stage Texture2D ViewDepthTexture;
-	stage Texture2D<float4> MultiScatTexture;
-	stage Texture3D<float4> AtmosphereCameraScatteringVolume;
-
 	float3 GetMultipleScattering(AtmosphereParameters Atmosphere, float3 scattering, float3 extinction, float3 worlPos, float viewZenithCosAngle)
 	{
 		float2 uv = saturate(float2(viewZenithCosAngle*0.5f + 0.5f, (length(worlPos) - Atmosphere.BottomRadius) / (Atmosphere.TopRadius - Atmosphere.BottomRadius)));

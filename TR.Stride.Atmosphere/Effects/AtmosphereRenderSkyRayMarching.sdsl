@@ -1,15 +1,15 @@
 ﻿
 
 shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspectiveEnabled, bool RenderSunDisk, bool MultiScatteringApproximationEnabled>
-: ShaderBase, AtmosphereFullscreenTriangle, Math, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>, AtmosphereParametersBase, AtmosphereGetSunLuminence<RenderSunDisk>
+: ShaderBase, AtmosphereFullscreenTriangle, Math, DepthBase, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>, AtmosphereParametersBase, AtmosphereGetSunLuminence<RenderSunDisk>
 {
 	struct RayMarchPixelOutputStruct
 	{
-		float4 Luminance		: SV_TARGET0;
+		float4 Luminance;
 	};
 
-    stage override void PSMain()
-    {   
+	RayMarchPixelOutputStruct _PSMain()
+	{
 		RayMarchPixelOutputStruct output = (RayMarchPixelOutputStruct)0;
 
 		float2 pixPos = streams.ShadingPosition.xy;
@@ -25,7 +25,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 
 		float viewHeight = length(WorldPos);
 		float3 L = 0;
-		DepthBufferValue = ViewDepthTexture[pixPos].r;
+		DepthBufferValue = DepthStencil[pixPos].r;
 
 		if (FastSkyEnabled)
 		{
@@ -46,6 +46,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 				SkyViewLutParamsToUv(Atmosphere, IntersectGround, viewZenithCosAngle, lightViewCosAngle, viewHeight, uv);
 
 				output.Luminance = float4(SkyViewLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb + GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius), 1.0);
+
 				return output;
 			}
 		}
@@ -106,6 +107,11 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 			output.Luminance = float4(L, 1.0f - Transmittance);
 		}
 
-        streams.ColorTarget = output.Luminance;
+		return output;
+	}
+
+    stage override void PSMain()
+    {   
+        streams.ColorTarget = _PSMain().Luminance;
     }
 };
