@@ -22,6 +22,9 @@ namespace TR.Stride.Atmosphere
         public TextureSettings2d SkyViewLutSettings = new TextureSettings2d(192, 108, PixelFormat.R11G11B10_Float);
         public TextureSettingsVolume AtmosphereCameraScatteringVolumeSettings = new TextureSettingsVolume(32, 32, PixelFormat.R16G16B16A16_Float);
 
+        public bool FastSky { get; set; } = true;
+        public bool FastAerialPerspectiveEnabled { get; set; } = true;
+
         public bool DrawDebugTextures { get; set; } = false;
 
         private Texture _transmittanceLutTexture = null;
@@ -128,6 +131,33 @@ namespace TR.Stride.Atmosphere
             pipelineState.PrimitiveType = PrimitiveType.TriangleList;
         }
 
+        public override void PrepareEffectPermutationsImpl(RenderDrawContext context)
+        {
+            base.PrepareEffectPermutationsImpl(context);
+
+            var renderEffects = RenderData.GetData(RenderEffectKey);
+            var effectSlotCount = EffectPermutationSlotCount;
+
+            foreach (AtmosphereRenderObject renderObject in RenderObjects)
+            {
+                var staticObjectNode = renderObject.StaticObjectNode;
+
+                for (int i = 0; i < effectSlotCount; ++i)
+                {
+                    var staticEffectObjectNode = staticObjectNode * effectSlotCount + i;
+                    var renderEffect = renderEffects[staticEffectObjectNode];
+
+                    // Skip effects not used during this frame
+                    if (renderEffect == null || !renderEffect.IsUsedDuringThisFrame(RenderSystem))
+                        continue;
+
+                    renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.FastSkyEnabled, FastSky);
+                    renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.FastAerialPerspectiveEnabled, FastAerialPerspectiveEnabled);
+                    renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.RenderSunDisk, renderObject.Component.RenderSunDisk);
+                }
+            }
+        }
+
         public override void Draw(RenderDrawContext context, RenderView renderView, RenderViewStage renderViewStage, int startIndex, int endIndex)
         {
             base.Draw(context, renderView, renderViewStage, startIndex, endIndex);
@@ -207,7 +237,7 @@ namespace TR.Stride.Atmosphere
             using (context.PushRenderTargetsAndRestore())
             {
                 SetParameters(renderView, renderObject.Component, _transmittanceLutEffect.Parameters);
-                
+
                 _transmittanceLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.Resolution, new Vector2(_transmittanceLutTexture.Width, _transmittanceLutTexture.Height));
 
                 _transmittanceLutEffect.SetOutput(_transmittanceLutTexture);
@@ -239,7 +269,7 @@ namespace TR.Stride.Atmosphere
             using (context.PushRenderTargetsAndRestore())
             {
                 SetParameters(renderView, renderObject.Component, _skyViewLutEffect.Parameters);
-                
+
                 _skyViewLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.Resolution, new Vector2(_skyViewLutTexture.Width, _skyViewLutTexture.Height));
                 _skyViewLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, _transmittanceLutTexture);
                 _skyViewLutEffect.Parameters.Set(AtmosphereParametersBaseKeys.MultiScatTexture, _multiScatteringTexture);

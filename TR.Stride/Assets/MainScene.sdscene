@@ -133,10 +133,13 @@ Hierarchy:
                         MieScaleHeight: 1.2
                         GroundAlbedo: {R: 0.0, G: 0.0, B: 0.0}
                         SunLuminanceFactor: 1000.0
+                        RenderSunDisk: true
                         AerialPerspectiveDistanceScale: 500.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 1.0
+                    6b105a8d0754bbc71cb8613490032b39: !TR.Stride.AtmosphereController,TR.Stride
+                        Id: c990fcd6-fead-486d-a74a-c17f2df34c8c
         -   Entity:
                 Id: cd498803-0c95-4a0d-a1d4-172b831e9182
                 Name: Terrain

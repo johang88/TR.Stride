@@ -44,6 +44,7 @@ namespace TR.Stride.Atmosphere
         [DataMember(70)] public Color3 GroundAlbedo { get; set; } = new Color3(0, 0, 0);
 
         [DataMember(80)] public float SunLuminanceFactor { get; set; } = 100.0f;
+        [DataMember(81)] public bool RenderSunDisk { get; set; } = true;
 
         [DataMember(200)] public float AerialPerspectiveDistanceScale { get; set; } = 1.0f;
         /// <summary>
