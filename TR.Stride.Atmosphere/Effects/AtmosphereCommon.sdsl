@@ -10,7 +10,6 @@
 
 	cbuffer PerFrame.Common
 	{
-		stage float3 SunIlluminance;
 		stage float2 RayMarchMinMaxSPP;
 		// Controls the scaling of world units to sky units (km)
 		stage float ScaleToSkyUnit = 1.0f;

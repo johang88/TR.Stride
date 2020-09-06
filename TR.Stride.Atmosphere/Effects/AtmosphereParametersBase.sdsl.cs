@@ -41,5 +41,7 @@ namespace Stride.Rendering
         public static readonly ValueParameterKey<Vector4> AerialPerspectiveSlicesAndDistancePerSlice = ParameterKeys.NewValue<Vector4>();
         public static readonly ValueParameterKey<float> MultipleScatteringFactor = ParameterKeys.NewValue<float>();
         public static readonly ValueParameterKey<Vector3> SunDirection = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<Vector3> SunIlluminance = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<float> SunLuminanceFactor = ParameterKeys.NewValue<float>();
     }
 }

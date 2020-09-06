@@ -231,7 +231,7 @@ namespace TR.Stride.Atmosphere
                 SetParameters(renderView, component, parameters);
 
                 parameters.Set(AtmosphereNewMultiScattCSKeys.OutputTexture, _multiScatteringTexture);
-                parameters.Set(AtmosphereCommonKeys.SunIlluminance, new Vector3(1, 1, 1));
+                parameters.Set(AtmosphereParametersBaseKeys.SunIlluminance, new Vector3(1, 1, 1));
                 parameters.Set(AtmosphereRenderSkyCommonKeys.TransmittanceLutTexture, _transmittanceLutTexture);
 
                 _renderNewMultiScattEffect.ThreadGroupCounts = new Int3(_multiScatteringTexture.Width, _multiScatteringTexture.Height, 1);
@@ -465,7 +465,8 @@ namespace TR.Stride.Atmosphere
             parameters.Set(AtmosphereCommonKeys.Resolution, renderView.ViewSize);
             parameters.Set(AtmosphereCommonKeys.RayMarchMinMaxSPP, new Vector2(4, 14));
             parameters.Set(AtmosphereCommonKeys.ScaleToSkyUnit, component.StrideToAtmosphereUnitScale);
-            parameters.Set(AtmosphereCommonKeys.SunIlluminance, new Vector3(sunColor.R, sunColor.G, sunColor.B));
+            parameters.Set(AtmosphereParametersBaseKeys.SunIlluminance, new Vector3(sunColor.R, sunColor.G, sunColor.B));
+            parameters.Set(AtmosphereParametersBaseKeys.SunLuminanceFactor, component.SunLuminanceFactor);
         }
 
         static Vector4 CalculateResolutionVector(Texture texutre)

@@ -68,7 +68,7 @@ Hierarchy:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
                         Position: {X: -15.1852064, Y: 48.50744, Z: -23.5119686}
-                        Rotation: {X: -0.02755861, Y: -0.0570988581, Z: 0.0369476937, W: 0.997303665}
+                        Rotation: {X: -0.106700085, Y: -0.0603010878, Z: 0.0381416157, W: 0.991727531}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -107,7 +107,7 @@ Hierarchy:
                     848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
                         Id: 8032bd41-6285-4803-8c88-71e9f7eedd91
                         Position: {X: -15.1852064, Y: 49.13556, Z: -23.5119686}
-                        Rotation: {X: 0.0140518025, Y: 0.0, Z: 0.0, W: 0.999901235}
+                        Rotation: {X: 0.12264435, Y: 0.0, Z: 0.0, W: 0.992450655}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     a84c1741d3ceac964d5bbe5d1031bf50: !TR.Stride.Atmosphere.AtmosphereComponent,TR.Stride.Atmosphere
@@ -132,8 +132,11 @@ Hierarchy:
                         RayleighScaleHeight: 8.0
                         MieScaleHeight: 1.2
                         GroundAlbedo: {R: 0.0, G: 0.0, B: 0.0}
+                        SunLuminanceFactor: 1000.0
                         AerialPerspectiveDistanceScale: 500.0
                         StrideToAtmosphereUnitScale: 0.001
+                        MultipleScatteringFactor: 1.0
+                        AtmosphereScatteringVolumeKmPerSlice: 1.0
         -   Entity:
                 Id: cd498803-0c95-4a0d-a1d4-172b831e9182
                 Name: Terrain

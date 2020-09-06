@@ -50,6 +50,8 @@ shader AtmosphereParametersBase
 
 		// Other globals
 		stage float3 SunDirection;
+		stage float3 SunIlluminance;
+		stage float SunLuminanceFactor;
 	};
 
 	struct AtmosphereParameters

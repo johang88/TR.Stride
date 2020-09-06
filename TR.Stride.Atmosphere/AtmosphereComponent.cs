@@ -43,6 +43,8 @@ namespace TR.Stride.Atmosphere
 
         [DataMember(70)] public Color3 GroundAlbedo { get; set; } = new Color3(0, 0, 0);
 
+        [DataMember(80)] public float SunLuminanceFactor { get; set; } = 100.0f;
+
         [DataMember(200)] public float AerialPerspectiveDistanceScale { get; set; } = 1.0f;
         /// <summary>
         /// 1 stride unit = 1m
@@ -50,13 +52,14 @@ namespace TR.Stride.Atmosphere
         /// </summary>
         [DataMember(201)] public float StrideToAtmosphereUnitScale { get; set; } = 1.0f / 1000.0f;
 
-        [DataMember(300)] public float MultipleScatteringFactor { get; set; } = 1.0f;
+        [DataMember(202)] public float MultipleScatteringFactor { get; set; } = 1.0f;
 
         /// <summary>
         /// Adjust this depending on the scale of your scene,
         /// if you have a small aerial perspective scale then you probably want lower values
+        /// or it wont get captured very well close to the camera, large scales work the same but in reverse :)
         /// </summary>
-        [DataMember(301)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
+        [DataMember(203)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
 
         public override void Update()
         {
