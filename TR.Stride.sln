@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride", "TR.Stride\TR.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Atmosphere", "TR.Stride.Atmosphere\TR.Stride.Atmosphere.csproj", "{2CE22B89-F2A7-420E-A718-0D518A842E33}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Gameplay", "TR.Stride.Gameplay\TR.Stride.Gameplay.csproj", "{41EB4272-76D5-418A-BC23-8A359EEBCA3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2CE22B89-F2A7-420E-A718-0D518A842E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CE22B89-F2A7-420E-A718-0D518A842E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CE22B89-F2A7-420E-A718-0D518A842E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,141 @@
+!SceneAsset
+Id: 29b2c172-7ae0-4bd3-97fd-95d8cdc26736
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! ef504daf-eaa0-4c97-8090-4f6f2f7b0a1b
+        - ref!! 13dbbbd2-d098-4a68-8bd6-53c67c2191b8
+        - ref!! 52b09b32-2bc6-4620-b64e-db70b9010ce2
+        - ref!! 5b6c1aef-383e-44f8-b236-18a1e3ae56fc
+        - ref!! ad174e97-c8b5-45b5-9f48-e8757af7805a
+    Parts:
+        -   Entity:
+                Id: 13dbbbd2-d098-4a68-8bd6-53c67c2191b8
+                Name: Camera
+                Components:
+                    98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
+                        Id: a258dc38-9cdc-42c8-a0b6-bb273e31b15a
+                        Position: {X: 0.0, Y: 0.1, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 1.0, Z: 0.0, W: -4.371139E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    b66dd7950f1f71e708dcf771b29841d6: !CameraComponent
+                        Id: 8f34f93b-c809-4da4-9626-1f70dcb9c3d2
+                        Name: null
+                        Projection: Perspective
+                        NearClipPlane: 0.01
+                        Slot: d75902e9-539b-4ac1-aaa7-580efc5ac7fd
+                    11fc5938664333b74d24b93a7fb461f6: !TR.Stride.BasicCameraController,TR.Stride
+                        Id: f58e69cd-0664-4efb-9d51-932dcd940af9
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 20.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    623acf77a6d22dfbf25fa38caa96f312: !TR.Stride.GameProfiler,TR.Stride
+                        Id: 3236d4f4-6d8a-4e92-b3a8-641417e568fc
+                        Enabled: true
+                        TextColor: {R: 144, G: 238, B: 144, A: 255}
+                        RefreshTime: 500.0
+                        SortingMode: ByName
+                        FilteringMode: GpuEvents
+                        ResultPage: 1
+        -   Entity:
+                Id: 52b09b32-2bc6-4620-b64e-db70b9010ce2
+                Name: Directional light
+                Components:
+                    6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
+                        Id: ec939704-444d-405f-afb6-6ac179ee61a5
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: -0.015846964, Y: 0.0, Z: 0.0, W: 0.9998745}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
+                        Id: 8756cacf-93a2-4c5c-a6b9-b0b7fcd0cc01
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                BiasParameters: {}
+                                ComputeTransmittance: false
+                        Intensity: 2.0
+                    f66940848d1e09ba8ff59ee644503bd7: !TR.Stride.RotateComponent,TR.Stride
+                        Id: d9a5f6df-8595-4426-913c-eda6d24bbd7b
+                        Axis: {X: -1.0, Y: -1.0, Z: 0.0}
+                        Speed: 0.0
+        -   Entity:
+                Id: 5b6c1aef-383e-44f8-b236-18a1e3ae56fc
+                Name: Ambient
+                Components:
+                    9c5903c3c429ef41687d2eb80c84fca7: !TransformComponent
+                        Id: d296ac3f-845d-418a-bb83-8923657bf984
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+        -   Entity:
+                Id: ad174e97-c8b5-45b5-9f48-e8757af7805a
+                Name: M_Planet
+                Components:
+                    04540b58f067ab26071d02899d2a038f: !TransformComponent
+                        Id: 664525f4-94c1-4859-9fca-0318b132634b
+                        Position: {X: 0.0, Y: -63.6, Z: 0.0}
+                        Rotation: {X: -0.193570644, Y: -0.104496345, Z: -0.4634012, W: 0.8584115}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    434fe068184ba702186766f4780a3ced: !ModelComponent
+                        Id: 3e8cb8fc-8c65-46e3-ae27-d48a39c84112
+                        Model: b2d5044d-8181-42d6-b468-a96a245610f8:Planet/M_Planet
+                        IsShadowCaster: false
+                        Materials: {}
+        -   Entity:
+                Id: ef504daf-eaa0-4c97-8090-4f6f2f7b0a1b
+                Name: Atmosphere
+                Components:
+                    848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
+                        Id: 7301c486-52cf-49ef-bcb0-c4557484b0ef
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.12264435, Y: 0.0, Z: 0.0, W: 0.992450655}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    6b105a8d0754bbc71cb8613490032b39: !TR.Stride.AtmosphereController,TR.Stride
+                        Id: fd306de2-8177-44a0-9135-d1123fd17dbf
+                    001c74f7deb7d7490b29fdb5db2f76a4: !TR.Stride.Atmosphere.AtmosphereComponent,TR.Stride.Atmosphere
+                        Id: fb6b3de5-3f76-4e40-a80f-f40cb4f1ebb5
+                        Sun: ref!! 8756cacf-93a2-4c5c-a6b9-b0b7fcd0cc01
+                        PlanetRadius: 6360.0
+                        AtmosphereHeight: 100.0
+                        MiePhase: 0.8
+                        MieScatteringScale: 0.0692
+                        MieScatteringCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
+                        MieAbsorptionScale: 0.00077
+                        MieAbsorptionCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
+                        RayleighScatteringScale: 0.03624
+                        RayleighScatteringCoefficient: {R: 0.160784319, G: 0.372549027, B: 0.9019608}
+                        AbsorptionExctinctionScale: 0.00199
+                        AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.945098042, B: 0.0431372561}
+                        AbsorptionDensity0LayerWidth: 25.0
+                        AbsorptionDensity0ConstantTerm: -0.6666667
+                        AbsorptionDensity0LinearTerm: 0.06666667
+                        AbsorptionDensity1ConstantTerm: 2.66666675
+                        AbsorptionDensity1LinearTerm: -0.06666667
+                        RayleighScaleHeight: 8.0
+                        MieScaleHeight: 1.2
+                        GroundAlbedo: {R: 0.0, G: 0.0, B: 0.0}
+                        SunLuminanceFactor: 100.0
+                        RenderSunDisk: true
+                        AerialPerspectiveDistanceScale: 1.0
+                        StrideToAtmosphereUnitScale: 100.0
+                        MultipleScatteringFactor: 1.0
+                        AtmosphereScatteringVolumeKmPerSlice: 4.0

@@ -1,0 +1,6 @@
+!Texture
+Id: b22eb1db-f228-4904-a0fa-af30d4a31d2c
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Planet/2k_earth_specular_map.tif
+Type: !GrayscaleTextureType {}

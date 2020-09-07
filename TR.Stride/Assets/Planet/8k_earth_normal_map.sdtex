@@ -1,0 +1,6 @@
+!Texture
+Id: 9d3303c4-e3c9-494c-ac73-dddccafa989b
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../../../../Downloads/8k_earth_normal_map.tif
+Type: !NormalMapTextureType {}

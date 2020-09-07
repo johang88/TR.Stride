@@ -14,4 +14,5 @@ OutputGroupDirectories: {}
 ExplicitFolders: []
 Bundles: []
 TemplateFolders: []
-RootAssets: []
+RootAssets:
+    - 29b2c172-7ae0-4bd3-97fd-95d8cdc26736:Planet/Planet

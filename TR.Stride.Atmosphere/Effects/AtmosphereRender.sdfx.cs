@@ -16,8 +16,8 @@ using Buffer = Stride.Graphics.Buffer;
 
 [DataContract]public partial class AtmosphereParameters : ShaderMixinParameters
 {
-    public static readonly PermutationParameterKey<bool> FastSkyEnabled = ParameterKeys.NewPermutation<bool>(true);
-    public static readonly PermutationParameterKey<bool> FastAerialPerspectiveEnabled = ParameterKeys.NewPermutation<bool>(true);
+    public static readonly PermutationParameterKey<bool> FastSkyEnabled = ParameterKeys.NewPermutation<bool>(false);
+    public static readonly PermutationParameterKey<bool> FastAerialPerspectiveEnabled = ParameterKeys.NewPermutation<bool>(false);
     public static readonly PermutationParameterKey<bool> RenderSunDisk = ParameterKeys.NewPermutation<bool>(true);
     public static readonly PermutationParameterKey<bool> MultiScatteringApproximationEnabled = ParameterKeys.NewPermutation<bool>(true);
 };

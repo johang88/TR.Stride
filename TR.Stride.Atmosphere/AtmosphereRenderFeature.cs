@@ -22,8 +22,8 @@ namespace TR.Stride.Atmosphere
         public TextureSettings2d SkyViewLutSettings = new TextureSettings2d(192, 108, PixelFormat.R11G11B10_Float);
         public TextureSettingsVolume AtmosphereCameraScatteringVolumeSettings = new TextureSettingsVolume(32, 32, PixelFormat.R16G16B16A16_Float);
 
-        public bool FastSky { get; set; } = true;
-        public bool FastAerialPerspectiveEnabled { get; set; } = true;
+        public bool FastSky { get; set; } = false;
+        public bool FastAerialPerspectiveEnabled { get; set; } = false;
 
         public bool DrawDebugTextures { get; set; } = false;
 
