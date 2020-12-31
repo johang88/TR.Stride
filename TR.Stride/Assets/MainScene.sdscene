@@ -63,7 +63,7 @@ Hierarchy:
                         Materials: {}
         -   Entity:
                 Id: 4eadaa21-a9e5-41b9-b7db-88e4771865f2
-                Name: Directional light
+                Name: Sun
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
@@ -73,18 +73,17 @@ Hierarchy:
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
                         Id: 1b0ce0b4-87f4-4f93-bb66-24a5a4f12eaa
-                        Type: !LightDirectional
+                        Type: !AtmosphereLightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
                             Shadow:
                                 Enabled: true
-                                Filter: !LightShadowMapFilterTypePcf
-                                    FilterSize: Filter5x5
                                 Size: Large
                                 DepthRange: {}
                                 PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
                                 BiasParameters: {}
                                 ComputeTransmittance: false
+                            Atmosphere: ref!! 534e54d1-cf9c-4a87-89ba-e5d71ba26343
                         Intensity: 2.0
         -   Entity:
                 Id: b7275e3e-ff31-4dec-bec0-9461bff33d2c
@@ -121,7 +120,7 @@ Hierarchy:
                         MieAbsorptionScale: 0.00077
                         MieAbsorptionCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
                         RayleighScatteringScale: 0.03624
-                        RayleighScatteringCoefficient: {R: 0.160784319, G: 0.372549027, B: 0.9019608}
+                        RayleighScatteringCoefficient: {R: 0.13019532, G: 0.273353517, B: 0.63125}
                         AbsorptionExctinctionScale: 0.00199
                         AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.945098042, B: 0.0431372561}
                         AbsorptionDensity0LayerWidth: 25.0
@@ -134,7 +133,7 @@ Hierarchy:
                         GroundAlbedo: {R: 0.0, G: 0.0, B: 0.0}
                         SunLuminanceFactor: 1000.0
                         RenderSunDisk: true
-                        AerialPerspectiveDistanceScale: 500.0
+                        AerialPerspectiveDistanceScale: 50.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 1.0
@@ -173,6 +172,7 @@ Hierarchy:
                         Children: {}
                     d59d21e61452c516a71069fff64fe606: !LightComponent
                         Id: 92de2586-3e44-45a1-bea0-0bfacd173e53
+                        Enabled: false
                         Type: !LightAmbient
                             Color: !ColorRgbProvider
-                                Value: {R: 0.417421877, G: 0.455964863, B: 0.4875}
+                                Value: {R: 0.23125, G: 0.23125, B: 0.23125}

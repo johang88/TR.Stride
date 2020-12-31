@@ -6,6 +6,7 @@ params AtmosphereParameters
     bool FastAerialPerspectiveEnabled = false;
     bool RenderSunDisk = true;
     bool MultiScatteringApproximationEnabled = true;
+    string AtmosphereGroup = "PerDraw.Atmosphere";
 }
 
 effect AtmosphereRenderSkyRayMarchingEffect
@@ -16,33 +17,34 @@ effect AtmosphereRenderSkyRayMarchingEffect
         AtmosphereParameters.FastSkyEnabled, 
         AtmosphereParameters.FastAerialPerspectiveEnabled,
         AtmosphereParameters.RenderSunDisk,
-        AtmosphereParameters.MultiScatteringApproximationEnabled>;
+        AtmosphereParameters.MultiScatteringApproximationEnabled, 
+        AtmosphereParameters.AtmosphereGroup>;
 };
 
 effect AtmosphereRenderTransmittanceLutEffect
 {
-    using params AtmosphereParameters;
+    using params AtmosphereParameters; 
 
-    mixin AtmosphereRenderTransmittanceLut<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+    mixin AtmosphereRenderTransmittanceLut<AtmosphereParameters.MultiScatteringApproximationEnabled, AtmosphereParameters.AtmosphereGroup>;
 };
 
 effect AtmosphereMultipleScatteringTextureEffect
 {
     using params AtmosphereParameters;
 
-    mixin AtmosphereMultipleScatteringTextureEffectCS<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+    mixin AtmosphereMultipleScatteringTextureEffectCS<AtmosphereParameters.MultiScatteringApproximationEnabled, AtmosphereParameters.AtmosphereGroup>;
 };
 
 effect AtmosphereRenderSkyViewLutEffect
 {
     using params AtmosphereParameters;
 
-    mixin AtmosphereRenderSkyViewLut<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+    mixin AtmosphereRenderSkyViewLut<AtmosphereParameters.MultiScatteringApproximationEnabled, AtmosphereParameters.AtmosphereGroup>;
 }
 
 effect AtmosphereRenderScatteringCameraVolumeEffect
 {
     using params AtmosphereParameters;
 
-    mixin AtmosphereRenderScatteringCameraVolume<AtmosphereParameters.MultiScatteringApproximationEnabled>;
+    mixin AtmosphereRenderScatteringCameraVolume<AtmosphereParameters.MultiScatteringApproximationEnabled, AtmosphereParameters.AtmosphereGroup>;
 }

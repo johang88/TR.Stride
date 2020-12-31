@@ -1,7 +1,7 @@
 ﻿
 
-shader AtmosphereRenderScatteringCameraVolume<bool MultiScatteringApproximationEnabled> 
-    : ShaderBase, AtmosphereFullscreenTriangle, Math, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
+shader AtmosphereRenderScatteringCameraVolume<bool MultiScatteringApproximationEnabled, MemberName AtmosphereGroup> 
+    : ShaderBase, AtmosphereFullscreenTriangle, Math, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled, AtmosphereGroup>
 {
 	stream uint RTAIndex : SV_RenderTargetArrayIndex;
 

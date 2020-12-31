@@ -1,4 +1,4 @@
-﻿shader AtmosphereCommon : AtmosphereParametersBase
+﻿shader AtmosphereCommon<MemberName AtmosphereGroup> : AtmosphereParametersBase<AtmosphereGroup>
 {
 	stage SamplerState samplerLinearClamp
 	{

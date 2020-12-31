@@ -1,7 +1,0 @@
-!Texture
-Id: 57bd218c-8363-499c-8a1d-9fbc9e955292
-SerializedVersion: {Stride: 2.0.0.0}
-Tags: []
-Source: !file ../../Resources/Planet/8k_earth_daymap.jpg
-Type: !ColorTextureType
-    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}

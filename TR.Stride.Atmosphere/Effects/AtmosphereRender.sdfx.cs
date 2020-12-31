@@ -20,6 +20,7 @@ using Buffer = Stride.Graphics.Buffer;
     public static readonly PermutationParameterKey<bool> FastAerialPerspectiveEnabled = ParameterKeys.NewPermutation<bool>(false);
     public static readonly PermutationParameterKey<bool> RenderSunDisk = ParameterKeys.NewPermutation<bool>(true);
     public static readonly PermutationParameterKey<bool> MultiScatteringApproximationEnabled = ParameterKeys.NewPermutation<bool>(true);
+    public static readonly PermutationParameterKey<string> AtmosphereGroup = ParameterKeys.NewPermutation<string>("PerDraw.Atmosphere");
 };
 internal static partial class ShaderMixins
 {
@@ -27,7 +28,7 @@ internal static partial class ShaderMixins
     {
         public void Generate(ShaderMixinSource mixin, ShaderMixinContext context)
         {
-            context.Mixin(mixin, "AtmosphereRenderSkyRayMarching", context.GetParam(AtmosphereParameters.FastSkyEnabled), context.GetParam(AtmosphereParameters.FastAerialPerspectiveEnabled), context.GetParam(AtmosphereParameters.RenderSunDisk), context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
+            context.Mixin(mixin, "AtmosphereRenderSkyRayMarching", context.GetParam(AtmosphereParameters.FastSkyEnabled), context.GetParam(AtmosphereParameters.FastAerialPerspectiveEnabled), context.GetParam(AtmosphereParameters.RenderSunDisk), context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled), context.GetParam(AtmosphereParameters.AtmosphereGroup));
         }
 
         [ModuleInitializer]
@@ -44,7 +45,7 @@ internal static partial class ShaderMixins
     {
         public void Generate(ShaderMixinSource mixin, ShaderMixinContext context)
         {
-            context.Mixin(mixin, "AtmosphereRenderTransmittanceLut", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
+            context.Mixin(mixin, "AtmosphereRenderTransmittanceLut", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled), context.GetParam(AtmosphereParameters.AtmosphereGroup));
         }
 
         [ModuleInitializer]
@@ -61,7 +62,7 @@ internal static partial class ShaderMixins
     {
         public void Generate(ShaderMixinSource mixin, ShaderMixinContext context)
         {
-            context.Mixin(mixin, "AtmosphereMultipleScatteringTextureEffectCS", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
+            context.Mixin(mixin, "AtmosphereMultipleScatteringTextureEffectCS", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled), context.GetParam(AtmosphereParameters.AtmosphereGroup));
         }
 
         [ModuleInitializer]
@@ -78,7 +79,7 @@ internal static partial class ShaderMixins
     {
         public void Generate(ShaderMixinSource mixin, ShaderMixinContext context)
         {
-            context.Mixin(mixin, "AtmosphereRenderSkyViewLut", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
+            context.Mixin(mixin, "AtmosphereRenderSkyViewLut", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled), context.GetParam(AtmosphereParameters.AtmosphereGroup));
         }
 
         [ModuleInitializer]
@@ -95,7 +96,7 @@ internal static partial class ShaderMixins
     {
         public void Generate(ShaderMixinSource mixin, ShaderMixinContext context)
         {
-            context.Mixin(mixin, "AtmosphereRenderScatteringCameraVolume", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled));
+            context.Mixin(mixin, "AtmosphereRenderScatteringCameraVolume", context.GetParam(AtmosphereParameters.MultiScatteringApproximationEnabled), context.GetParam(AtmosphereParameters.AtmosphereGroup));
         }
 
         [ModuleInitializer]

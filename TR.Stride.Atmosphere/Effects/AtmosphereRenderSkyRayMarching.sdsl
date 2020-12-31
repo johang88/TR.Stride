@@ -1,7 +1,7 @@
 ﻿
 
-shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspectiveEnabled, bool RenderSunDisk, bool MultiScatteringApproximationEnabled>
-: ShaderBase, AtmosphereFullscreenTriangle, Math, DepthBase, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>, AtmosphereParametersBase, AtmosphereGetSunLuminence<RenderSunDisk>
+shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspectiveEnabled, bool RenderSunDisk, bool MultiScatteringApproximationEnabled, MemberName AtmosphereGroup>
+: ShaderBase, AtmosphereFullscreenTriangle, Math, DepthBase, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled, AtmosphereGroup>, AtmosphereGetSunLuminence<RenderSunDisk, AtmosphereGroup>
 {
 	struct RayMarchPixelOutputStruct
 	{

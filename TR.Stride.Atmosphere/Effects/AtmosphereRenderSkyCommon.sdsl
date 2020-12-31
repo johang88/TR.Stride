@@ -1,7 +1,7 @@
 ﻿
 #define UsCornetteShanks 1
 
-shader AtmosphereRenderSkyCommon<bool MultiScatteringApproximationEnabled> : AtmosphereCommon, AtmosphereParametersBase, Math
+shader AtmosphereRenderSkyCommon<bool MultiScatteringApproximationEnabled, MemberName AtmosphereGroup> : AtmosphereCommon<AtmosphereGroup>, Math
 {
 	float AerialPerspectiveDepthToSlice(float depth)
 	{

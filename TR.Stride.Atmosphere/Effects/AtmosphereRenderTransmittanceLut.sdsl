@@ -1,7 +1,7 @@
 ﻿
 
-shader AtmosphereRenderTransmittanceLut<bool MultiScatteringApproximationEnabled> 
-	: ShaderBase, ImageEffectShader, Math, AtmosphereCommon, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled>
+shader AtmosphereRenderTransmittanceLut<bool MultiScatteringApproximationEnabled, MemberName AtmosphereGroup> 
+	: ShaderBase, ImageEffectShader, Math, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled, AtmosphereGroup>
 {
     stage override float4 Shading()
     {

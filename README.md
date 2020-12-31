@@ -10,8 +10,10 @@ Implementation of https://github.com/sebh/UnrealEngineSkyAtmosphere
 * Add `TR.Stride.Atmosphere` to your project
 * Add AtmosphereRenderFeature to graphics compositor
 * Add SimpleGroupToRenderStageSelector to the newly added render feature, set effect name to AtmosphereRenderSkyRayMarchingEffect
+* Change LightDirectionalGroupRenderer to AtmosphereLightDirectionalGroupRenderer in MeshRenderFeature -> ForwardLightingRenderFeeature
 * Make sure "Bind Depth As Resource During Transparent Rendering" is checked on the Forward renderer node (this is the default setting)
-* Create game object, add atmosphere component, link with directional light
+* Create game object, add light component with type = Sun, this is basically just a regular directional light.
+* Create game object, add atmosphere component, link with sun light
 * Done :)
 
 ### Issues

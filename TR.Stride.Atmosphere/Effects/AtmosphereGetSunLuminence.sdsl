@@ -1,6 +1,6 @@
 ﻿
 
-shader AtmosphereGetSunLuminence<bool RenderSunDisk> : AtmosphereCommon, AtmosphereParametersBase
+shader AtmosphereGetSunLuminence<bool RenderSunDisk, MemberName AtmosphereGroup> : AtmosphereCommon<AtmosphereGroup>
 {
 	float3 GetSunLuminance(float3 WorldPos, float3 WorldDir, float PlanetRadius)
 	{
@@ -13,8 +13,6 @@ shader AtmosphereGetSunLuminence<bool RenderSunDisk> : AtmosphereCommon, Atmosph
 				{
 					return SunIlluminance * SunLuminanceFactor;
 				}
-
-				float vDotL = dot(WorldDir, SunDirection);
 			}
 		}
 		return 0;

@@ -33,6 +33,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Effects\AtmosphereLightDirectionalGroup.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Effects\AtmosphereMultipleScatteringTextureEffectCS.sdsl.cs">
       <DesignTime>True</DesignTime>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -88,6 +93,9 @@
     </None>
     <None Update="Effects\AtmosphereGetSunLuminence.sdsl">
       <LastGenOutput>AtmosphereGetSunLuminence.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereLightDirectionalGroup.sdsl">
+      <LastGenOutput>AtmosphereLightDirectionalGroup.sdsl.cs</LastGenOutput>
     </None>
     <None Update="Effects\AtmosphereMultipleScatteringTextureEffectCS.sdsl">
       <LastGenOutput>AtmosphereMultipleScatteringTextureEffectCS.sdsl.cs</LastGenOutput>

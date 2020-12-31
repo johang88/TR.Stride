@@ -76,7 +76,7 @@ RenderFeatures:
             65743b4380f4cc43b2b4bdc23cd0c07c: !Stride.Rendering.Lights.ForwardLightingRenderFeature,Stride.Rendering
                 LightRenderers:
                     7ac2775468f53c4399b2f3f6357c85c9: !Stride.Rendering.Lights.LightAmbientRenderer,Stride.Rendering {}
-                    7b68f9cd17404a4ba9e5f7df72e3b48d: !Stride.Rendering.Lights.LightDirectionalGroupRenderer,Stride.Rendering {}
+                    7b68f9cd17404a4ba9e5f7df72e3b48d*: !TR.Stride.Atmosphere.AtmosphereLightDirectionalGroupRenderer,TR.Stride.Atmosphere {}
                     411fdcfb9fc388449a0443173dfa3f27: !Stride.Rendering.Lights.LightSkyboxRenderer,Stride.Rendering {}
                     facdcd5b543cf1c6bdf2138aab6cc473: !Stride.Rendering.Lights.LightClusteredPointSpotGroupRenderer,Stride.Rendering {}
                     79582329a9cf466e960f8920f579de9b: !Stride.Rendering.Lights.LightPointGroupRenderer,Stride.Rendering {}

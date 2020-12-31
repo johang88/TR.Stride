@@ -1,7 +1,7 @@
 ﻿
-shader AtmosphereParametersBase
+shader AtmosphereParametersBase<MemberName AtmosphereGroup>
 {
-	cbuffer PerDraw.Atmosphere
+	cbuffer AtmosphereGroup
 	{
 		// Radius of the planet (center to ground)
 		stage float BottomRadius;
@@ -60,7 +60,7 @@ shader AtmosphereParametersBase
 		stage float2 RayMarchMinMaxSPP;
 	};
 
-	rgroup PerDraw.Atmosphere
+	rgroup AtmosphereGroup
 	{
 		stage Texture2D TransmittanceLutTexture;
 		stage Texture2D SkyViewLutTexture;
