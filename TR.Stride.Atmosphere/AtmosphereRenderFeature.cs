@@ -17,14 +17,21 @@ namespace TR.Stride.Atmosphere
 {
     public class AtmosphereRenderFeature : RootEffectRenderFeature
     {
-        public TextureSettings2d TransmittanceLutSettings = new TextureSettings2d(256, 64, PixelFormat.R16G16B16A16_Float);
-        public TextureSettingsSquare MultiScatteringTextureSettings = new TextureSettingsSquare(32, PixelFormat.R16G16B16A16_Float);
-        public TextureSettings2d SkyViewLutSettings = new TextureSettings2d(192, 108, PixelFormat.R11G11B10_Float);
-        public TextureSettingsVolume AtmosphereCameraScatteringVolumeSettings = new TextureSettingsVolume(32, 32, PixelFormat.R16G16B16A16_Float);
+        [DataMember, Display("Transmittance LUT", "Texture Settings")]
+        public TextureSettings2d TransmittanceLutSettings { get; set; } = new TextureSettings2d(256, 64, PixelFormat.R16G16B16A16_Float);
+        [DataMember, Display("Multiscattering", "Texture Settings")]
+        public TextureSettingsSquare MultiScatteringTextureSettings { get; set; } = new TextureSettingsSquare(32, PixelFormat.R16G16B16A16_Float);
+        [DataMember, Display("Sky View LUT", "Texture Settings")]
+        public TextureSettings2d SkyViewLutSettings { get; set; } = new TextureSettings2d(192, 108, PixelFormat.R11G11B10_Float);
+        [DataMember, Display("Atmosphere scattering volume", "Texture Settings")]
+        public TextureSettingsVolume AtmosphereCameraScatteringVolumeSettings { get; set; } = new TextureSettingsVolume(32, 32, PixelFormat.R16G16B16A16_Float);
 
+        [DataMember, Display("Fast Sky", "Performance")]
         public bool FastSky { get; set; } = false;
+        [DataMember, Display("Fast Aerial Perspective", "Performance")]
         public bool FastAerialPerspectiveEnabled { get; set; } = false;
 
+        [DataMember, Display("Draw Textures", "Debug")]
         public bool DrawDebugTextures { get; set; } = false;
 
         public Texture TransmittanceLutTexture { get; private set; }

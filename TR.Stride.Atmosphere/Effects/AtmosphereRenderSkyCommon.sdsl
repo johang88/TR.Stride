@@ -401,8 +401,9 @@ shader AtmosphereRenderSkyCommon<bool MultiScatteringApproximationEnabled, Membe
 	void UvToSkyViewLutParams(AtmosphereParameters Atmosphere, out float viewZenithCosAngle, out float lightViewCosAngle, in float viewHeight, in float2 uv)
 	{
 		// Constrain uvs to valid sub texel range (avoid zenith derivative issue making LUT usage visible)
+		// TODO: Readd this to make things better
 		// We get weird errors resulting in NaN if we don't hardcode the resolution :/ it's quite weird, might be due to optimizations when the values are know at compilation time
-		uv = fromSubUvsToUnit(uv.xy, float4(192, 108, SkyViewLutResolution.z, SkyViewLutResolution.w));
+		//uv = fromSubUvsToUnit(uv.xy, float4(192, 108, SkyViewLutResolution.z, SkyViewLutResolution.w));
 
 		float Vhorizon = sqrt(viewHeight * viewHeight - Atmosphere.BottomRadius * Atmosphere.BottomRadius);
 		float CosBeta = Vhorizon / viewHeight;				// GroundToHorizonCos
