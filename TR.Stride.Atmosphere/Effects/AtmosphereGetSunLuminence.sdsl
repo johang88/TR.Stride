@@ -14,12 +14,6 @@ shader AtmosphereGetSunLuminence<bool RenderSunDisk, MemberName AtmosphereGroup>
 				grad = grad / max(fwidth(vDotL), 0.0001f);
 
 				return SunIlluminance * SunLuminanceFactor * saturate(grad);
-
-				//if (vDotL > sunSize)
-				//{	
-				//	float alpha = 1.0 - saturate((sunSizeFade - vDotL) / (sunSizeFade - sunSize));
-				//	return SunIlluminance * SunLuminanceFactor * alpha;
-				//}
 		}
 		return 0;
 	}
