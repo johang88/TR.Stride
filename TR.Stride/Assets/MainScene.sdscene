@@ -68,7 +68,7 @@ Hierarchy:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
                         Position: {X: -15.1852064, Y: 48.50744, Z: -23.5119686}
-                        Rotation: {X: -0.0500641763, Y: -0.0909943, Z: 0.0359412879, W: 0.9939425}
+                        Rotation: {X: -0.192510635, Y: -0.08487833, Z: 0.04865601, W: 0.976405561}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -86,6 +86,10 @@ Hierarchy:
                                 ComputeTransmittance: false
                             Atmosphere: ref!! 534e54d1-cf9c-4a87-89ba-e5d71ba26343
                         Intensity: 4.0
+                    35b5dfdcb72bf70cdf6d4b40a9cb25e9: !TR.Stride.RotateComponent,TR.Stride
+                        Id: d8eafe5e-9155-4368-b2c3-7203f31cbe56
+                        Axis: {X: 0.0, Y: 0.0, Z: 1.0}
+                        Speed: 0.0
         -   Entity:
                 Id: b7275e3e-ff31-4dec-bec0-9461bff33d2c
                 Name: Sphere
@@ -107,7 +111,7 @@ Hierarchy:
                     848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
                         Id: 8032bd41-6285-4803-8c88-71e9f7eedd91
                         Position: {X: -15.1852064, Y: 49.13556, Z: -23.5119686}
-                        Rotation: {X: 0.12264435, Y: 0.0, Z: 0.0, W: 0.992450655}
+                        Rotation: {X: 0.05104264, Y: 0.0, Z: 0.0, W: 0.998696446}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     a84c1741d3ceac964d5bbe5d1031bf50: !TR.Stride.Atmosphere.AtmosphereComponent,TR.Stride.Atmosphere
@@ -132,8 +136,8 @@ Hierarchy:
                         AbsorptionDensity1LinearTerm: -0.06666667
                         RayleighScaleHeight: 8.0
                         MieScaleHeight: 1.2
-                        GroundAlbedo: {R: 0.0, G: 0.0, B: 0.0}
-                        SunLuminanceFactor: 1000.0
+                        GroundAlbedo: {R: 0.1125, G: 0.1125, B: 0.1125}
+                        SunLuminanceFactor: 1.0
                         RenderSunDisk: true
                         AerialPerspectiveDistanceScale: 50.0
                         StrideToAtmosphereUnitScale: 0.001

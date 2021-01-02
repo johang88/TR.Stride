@@ -122,6 +122,24 @@ RenderFeatures:
                 RenderStage: ref!! ee0a9342-d8bb-4463-99e5-f15c4883f834
                 EffectName: AtmosphereRenderSkyRayMarchingEffect
         PipelineProcessors: {}
+        TransmittanceLutSettings:
+            Width: 256
+            Height: 64
+            Format: R16G16B16A16_Float
+        MultiScatteringTextureSettings:
+            Size: 32
+            Format: R16G16B16A16_Float
+        SkyViewLutSettings:
+            Width: 192
+            Height: 108
+            Format: R11G11B10_Float
+        AtmosphereCameraScatteringVolumeSettings:
+            Size: 32
+            Slices: 32
+            Format: R16G16B16A16_Float
+        FastSky: false
+        FastAerialPerspectiveEnabled: false
+        DrawDebugTextures: false
 SharedRenderers:
     60459475d3a3adaf2d1ba5d99913ca75: !Stride.Rendering.Compositing.ForwardRenderer,Stride.Engine
         Id: 9cf51cec-34b2-4b2b-8609-816bc58fd23b

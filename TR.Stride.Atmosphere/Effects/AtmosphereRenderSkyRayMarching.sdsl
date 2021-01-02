@@ -53,7 +53,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 					output.Luminance.xyz += GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius);
 				}
 
-				if (viewHeight >= Atmosphere.TopRadius && RenderStage == 1)
+				if (IntersectGround && RenderStage == 1)
 				{
 					output.Luminance = float4(GroundAlbedo, 1);
 				}
