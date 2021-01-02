@@ -15,6 +15,7 @@ namespace TR.Stride.Atmosphere
     public class AtmosphereComponent : ScriptComponent
     {
         [DataMember(0)] public LightComponent Sun { get; set; }
+        [DataMember(1)] public LightComponent Sky { get; set; }
 
         [DataMember(10)] public float PlanetRadius { get; set; } = 6360.0f;
         [DataMember(11)] public float AtmosphereHeight { get; set; } = 100.0f;

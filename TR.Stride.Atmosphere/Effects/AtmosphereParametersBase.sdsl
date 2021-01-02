@@ -58,6 +58,8 @@ shader AtmosphereParametersBase<MemberName AtmosphereGroup>
 		stage float ScaleToSkyUnit = 1.0f;
 		stage float2 Resolution;
 		stage float2 RayMarchMinMaxSPP;
+
+		stage int RenderStage = 0; // 1 ==  Render cube map
 	};
 
 	rgroup AtmosphereGroup

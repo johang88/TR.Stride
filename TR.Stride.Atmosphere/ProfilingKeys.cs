@@ -13,5 +13,7 @@ namespace TR.Stride.Atmosphere
         public static readonly ProfilingKey ScatteringCameraVolume = new ProfilingKey(Atmosphere, "Scattering Camera Volume");
         public static readonly ProfilingKey MultiScatteringTexture = new ProfilingKey(Atmosphere, "MultiScattering Texture");
         public static readonly ProfilingKey RayMarching = new ProfilingKey(Atmosphere, "Ray marching");
+        public static readonly ProfilingKey CubeMap = new ProfilingKey(Atmosphere, "Cube map");
+        public static readonly ProfilingKey CubeMapPreFilter = new ProfilingKey(Atmosphere, "Cube map Pre Filter");
     }
 }

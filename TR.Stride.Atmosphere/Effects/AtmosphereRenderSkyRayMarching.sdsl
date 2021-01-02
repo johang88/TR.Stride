@@ -27,9 +27,9 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 		float3 L = 0;
 		DepthBufferValue = DepthStencil[pixPos].r;
 
-		if (FastSkyEnabled)
+		if (FastSkyEnabled || RenderStage == 1)
 		{
-			if (viewHeight < Atmosphere.TopRadius && DepthBufferValue == 1.0f)
+			if ((viewHeight < Atmosphere.TopRadius && DepthBufferValue == 1.0f ) || RenderStage == 1)
 			{
 				float2 uv;
 				float3 UpVector = normalize(WorldPos);
@@ -45,7 +45,18 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 
 				SkyViewLutParamsToUv(Atmosphere, IntersectGround, viewZenithCosAngle, lightViewCosAngle, viewHeight, uv);
 
-				output.Luminance = float4(SkyViewLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb + GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius), 1.0);
+				output.Luminance = float4(SkyViewLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb, 1.0);
+
+				// Don't render sun in cube map as we dont want double specular reflections
+				if (RenderStage == 0)
+				{
+					output.Luminance.xyz += GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius);
+				}
+
+				if (viewHeight >= Atmosphere.TopRadius && RenderStage == 1)
+				{
+					output.Luminance = float4(GroundAlbedo, 1);
+				}
 
 				return output;
 			}

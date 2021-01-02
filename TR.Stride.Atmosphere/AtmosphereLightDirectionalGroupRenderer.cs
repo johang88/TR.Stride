@@ -63,7 +63,8 @@ namespace TR.Stride.Atmosphere
                 if (lightRange.Start == lightRange.End)
                     return;
 
-                var light = (AtmosphereLightDirectional)lights[lightRange.Start].Light.Type;
+                if (!(lights[lightRange.Start].Light.Type is AtmosphereLightDirectional light))
+                    return;
 
                 // Fetch compositor and find atmosphere render feature
                 var sceneSystem = context.RenderContext.Services.GetService<SceneSystem>();
