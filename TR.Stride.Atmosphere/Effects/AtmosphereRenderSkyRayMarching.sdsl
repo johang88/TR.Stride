@@ -50,7 +50,10 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 				// Don't render sun in cube map as we dont want double specular reflections
 				if (RenderStage == 0)
 				{
-					output.Luminance.xyz += GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius);
+					LutTransmittanceParamsToUv(Atmosphere, viewHeight, viewZenithCosAngle, uv);
+					const float3 transmittance = TransmittanceLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb;
+
+					output.Luminance.xyz += GetSunLuminance(WorldDir, transmittance);
 				}
 
 				if (IntersectGround && RenderStage == 1)
@@ -64,7 +67,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 		else
 		{
 			if (DepthBufferValue == 1.0f)
-				L += GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius);
+				L += GetSunLuminance(WorldDir, float3(1, 1, 1));
 		}
 
 		if (FastAerialPerspectiveEnabled)
@@ -99,7 +102,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 			if (!MoveToTopAtmosphere(WorldPos, WorldDir, Atmosphere.TopRadius))
 			{
 				// Ray is not intersecting the atmosphere		
-				output.Luminance = float4(GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius), 1.0);
+				output.Luminance = float4(GetSunLuminance(WorldDir, float3(1, 1, 1)), 1.0);
 				return output;
 			}
 

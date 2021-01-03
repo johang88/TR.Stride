@@ -2,18 +2,18 @@
 
 shader AtmosphereGetSunLuminence<bool RenderSunDisk, MemberName AtmosphereGroup> : AtmosphereCommon<AtmosphereGroup>
 {
-	float3 GetSunLuminance(float3 WorldPos, float3 WorldDir, float PlanetRadius)
+	float3 GetSunLuminance(float3 WorldDir, float3 Transmittance)
 	{
 		if (RenderSunDisk)
 		{
-				float vDotL = dot(WorldDir, SunDirection);
+			float vDotL = dot(WorldDir, SunDirection);
 
-				const float SunSize = cos(1*0.505*3.14159 / 180.0);
+			const float SunSize = cos(1*0.505*3.14159 / 180.0);
 
-				float grad = vDotL - SunSize;
-				grad = grad / max(fwidth(vDotL), 0.0001f);
+			float grad = vDotL - SunSize;
+			grad = grad / max(fwidth(vDotL), 0.0001f);
 
-				return SunIlluminance * SunLuminanceFactor * saturate(grad);
+			return Transmittance * SunIlluminance * SunLuminanceFactor * saturate(grad);
 		}
 		return 0;
 	}

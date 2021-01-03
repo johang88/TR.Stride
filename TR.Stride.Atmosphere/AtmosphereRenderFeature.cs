@@ -77,7 +77,7 @@ namespace TR.Stride.Atmosphere
             TransmittanceLutTexture = Texture.New2D(Context.GraphicsDevice, TransmittanceLutSettings.Width, TransmittanceLutSettings.Height, TransmittanceLutSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.RenderTarget | TextureFlags.ShaderResource);
             _atmosphereCubeMapRenderTarget = Texture.New2D(Context.GraphicsDevice, 64, 64, PixelFormat.R16G16B16A16_Float, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
             _atmosphereCubeMap = Texture.NewCube(Context.GraphicsDevice, 64, PixelFormat.R16G16B16A16_Float, TextureFlags.ShaderResource);
-            _atmosphereCubeMapSpecular = Texture.NewCube(Context.GraphicsDevice, 64, PixelFormat.R16G16B16A16_Float, TextureFlags.ShaderResource | TextureFlags.UnorderedAccess);
+            _atmosphereCubeMapSpecular = Texture.NewCube(Context.GraphicsDevice, 64, MipMapCount.Auto, PixelFormat.R16G16B16A16_Float, TextureFlags.ShaderResource | TextureFlags.UnorderedAccess);
 
             _transmittanceLutEffect = new ImageEffectShader("AtmosphereRenderTransmittanceLutEffect");
             _skyViewLutEffect = new ImageEffectShader("AtmosphereRenderSkyViewLutEffect");
