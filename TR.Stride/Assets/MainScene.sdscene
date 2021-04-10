@@ -8,7 +8,6 @@ Hierarchy:
     RootParts:
         - ref!! 26cdafcf-427b-454b-bb17-00ace7b05a42
         - ref!! 4eadaa21-a9e5-41b9-b7db-88e4771865f2
-        - ref!! 2bf24684-5a7e-4181-b162-744c4233bf07
         - ref!! b7275e3e-ff31-4dec-bec0-9461bff33d2c
         - ref!! b94a7908-f7d7-48ac-9516-20bf3bc9b730
         - ref!! cd498803-0c95-4a0d-a1d4-172b831e9182
@@ -20,8 +19,8 @@ Hierarchy:
                 Components:
                     98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
                         Id: cf510d5b-aacf-45f0-805b-48734d043a40
-                        Position: {X: -12.585207, Y: 47.1074371, Z: -24.5119686}
-                        Rotation: {X: 0.0, Y: 0.829037547, Z: 0.0, W: 0.5591929}
+                        Position: {X: -12.585207, Y: 47.107437, Z: -24.511969}
+                        Rotation: {X: 0.0, Y: 0.82903755, Z: 0.0, W: 0.5591929}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     b66dd7950f1f71e708dcf771b29841d6: !CameraComponent
@@ -48,27 +47,13 @@ Hierarchy:
                         FilteringMode: GpuEvents
                         ResultPage: 1
         -   Entity:
-                Id: 2bf24684-5a7e-4181-b162-744c4233bf07
-                Name: Ground
-                Components:
-                    59242434ae994253373176e713b43e4d: !TransformComponent
-                        Id: 3dcfe241-8a5d-425f-a4c1-740f7ff4653f
-                        Position: {X: -15.1852064, Y: 46.6074371, Z: -23.5119686}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    01b61b080a6729bac16edbcd66e8f471: !ModelComponent
-                        Id: 55a55c14-fc07-48c0-8a38-fe5e0c4c055d
-                        Model: b0286cb0-edcc-4379-8211-584b3b2b637b:Ground
-                        Materials: {}
-        -   Entity:
                 Id: 4eadaa21-a9e5-41b9-b7db-88e4771865f2
                 Name: Sun
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
-                        Position: {X: -15.1852064, Y: 48.50744, Z: -23.5119686}
-                        Rotation: {X: -0.123346061, Y: -0.08809087, Z: 0.0425644927, W: 0.9875292}
+                        Position: {X: -15.185206, Y: 48.50744, Z: -23.511969}
+                        Rotation: {X: -0.07105005, Y: -0.09021472, Z: 0.03785552, W: 0.9926632}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -78,12 +63,15 @@ Hierarchy:
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
                             Shadow: !LightDirectionalShadowMap
                                 Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf {}
                                 Size: XLarge
                                 DepthRange:
                                     IsAutomatic: false
-                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
-                                BiasParameters: {}
+                                    ManualMaxDistance: 512.0
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic
+                                    PSSMFactor: 0.1
                                 ComputeTransmittance: false
+                                BiasParameters: {}
                             Atmosphere: ref!! 534e54d1-cf9c-4a87-89ba-e5d71ba26343
                         Intensity: 2.0
                     35b5dfdcb72bf70cdf6d4b40a9cb25e9: !TR.Stride.RotateComponent,TR.Stride
@@ -96,7 +84,7 @@ Hierarchy:
                 Components:
                     e9859e8e1b90ae1bf9224352dad45d1c: !TransformComponent
                         Id: c61eccf7-f61e-4f0e-9a73-b555f5cacbc1
-                        Position: {X: -15.1852064, Y: 47.0534973, Z: -23.5119686}
+                        Position: {X: -15.185206, Y: 46.81653, Z: -23.511969}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -110,7 +98,7 @@ Hierarchy:
                 Components:
                     848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
                         Id: 8032bd41-6285-4803-8c88-71e9f7eedd91
-                        Position: {X: -15.1852064, Y: 49.13556, Z: -23.5119686}
+                        Position: {X: -15.185206, Y: 49.13556, Z: -23.511969}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -126,20 +114,20 @@ Hierarchy:
                         MieAbsorptionScale: 0.00077
                         MieAbsorptionCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
                         RayleighScatteringScale: 0.03624
-                        RayleighScatteringCoefficient: {R: 0.223437488, G: 0.390415877, B: 0.8125}
+                        RayleighScatteringCoefficient: {R: 0.22343749, G: 0.39041588, B: 0.8125}
                         AbsorptionExctinctionScale: 0.00199
-                        AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.945098042, B: 0.0431372561}
+                        AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.94509804, B: 0.043137256}
                         AbsorptionDensity0LayerWidth: 25.0
                         AbsorptionDensity0ConstantTerm: -0.6666667
                         AbsorptionDensity0LinearTerm: 0.06666667
-                        AbsorptionDensity1ConstantTerm: 2.66666675
+                        AbsorptionDensity1ConstantTerm: 2.6666667
                         AbsorptionDensity1LinearTerm: -0.06666667
-                        RayleighScaleHeight: 16.0
-                        MieScaleHeight: 8.0
+                        RayleighScaleHeight: 8.0
+                        MieScaleHeight: 1.2
                         GroundAlbedo: {R: 0.1125, G: 0.1125, B: 0.1125}
                         SunLuminanceFactor: 1.0
                         RenderSunDisk: true
-                        AerialPerspectiveDistanceScale: 5000.0
+                        AerialPerspectiveDistanceScale: 500.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 0.15
