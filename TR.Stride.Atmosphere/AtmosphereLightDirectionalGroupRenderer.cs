@@ -80,7 +80,7 @@ namespace TR.Stride.Atmosphere
                 if (atmosphereRenderFeature == null || atmosphereRenderFeature.TransmittanceLutTexture == null)
                     return;
 
-                atmosphereRenderFeature.SetParameters(null, light.Atmosphere, parameters, null);
+                atmosphereRenderFeature.SetAtmoshpereParameters(light.Atmosphere, parameters, null);
                 parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, atmosphereRenderFeature.TransmittanceLutTexture);
             }
 

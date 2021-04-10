@@ -137,8 +137,8 @@ RenderFeatures:
             Size: 32
             Slices: 32
             Format: R16G16B16A16_Float
-        FastSky: false
-        FastAerialPerspectiveEnabled: false
+        FastSky: true
+        FastAerialPerspectiveEnabled: true
         DrawDebugTextures: false
 SharedRenderers:
     60459475d3a3adaf2d1ba5d99913ca75: !Stride.Rendering.Compositing.ForwardRenderer,Stride.Engine
@@ -220,9 +220,9 @@ SharedRenderers:
                     AutoKeyValue*: false
                     KeyValue*: 0.13
                     AutoExposure*: false
-                    Exposure*: 1.0
+                    Exposure*: 0.1
                     TemporalAdaptation*: false
-                    UseLocalLuminance*: true
+                    UseLocalLuminance*: false
                     LuminanceLocalFactor*: 0.5
                     Contrast*: 0.0
                     Brightness*: 0.0

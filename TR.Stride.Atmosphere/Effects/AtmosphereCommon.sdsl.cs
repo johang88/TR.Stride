@@ -18,6 +18,13 @@ namespace Stride.Rendering
 {
     public static partial class AtmosphereCommonKeys
     {
-        public static readonly ObjectParameterKey<SamplerState> samplerLinearClamp = ParameterKeys.NewObject<SamplerState>();
+        public static readonly ValueParameterKey<Vector3> SunDirection = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<Vector3> SunIlluminance = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<float> SunLuminanceFactor = ParameterKeys.NewValue<float>();
+        public static readonly ValueParameterKey<Matrix> InvViewProjectionMatrix = ParameterKeys.NewValue<Matrix>();
+        public static readonly ValueParameterKey<Vector3> CameraPositionWS = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<Vector2> Resolution = ParameterKeys.NewValue<Vector2>();
+        public static readonly ValueParameterKey<Vector2> RayMarchMinMaxSPP = ParameterKeys.NewValue<Vector2>();
+        public static readonly ValueParameterKey<int> RenderStage = ParameterKeys.NewValue<int>(0);
     }
 }

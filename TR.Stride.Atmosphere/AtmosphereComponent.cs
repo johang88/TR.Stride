@@ -62,5 +62,10 @@ namespace TR.Stride.Atmosphere
         /// or it wont get captured very well close to the camera, large scales work the same but in reverse :)
         /// </summary>
         [DataMember(203)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
+
+        [DataMember(300)] public bool EnableClouds { get; set; } = true;
+        [DataMember(301)] public float CloudScale { get; set; } = 0.0001f;
+        [DataMember(302)] public float CloudSpeed { get; set; } = 0.01f;
+        [DataMember(303)] public float Cloudiness { get; set; } = 0.8f;
     }
 }

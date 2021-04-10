@@ -6,4 +6,21 @@
 // and re-save the associated .sdfx.
 // </auto-generated>
 
-// Nothing to generate
+using System;
+using Stride.Core;
+using Stride.Rendering;
+using Stride.Graphics;
+using Stride.Shaders;
+using Stride.Core.Mathematics;
+using Buffer = Stride.Graphics.Buffer;
+
+namespace Stride.Rendering
+{
+    public static partial class AtmosphereRenderSkyRayMarchingKeys
+    {
+        public static readonly ValueParameterKey<float> Time = ParameterKeys.NewValue<float>(0.0f);
+        public static readonly ValueParameterKey<float> CloudScale = ParameterKeys.NewValue<float>(0.0001f);
+        public static readonly ValueParameterKey<float> CloudSpeed = ParameterKeys.NewValue<float>(0.1f);
+        public static readonly ValueParameterKey<float> Cloudiness = ParameterKeys.NewValue<float>(0.8f);
+    }
+}

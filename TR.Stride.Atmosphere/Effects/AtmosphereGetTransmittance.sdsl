@@ -1,0 +1,19 @@
+﻿shader AtmosphereGetTransmittance<MemberName AtmosphereGroup> 
+    : AtmosphereParametersBase<AtmosphereGroup>
+{
+    float3 GetTransmittance(float4 worldPosition, float3 lightDirection)
+    {
+        AtmosphereParameters Atmosphere = GetAtmosphereParameters();
+        float3 P0 = (worldPosition.xyz / worldPosition.w) * ScaleToSkyUnit + float3(0, Atmosphere.BottomRadius, 0);
+        float viewHeight = length(P0);
+        const float3 UpVector = P0 / viewHeight;
+        float viewZenithCosAngle = dot(lightDirection, UpVector);
+
+        float2 uv;
+	    LutTransmittanceParamsToUv(Atmosphere, viewHeight, viewZenithCosAngle, uv);
+            
+        const float3 transmittance = TransmittanceLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb;
+
+        return transmittance;
+    }
+};

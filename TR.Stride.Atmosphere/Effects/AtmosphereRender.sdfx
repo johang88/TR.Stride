@@ -6,6 +6,7 @@ params AtmosphereParameters
     bool FastAerialPerspectiveEnabled = false;
     bool RenderSunDisk = true;
     bool MultiScatteringApproximationEnabled = true;
+    bool EnableClouds = true;
     string AtmosphereGroup = "PerDraw.Atmosphere";
 }
 
@@ -18,6 +19,7 @@ effect AtmosphereRenderSkyRayMarchingEffect
         AtmosphereParameters.FastAerialPerspectiveEnabled,
         AtmosphereParameters.RenderSunDisk,
         AtmosphereParameters.MultiScatteringApproximationEnabled, 
+        AtmosphereParameters.EnableClouds, 
         AtmosphereParameters.AtmosphereGroup>;
 };
 

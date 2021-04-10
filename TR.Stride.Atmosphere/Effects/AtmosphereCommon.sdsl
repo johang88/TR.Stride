@@ -1,12 +1,19 @@
 ﻿shader AtmosphereCommon<MemberName AtmosphereGroup> : AtmosphereParametersBase<AtmosphereGroup>
 {
-	stage SamplerState samplerLinearClamp
+	cbuffer AtmosphereGroup
 	{
-        Filter = MIN_MAG_MIP_LINEAR;
-        AddressU = Clamp;
-        AddressV = Clamp;
-		AddressW = Clamp;
-    };
+		// Other globals
+		stage float3 SunDirection;
+		stage float3 SunIlluminance;
+		stage float SunLuminanceFactor;
+
+		stage float4x4 InvViewProjectionMatrix;
+		stage float3 CameraPositionWS;
+		stage float2 Resolution;
+		stage float2 RayMarchMinMaxSPP;
+
+		stage int RenderStage = 0; // 1 ==  Render cube map
+	};
 
 	float RaySphereIntersectNearest(float3 r0, float3 rd, float3 s0, float sR)
     {
@@ -35,20 +42,4 @@
 	    }
 	    return max(0.0, min(sol0, sol1));
     }
-
-	void LutTransmittanceParamsToUv(AtmosphereParameters Atmosphere, in float viewHeight, in float viewZenithCosAngle, out float2 uv)
-	{
-		float H = sqrt(max(0.0f, Atmosphere.TopRadius * Atmosphere.TopRadius - Atmosphere.BottomRadius * Atmosphere.BottomRadius));
-		float rho = sqrt(max(0.0f, viewHeight * viewHeight - Atmosphere.BottomRadius * Atmosphere.BottomRadius));
-
-		float discriminant = viewHeight * viewHeight * (viewZenithCosAngle * viewZenithCosAngle - 1.0) + Atmosphere.TopRadius * Atmosphere.TopRadius;
-		float d = max(0.0, (-viewHeight * viewZenithCosAngle + sqrt(discriminant))); // Distance to atmosphere boundary
-
-		float d_min = Atmosphere.TopRadius - viewHeight;
-		float d_max = rho + H;
-		float x_mu = (d - d_min) / (d_max - d_min);
-		float x_r = rho / H;
-
-		uv = float2(x_mu, x_r);
-	}
 };

@@ -1,7 +1,7 @@
 ﻿namespace Stride.Rendering.Lights
 {
     shader AtmosphereLightDirectionalGroup<int TMaxLightCount, MemberName AtmosphereGroup> 
-        : DirectLightGroupPerView, LightDirectional, AtmosphereCommon<AtmosphereGroup>
+        : DirectLightGroupPerView, LightDirectional, AtmosphereGetTransmittance<AtmosphereGroup>
     {
         cbuffer PerView.Lighting
         {
@@ -18,20 +18,10 @@
         /// </summary>
         override void PrepareDirectLightCore(int lightIndex)
         {
-            AtmosphereParameters Atmosphere = GetAtmosphereParameters();
-            float3 P0 = (streams.PositionWS.xyz / streams.PositionWS.w) * ScaleToSkyUnit + float3(0, Atmosphere.BottomRadius, 0);
-            float viewHeight = length(P0);
-            const float3 UpVector = P0 / viewHeight;
-            float viewZenithCosAngle = dot(-Lights[lightIndex].DirectionWS, UpVector);
-
-            float2 uv;
-	        LutTransmittanceParamsToUv(Atmosphere, viewHeight, viewZenithCosAngle, uv);
-            
-            const float3 transmittance = TransmittanceLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb;
-
-            streams.lightColor = transmittance * Lights[lightIndex].Color; // Probably not correct to multiply by light color, but it looks nice :)
-            // TODO: Update if support for disk based Directional light is added
             streams.lightDirectionWS = -Lights[lightIndex].DirectionWS;
+            const float3 transmittance = GetTransmittance(streams.PositionWS, streams.lightDirectionWS);
+
+            streams.lightColor = transmittance * Lights[lightIndex].Color;
         }
     };
 }
