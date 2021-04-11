@@ -1,0 +1,19 @@
+﻿
+
+namespace TR.Stride.Ocean
+{
+    shader OceanPrecomputeTwiddleFactorsAndInputIndices : ComputeShaderBase, OceanFastFourierTransformBase
+    {
+        stage RWTexture2D<float4> PrecomputeBuffer;
+
+        override void Compute()
+        {
+            uint b = Size >> (streams.DispatchThreadId.x + 1);
+	        float2 mult = 2 * PI * float2(0, 1) / Size;
+	        uint i = (2 * b * (streams.DispatchThreadId.y / b) + streams.DispatchThreadId.y % b) % Size;
+	        float2 twiddle = ComplexExp(-mult * ((streams.DispatchThreadId.y / b) * b));
+	        PrecomputeBuffer[streams.DispatchThreadId.xy] = float4(twiddle.x, twiddle.y, i, i + b);
+	        PrecomputeBuffer[uint2(streams.DispatchThreadId.x, streams.DispatchThreadId.y + Size / 2)] = float4(-twiddle.x, -twiddle.y, i, i + b);
+        }
+    };
+}

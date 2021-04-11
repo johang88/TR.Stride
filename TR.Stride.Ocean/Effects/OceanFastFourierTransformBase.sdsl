@@ -1,0 +1,25 @@
+﻿
+
+namespace TR.Stride.Ocean
+{
+    shader OceanFastFourierTransformBase : Math
+    {
+        stage Texture2D<float4> PrecomputedData;
+        stage RWTexture2D<float2> Buffer0;
+        stage RWTexture2D<float2> Buffer1;
+
+        stage bool PingPong;
+        stage uint Size;
+        stage uint Step;
+
+        float2 ComplexMult(float2 a, float2 b)
+        {
+	        return float2(a.r * b.r - a.g * b.g, a.r * b.g + a.g * b.r);
+        }
+
+        float2 ComplexExp(float2 a)
+        {
+	        return float2(cos(a.y), sin(a.y)) * exp(a.x);
+        }
+    };
+}

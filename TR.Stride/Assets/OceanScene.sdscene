@@ -1,0 +1,155 @@
+!SceneAsset
+Id: 86fa4c31-a066-46fe-be1c-52d5da8584e3
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! 389c3cb5-fff0-4c20-91dc-d7f14149bfe5
+        - ref!! f4567ad3-8847-4413-a5ad-574a9ed87680
+        - ref!! c66e5d2f-fcda-450a-8c55-2220a4c184be
+        - ref!! 80ae9e45-3042-495f-b60f-d85176e27dfa
+        - ref!! ff7f66e5-fc76-44dd-b942-92eb538584ea
+        - ref!! 68a38d07-e45d-446a-b3d2-7d69b0c354f1
+    Parts:
+        -   Entity:
+                Id: 389c3cb5-fff0-4c20-91dc-d7f14149bfe5
+                Name: Ocean
+                Components:
+                    aeb0f1cf021d89d2113f0f41276a08ee: !TransformComponent
+                        Id: e9445350-468f-420b-aac8-2cc700baa25c
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    266df22c9213fd7abb9f34d375557b6e: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
+                        Id: 6335b5ba-2c9a-45a4-8854-dacd0acec688
+                        WavesSettings:
+                            G: 9.81
+                            Depth: 500.0
+                            Lambda: 1.0
+                            Local:
+                                Scale: 1.0
+                                WindSpeed: 0.5
+                                WindDirection: -29.81
+                                Fetch: 100000.0
+                                SpreadBlend: 1.0
+                                Swell: 0.2
+                                PeakEnhancement: 3.3
+                                ShortWavesFade: 0.01
+                            Swell:
+                                Scale: 0.0
+                                WindSpeed: 1.0
+                                WindDirection: 0.0
+                                Fetch: 300000.0
+                                SpreadBlend: 1.0
+                                Swell: 1.0
+                                PeakEnhancement: 3.3
+                                ShortWavesFade: 0.01
+                        AlwaysRecalculateInitials: true
+                        Sun: null
+        -   Entity:
+                Id: 68a38d07-e45d-446a-b3d2-7d69b0c354f1
+                Name: Directional light
+                Components:
+                    30e347311d17c2732d05abb2cce6205b: !TransformComponent
+                        Id: 81e28e58-573c-4387-b1c1-969969206f91
+                        Position: {X: 0.0, Y: 2.0, Z: 0.0}
+                        Rotation: {X: -0.038131405, Y: -0.5983745, Z: -0.11471636, W: 0.7920443}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    16931c1e139503a60a3135f448ca06b0: !LightComponent
+                        Id: 735558dd-907d-41b4-9f5d-cba7962ff273
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow: !LightDirectionalShadowMap
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter7x7
+                                Size: XLarge
+                                DepthRange:
+                                    IsAutomatic: false
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+        -   Folder: null
+            Entity:
+                Id: 80ae9e45-3042-495f-b60f-d85176e27dfa
+                Name: Sphere
+                Components:
+                    550565f05e48e4e09b92cb9289b1883a: !TransformComponent
+                        Id: f85fc872-71c3-4fd8-8997-88b7948a751f
+                        Position: {X: 0.0, Y: 0.5521089, Z: 0.41478682}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 1.0, Z: 5.0}
+                        Children: {}
+                    4dc4f0bc9f858dbd5b79c373ebf6162e: !ModelComponent
+                        Id: 34cf7e72-4e8a-4268-bb91-e61315d8070f
+                        Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
+                        Materials: {}
+        -   Entity:
+                Id: c66e5d2f-fcda-450a-8c55-2220a4c184be
+                Name: Sphere
+                Components:
+                    550565f05e48e4e09b92cb9289b1883a: !TransformComponent
+                        Id: 9eba8776-6136-4c94-b026-15d4d6c6b3d7
+                        Position: {X: 0.0, Y: 1.1456182, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4dc4f0bc9f858dbd5b79c373ebf6162e: !ModelComponent
+                        Id: c169f709-2954-476a-9d19-1b90bb83df3d
+                        Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
+                        Materials: {}
+        -   Entity:
+                Id: f4567ad3-8847-4413-a5ad-574a9ed87680
+                Name: Camera
+                Components:
+                    98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
+                        Id: 528db4ce-3504-428d-a85f-9c8e916cdb76
+                        Position: {X: -3.5575178, Y: 3.1308727, Z: -4.4859905}
+                        Rotation: {X: 0.0, Y: -0.9728247, Z: 0.0, W: 0.2315428}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    b66dd7950f1f71e708dcf771b29841d6: !CameraComponent
+                        Id: 749f7825-d1df-47ad-b0ff-f06de1198f8d
+                        Name: null
+                        Projection: Perspective
+                        FarClipPlane: 5000.0
+                        Slot: d75902e9-539b-4ac1-aaa7-580efc5ac7fd
+                    376dd755b9a7b0702c075419622c3134: !TR.Stride.BasicCameraController,TR.Stride
+                        Id: b80aa20a-cce1-42ab-b3a0-1209257149e1
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 20.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    c458059b1dc1c9729ebeac41c7ca8382: !TR.Stride.GameProfiler,TR.Stride
+                        Id: be5e08ce-1287-4fd3-8c63-02fc370a6133
+                        Enabled: true
+                        TextColor: {R: 144, G: 238, B: 144, A: 255}
+                        RefreshTime: 500.0
+                        SortingMode: ByName
+                        FilteringMode: GpuEvents
+                        ResultPage: 1
+        -   Entity:
+                Id: ff7f66e5-fc76-44dd-b942-92eb538584ea
+                Name: Skybox light
+                Components:
+                    f7f3b820ba803ab8fbcc514d864c5814: !TransformComponent
+                        Id: fb3875b2-4fa2-4cb1-841a-ad84f9109862
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    ac19ee5040d95a7ceb53cdbc6f629a47: !LightComponent
+                        Id: c11a2017-c54c-4e4f-aaec-5f8838b6bd18
+                        Type: !LightSkybox
+                            Skybox: 22ec7478-64dc-464f-a9b1-8e89110288e9:Skybox
+                    94608014c86f9559caada233cdda9747: !BackgroundComponent
+                        Id: 00c1e3e5-c3c9-4179-bdc1-b0a9c208a73f
+                        Texture: c8f50514-fe46-4d07-a8f6-d6b78a739262:Skybox texture

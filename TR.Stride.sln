@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Atmosphere", "TR.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Gameplay", "TR.Stride.Gameplay\TR.Stride.Gameplay.csproj", "{41EB4272-76D5-418A-BC23-8A359EEBCA3C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Ocean", "TR.Stride.Ocean\TR.Stride.Ocean.csproj", "{A9857F88-25E0-46A7-AC43-ADA1700B4221}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41EB4272-76D5-418A-BC23-8A359EEBCA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9857F88-25E0-46A7-AC43-ADA1700B4221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9857F88-25E0-46A7-AC43-ADA1700B4221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9857F88-25E0-46A7-AC43-ADA1700B4221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9857F88-25E0-46A7-AC43-ADA1700B4221}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

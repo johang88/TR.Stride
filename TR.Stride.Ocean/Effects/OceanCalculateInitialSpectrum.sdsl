@@ -1,0 +1,39 @@
+﻿
+
+namespace TR.Stride.Ocean
+{
+    shader OceanCalculateInitialSpectrum : ComputeShaderBase, OceanInitialSpectrumCommon
+    {
+        override void Compute()
+        {
+            float deltaK = 2 * PI / LengthScale;
+            
+            int nx = streams.DispatchThreadId.x - Size / 2;
+            int nz = streams.DispatchThreadId.y - Size / 2;
+
+            float2 k = float2(nx, nz) * deltaK;
+            float kLength = length(k);
+
+            if (kLength <= CutoffHigh && kLength >= CutoffLow)
+            {
+                float kAngle = atan2(k.y, k.x);
+		        float omega = Frequency(kLength, GravityAcceleration, Depth);
+
+		        WavesData[streams.DispatchThreadId.xy] = float4(k.x, 1 / kLength, k.y, omega);
+
+		        float dOmegadk = FrequencyDerivative(kLength, GravityAcceleration, Depth);
+
+		        float spectrum = JONSWAP(omega, GravityAcceleration, Depth, Spectrums[0]) * DirectionSpectrum(kAngle, omega, Spectrums[0]) * ShortWavesFade(kLength, Spectrums[0]);
+		        if (Spectrums[1].scale > 0)
+			        spectrum += JONSWAP(omega, GravityAcceleration, Depth, Spectrums[1]) * DirectionSpectrum(kAngle, omega, Spectrums[1]) * ShortWavesFade(kLength, Spectrums[1]);
+
+		        H0K[streams.DispatchThreadId.xy] = float2(Noise[streams.DispatchThreadId.xy].x, Noise[streams.DispatchThreadId.xy].y) * sqrt(2 * spectrum * abs(dOmegadk) / kLength * deltaK * deltaK);
+            }
+            else
+            {
+                H0K[streams.DispatchThreadId.xy] = 0;
+		        WavesData[streams.DispatchThreadId.xy] = float4(k.x, 1, k.y, 0);
+            }
+        }
+    };
+}

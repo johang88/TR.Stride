@@ -1,0 +1,41 @@
+﻿
+
+namespace TR.Stride.Ocean
+{
+    shader OceanDisplacement : ComputeColor, OceanShadingCommon, PositionStream4, Transformation
+    {
+        override float4 Compute()
+        {
+            float4 positionWS = mul(streams.Position, World);
+            float2 uv = positionWS.xz;
+            streams.worldUV = positionWS.xz;
+
+            float viewDist = length(Eye.xyz - positionWS.xyz);
+
+            float lod_c0 = min(LodScale * LengthScale0 / viewDist, 1);
+            float lod_c1 = min(LodScale * LengthScale1 / viewDist, 1);
+            float lod_c2 = min(LodScale * LengthScale2 / viewDist, 1);
+
+            float3 displacement = float3(0, 0, 0);
+            float largeWavesBias = 0;
+
+            displacement += Displacement_c0.SampleLevel(AnisotropicRepeatSampler, uv / LengthScale0, 0).xyz * lod_c0;
+            largeWavesBias = displacement.y;
+
+            if (Lod == 0 || Lod == 1)
+            {
+                displacement += Displacement_c1.SampleLevel(AnisotropicRepeatSampler, uv / LengthScale1, 0).xyz * lod_c1;
+            }
+            if (Lod == 0)
+            {
+                displacement += Displacement_c2.SampleLevel(AnisotropicRepeatSampler, uv / LengthScale2, 0).xyz * lod_c2;
+            }
+
+            streams.Position.xyz += mul(displacement, WorldInverse).xyz;
+
+            streams.lodScales = float4(lod_c0, lod_c1, lod_c2, max(displacement.y - largeWavesBias * 0.8 - SSSBase, 0) / SSSScale);
+
+            return float4(0, 0, 0, 0);
+        }
+    };
+}

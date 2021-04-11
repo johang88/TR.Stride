@@ -1,0 +1,10 @@
+﻿namespace TR.Stride.Ocean
+{
+    shader OceanScale : ComputeShaderBase, OceanFastFourierTransformBase
+    {
+        override void Compute()
+        {
+            Buffer0[streams.DispatchThreadId.xy] = Buffer0[streams.DispatchThreadId.xy] / Size / Size;
+        }
+    };
+}

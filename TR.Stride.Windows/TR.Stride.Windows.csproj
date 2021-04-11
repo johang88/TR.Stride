@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TR.Stride.Atmosphere\TR.Stride.Atmosphere.csproj" />
+    <ProjectReference Include="..\TR.Stride.Ocean\TR.Stride.Ocean.csproj" />
     <ProjectReference Include="..\TR.Stride.Gameplay\TR.Stride.Gameplay.csproj" />
     <ProjectReference Include="..\TR.Stride\TR.Stride.csproj" />
   </ItemGroup>

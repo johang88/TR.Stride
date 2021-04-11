@@ -1,0 +1,29 @@
+﻿namespace TR.Stride.Ocean
+{
+    shader OceanGenerateMips : ComputeShaderBase
+    {
+        stage SamplerState LinearSampler
+        {
+            Filter = MIN_MAG_MIP_POINT;
+            AddressU = Clamp;
+            AddressV = Clamp;
+        };
+
+        stage Texture2D<float4> SrcMip;
+        stage RWTexture2D<float4> OutMip;
+
+        stage float2 InvOutTexelSize; // texel size for OutMip (NOT SrcMip)
+        stage uint SrcMipIndex;
+
+        float4 Mip(uint2 coord)
+        {
+            float2 uv = (coord.xy + 0.5) * InvOutTexelSize;
+            return SrcMip.SampleLevel(LinearSampler, uv, SrcMipIndex);
+        }
+
+        override void Compute()
+        {
+            OutMip[streams.DispatchThreadId.xy] = Mip(streams.DispatchThreadId.xy);
+        }
+    };
+}

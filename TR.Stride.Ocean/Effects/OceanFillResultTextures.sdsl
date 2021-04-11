@@ -1,0 +1,31 @@
+﻿namespace TR.Stride.Ocean
+{
+    shader OceanFillResultTextures : ComputeShaderBase
+    {
+        stage RWTexture2D<float3> Displacement;
+        stage RWTexture2D<float4> Derivatives;
+        stage RWTexture2D<float4> Turbulence;
+
+        stage Texture2D<float2> Dx_Dz;
+        stage Texture2D<float2> Dy_Dxz;
+        stage Texture2D<float2> Dyx_Dyz;
+        stage Texture2D<float2> Dxx_Dzz;
+
+        stage float Lambda;
+        stage float DeltaTime;
+
+        override void Compute()
+        {
+            float2 DxDz = Dx_Dz[streams.DispatchThreadId.xy];
+	        float2 DyDxz = Dy_Dxz[streams.DispatchThreadId.xy];
+	        float2 DyxDyz = Dyx_Dyz[streams.DispatchThreadId.xy];
+	        float2 DxxDzz = Dxx_Dzz[streams.DispatchThreadId.xy];
+	
+	        Displacement[streams.DispatchThreadId.xy] = float3(Lambda * DxDz.x, DyDxz.x, Lambda * DxDz.y);
+	        Derivatives[streams.DispatchThreadId.xy] = float4(DyxDyz, DxxDzz * Lambda);
+	        float jacobian = (1 + Lambda * DxxDzz.x) * (1 + Lambda * DxxDzz.y) - Lambda * Lambda * DyDxz.y * DyDxz.y;
+	        Turbulence[streams.DispatchThreadId.xy] = Turbulence[streams.DispatchThreadId.xy].r + DeltaTime * 0.5 / max(jacobian, 0.5);
+	        Turbulence[streams.DispatchThreadId.xy] = min(jacobian, Turbulence[streams.DispatchThreadId.xy].r);
+        }
+    };
+}

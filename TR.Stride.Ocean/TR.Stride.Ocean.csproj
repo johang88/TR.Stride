@@ -1,0 +1,161 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stride.Engine" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+
+    <PackageReference Include="Stride.Video" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Physics" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Navigation" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Particles" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.UI" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Effects\OceanCalculateConjugatedSpectrum.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanCalculateInitialSpectrum.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanDisplacement.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanEmissive.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanFastFourierTransformBase.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanFillResultTextures.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanGenerateMips.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanHorizontalStepFFT.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanHorizontalStepInverseFFT.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanInitialSpectrumCommon.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanPermute.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanPrecomputeTwiddleFactorsAndInputIndices.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanScale.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanShadingCommon.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanTimeDependentSpectrum.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanVerticalStepFFT.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\OceanVerticalStepInverseFFT.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Effects\OceanCalculateConjugatedSpectrum.sdsl">
+      <LastGenOutput>OceanCalculateConjugatedSpectrum.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanCalculateInitialSpectrum.sdsl">
+      <LastGenOutput>OceanCalculateInitialSpectrum.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanDisplacement.sdsl">
+      <LastGenOutput>OceanDisplacement.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanEmissive.sdsl">
+      <LastGenOutput>OceanEmissive.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanFastFourierTransformBase.sdsl">
+      <LastGenOutput>OceanFastFourierTransformBase.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanFillResultTextures.sdsl">
+      <LastGenOutput>OceanFillResultTextures.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanGenerateMips.sdsl">
+      <LastGenOutput>OceanGenerateMips.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanHorizontalStepFFT.sdsl">
+      <LastGenOutput>OceanHorizontalStepFFT.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanHorizontalStepInverseFFT.sdsl">
+      <LastGenOutput>OceanHorizontalStepInverseFFT.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanInitialSpectrumCommon.sdsl">
+      <LastGenOutput>OceanInitialSpectrumCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanPermute.sdsl">
+      <LastGenOutput>OceanPermute.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanPrecomputeTwiddleFactorsAndInputIndices.sdsl">
+      <LastGenOutput>OceanPrecomputeTwiddleFactorsAndInputIndices.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanScale.sdsl">
+      <LastGenOutput>OceanScale.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanShadingCommon.sdsl">
+      <LastGenOutput>OceanShadingCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanTimeDependentSpectrum.sdsl">
+      <LastGenOutput>OceanTimeDependentSpectrum.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanVerticalStepFFT.sdsl">
+      <LastGenOutput>OceanVerticalStepFFT.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\OceanVerticalStepInverseFFT.sdsl">
+      <LastGenOutput>OceanVerticalStepInverseFFT.sdsl.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+</Project>

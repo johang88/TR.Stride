@@ -1,0 +1,52 @@
+﻿namespace TR.Stride.Ocean
+{
+    shader OceanShadingCommon : Texturing
+    {
+        cbuffer PerMaterial
+        {
+            [Color] stage float3 Color;
+            stage int Lod;
+
+            stage float LodScale = 1;
+            stage float LengthScale0;
+            stage float LengthScale1;
+            stage float LengthScale2;
+
+            stage float SSSBase = 0;
+            stage float SSSScale = 4;
+            stage float SSSStrength = 0.2f;
+            [Color] stage float4 SSSColor = float4(1, 1, 1, 1);
+
+            stage float FoamBiasLOD0 = 1;
+            stage float FoamBiasLOD1 = 1;
+            stage float FoamBiasLOD2 = 1;
+            stage float FoamScale = 1;
+
+            [Color] stage float4 FoamColor = float4(1, 1, 1, 1);
+
+            stage float Roughness = 0;
+            stage float RoughnessScale = 0.1f;
+            stage float MaxGloss = 0;
+
+            stage float3 LightDirectionWS;
+        }
+
+        rgroup PerMaterial
+        {
+            stage Texture2D Displacement_c0;
+            stage Texture2D Derivatives_c0;
+            stage Texture2D Turbulence_c0;
+
+            stage Texture2D Displacement_c1;
+            stage Texture2D Derivatives_c1;
+            stage Texture2D Turbulence_c1;
+
+            stage Texture2D Displacement_c2;
+            stage Texture2D Derivatives_c2;
+            stage Texture2D Turbulence_c2;
+        }
+
+        stage stream float2 worldUV;
+        stage stream float4 lodScales;
+    };
+}

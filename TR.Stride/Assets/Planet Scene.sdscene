@@ -18,7 +18,7 @@ Hierarchy:
                     98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
                         Id: 6140c70a-1bb5-41f3-90b3-cc2541bc17a1
                         Position: {X: -12.585207, Y: 8.203049, Z: -70.67115}
-                        Rotation: {X: 0.000523278, Y: 0.9910574, Z: 0.133378118, W: 0.00388818351}
+                        Rotation: {X: 0.000523278, Y: 0.9910574, Z: 0.13337812, W: 0.0038881835}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     b66dd7950f1f71e708dcf771b29841d6: !CameraComponent
@@ -27,7 +27,7 @@ Hierarchy:
                         Projection: Perspective
                         FarClipPlane: 5000.0
                         Slot: d75902e9-539b-4ac1-aaa7-580efc5ac7fd
-                    11fc5938664333b74d24b93a7fb461f6: !TR.Stride.BasicCameraController,TR.Stride
+                    872e1eba4cfb05f184614c698bec4b04: !TR.Stride.BasicCameraController,TR.Stride
                         Id: fe761231-46d9-47f5-ac12-507b72fcf3df
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -36,7 +36,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    623acf77a6d22dfbf25fa38caa96f312: !TR.Stride.GameProfiler,TR.Stride
+                    4b576aff90e72b76ced52b6f0417a5df: !TR.Stride.GameProfiler,TR.Stride
                         Id: ff233131-5c7c-4acf-8ce7-0ac0dce79fb0
                         Enabled: true
                         TextColor: {R: 144, G: 238, B: 144, A: 255}
@@ -50,8 +50,8 @@ Hierarchy:
                 Components:
                     848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
                         Id: 0ebe6515-691e-44d8-b039-63bf46835f1d
-                        Position: {X: -15.1852064, Y: 49.13556, Z: -23.5119686}
-                        Rotation: {X: 0.05104264, Y: 0.0, Z: 0.0, W: 0.998696446}
+                        Position: {X: -15.185206, Y: 49.13556, Z: -23.511969}
+                        Rotation: {X: 0.05104264, Y: 0.0, Z: 0.0, W: 0.99869645}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     a84c1741d3ceac964d5bbe5d1031bf50: !TR.Stride.Atmosphere.AtmosphereComponent,TR.Stride.Atmosphere
@@ -66,13 +66,13 @@ Hierarchy:
                         MieAbsorptionScale: 0.00077
                         MieAbsorptionCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
                         RayleighScatteringScale: 0.03624
-                        RayleighScatteringCoefficient: {R: 0.13019532, G: 0.273353517, B: 0.63125}
+                        RayleighScatteringCoefficient: {R: 0.13019532, G: 0.27335352, B: 0.63125}
                         AbsorptionExctinctionScale: 0.00199
-                        AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.945098042, B: 0.0431372561}
+                        AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.94509804, B: 0.043137256}
                         AbsorptionDensity0LayerWidth: 25.0
                         AbsorptionDensity0ConstantTerm: -0.6666667
                         AbsorptionDensity0LinearTerm: 0.06666667
-                        AbsorptionDensity1ConstantTerm: 2.66666675
+                        AbsorptionDensity1ConstantTerm: 2.6666667
                         AbsorptionDensity1LinearTerm: -0.06666667
                         RayleighScaleHeight: 8.0
                         MieScaleHeight: 1.2
@@ -83,7 +83,11 @@ Hierarchy:
                         StrideToAtmosphereUnitScale: 100.0
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 1.0
-                    6b105a8d0754bbc71cb8613490032b39: !TR.Stride.AtmosphereController,TR.Stride
+                        EnableClouds: true
+                        CloudScale: 0.0001
+                        CloudSpeed: 0.01
+                        Cloudiness: 0.8
+                    2813f1d7cb3a9f909e5441155709f84e: !TR.Stride.AtmosphereController,TR.Stride
                         Id: 1660df06-7e8a-4fea-aed9-7e615d7065bc
         -   Entity:
                 Id: dc33cd66-4c15-476b-8cf9-9d1f221f6e4b
@@ -106,8 +110,8 @@ Hierarchy:
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: c1e626c2-5b09-4324-83f7-279c4d9f1af5
-                        Position: {X: -15.1852064, Y: 48.50744, Z: -23.5119686}
-                        Rotation: {X: -0.192510635, Y: -0.08487833, Z: 0.04865601, W: 0.976405561}
+                        Position: {X: -15.185206, Y: 48.50744, Z: -23.511969}
+                        Rotation: {X: -0.19251063, Y: -0.08487833, Z: 0.04865601, W: 0.97640556}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -115,16 +119,16 @@ Hierarchy:
                         Type: !AtmosphereLightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow:
+                            Shadow: !LightDirectionalShadowMap
                                 Size: XLarge
                                 DepthRange:
                                     IsAutomatic: false
                                 PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
-                                BiasParameters: {}
                                 ComputeTransmittance: false
+                                BiasParameters: {}
                             Atmosphere: ref!! 010daca6-2cd6-4208-8322-fc70f5111ef6
                         Intensity: 4.0
-                    35b5dfdcb72bf70cdf6d4b40a9cb25e9: !TR.Stride.RotateComponent,TR.Stride
+                    e58978bbe9f672d785be1dca0622bffb: !TR.Stride.RotateComponent,TR.Stride
                         Id: f6bb0e90-89d5-4eb3-8e97-aab4a9a20494
                         Axis: {X: 0.0, Y: 0.0, Z: 1.0}
                         Speed: 0.0

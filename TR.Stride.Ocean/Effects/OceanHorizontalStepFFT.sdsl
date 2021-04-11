@@ -1,0 +1,21 @@
+﻿namespace TR.Stride.Ocean
+{
+    shader OceanHorizontalStepFFT : ComputeShaderBase, OceanFastFourierTransformBase
+    {
+        override void Compute()
+        {
+			float4 data = PrecomputedData[uint2(Step, streams.DispatchThreadId.x)];
+			uint2 inputsIndices = (uint2)data.ba;
+			if (PingPong)
+			{
+				Buffer1[streams.DispatchThreadId.xy] = Buffer0[uint2(inputsIndices.x, streams.DispatchThreadId.y)].xy
+					+ ComplexMult(data.rg, Buffer0[uint2(inputsIndices.y, streams.DispatchThreadId.y)]);
+			}
+			else
+			{
+				Buffer0[streams.DispatchThreadId.xy] = Buffer1[uint2(inputsIndices.x, streams.DispatchThreadId.y)].xy
+					+ ComplexMult(data.rg, Buffer1[uint2(inputsIndices.y, streams.DispatchThreadId.y)]);
+			}
+        }
+    };
+}

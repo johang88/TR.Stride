@@ -1,0 +1,14 @@
+﻿
+
+namespace TR.Stride.Ocean
+{
+    shader OceanCalculateConjugatedSpectrum : ComputeShaderBase, OceanInitialSpectrumCommon
+    {
+        override void Compute()
+        {
+            float2 h0K = H0K[streams.DispatchThreadId.xy];
+	        float2 h0MinusK = H0K[uint2((Size - streams.DispatchThreadId.x) % Size, (Size - streams.DispatchThreadId.y) % Size)];
+	        H0[streams.DispatchThreadId.xy] = float4(h0K.x, h0K.y, h0MinusK.x, -h0MinusK.y);
+        }
+    };
+}
