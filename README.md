@@ -21,3 +21,15 @@ Implementation of https://github.com/sebh/UnrealEngineSkyAtmosphere
 * Some weird issues that requires sky view lut resolution to be hardcoded, meaning that it can't easily be changed
 * Atmosphere can not be moved
 * Diretional light might be incorrect in editor after a hot reload, this is due to an issue in stride where component references are not correctly restored
+
+## TR.Stride.Ocean
+Implementation of https://github.com/gasgiant/FFT-Ocean/
+
+### Usage
+* Add `TR.Stride.Ocean` to your project
+* Create an empty entity
+* Add OceanComponent to the entity
+
+### Issues
+* Mesh rendering bugs
+* Currently requires that you have at least one other model in your scene, it will crash due to a missing model processor otherwise.
