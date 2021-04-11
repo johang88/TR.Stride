@@ -168,7 +168,7 @@ SharedRenderers:
         Id: 02046533-dacf-4bc0-a247-6271c78c8940
         Clear:
             Id: 66a42307-1985-4316-871a-768449238c11
-            Color: {R: 0.40491876, G: 0.411895424, B: 0.43775, A: 1.0}
+            Color: {R: 0.40491876, G: 0.41189542, B: 0.43775, A: 1.0}
         LightProbes: true
         OpaqueRenderStage: ref!! 31a53557-c966-47b3-8867-d0d3f4e4a231
         TransparentRenderStage: ref!! ee0a9342-d8bb-4463-99e5-f15c4883f834
@@ -191,7 +191,7 @@ SharedRenderers:
         AmbientOcclusion:
             Enabled: false
         LocalReflections:
-            Enabled: false
+            Enabled*: false
             ResolvePassResolution: Full
             DepthResolution: Half
         DepthOfField:

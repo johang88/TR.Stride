@@ -349,7 +349,12 @@ namespace TR.Stride.Ocean
                             {
                                 MixinReference = "OceanDisplacement"
                             }
-                        }
+                        },
+                        //Transparency = new MaterialTransparencyBlendFeature
+                        //{
+                        //    Alpha = new ComputeFloat(1),
+                        //    Tint = new ComputeColor(new Color4(0, 0, 0, 0))
+                        //}
                     }
                 });
             }

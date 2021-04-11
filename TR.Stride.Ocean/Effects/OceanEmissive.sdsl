@@ -66,13 +66,7 @@ namespace TR.Stride.Ocean
             fresnel = saturate(1 - fresnel);
             fresnel =  0.02f + 0.98f * pow5(fresnel);
             
-            float3 emissive = lerp(color, 0, jacobian);
-            //float3 emissive = lerp(color * (1 - fresnel), 0, jacobian);
-
-            //emissive = fresnel.xxx;
-            //streams.matDiffuse.xyz =  fresnel.xxx;
-
-            //streams.matDiffuse.a = alpha;
+            float3 emissive = lerp(color * (1 - fresnel), 0, jacobian);
 
             return float4(emissive, 1);
         }

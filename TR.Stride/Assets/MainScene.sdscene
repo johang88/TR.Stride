@@ -173,6 +173,7 @@ Hierarchy:
                         Id: 92de2586-3e44-45a1-bea0-0bfacd173e53
                         Type: !LightSkybox
                             Skybox: 22ec7478-64dc-464f-a9b1-8e89110288e9:Skybox
+                        Intensity: 2.0
         -   Entity:
                 Id: f182e1ae-4e80-44c9-a5bb-c703192ca6cf
                 Name: Ocean
