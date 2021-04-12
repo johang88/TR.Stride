@@ -9,9 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
-using Buffer = Stride.Graphics.Buffer;
-using Stride.Rendering.Materials;
-using Stride.Rendering.Materials.ComputeColors;
 using Stride.Rendering.ComputeEffect;
 
 namespace TR.Stride.Ocean
@@ -44,7 +41,6 @@ namespace TR.Stride.Ocean
 
             var graphicsDevice = Services.GetService<IGraphicsDeviceService>().GraphicsDevice;
             var camera = GetCamera();
-            var cameraPosition = GetCameraPosition(camera);
             var sceneSystem = context.Services.GetService<SceneSystem>();
             var time = (float)sceneSystem.Game.UpdateTime.Total.TotalSeconds;
             var deltaTime = (float)sceneSystem.Game.UpdateTime.Elapsed.TotalSeconds;
@@ -65,8 +61,6 @@ namespace TR.Stride.Ocean
                 var component = pair.Key;
                 var data = pair.Value;
                 var entity = component.Entity;
-
-                var k = component.GridSize;
 
                 var renderDrawContext = context.GetThreadContext();
                 var commandList = renderDrawContext.CommandList;
@@ -134,426 +128,50 @@ namespace TR.Stride.Ocean
                     cascade.CalculateWavesAtTime(renderDrawContext, _timeDependantSpectrumShader, _fillResultTexturesShader, _generateMipsShader, time, deltaTime);
                 }
 
-                // (re)create meshes if needed
-                if (data.Rings.Count != component.ClipLevels
-                    || data.Trims.Count != component.ClipLevels
-                    || data.VertexDensity != component.VertexDensity
-                    || data.SkirtSize != component.SkirtSize)
+                // Create materials
+                if (data.Materials == null || component.Material != data.Material)
                 {
-                    data.DestroyChildren();
+                    data.Material = component.Material;
 
-                    if (data.Materials == null)
+                    if (data.Material == null)
                     {
-                        data.Materials = new Material[]
-                        {
-                            CreateMaterial(graphicsDevice),
-                            CreateMaterial(graphicsDevice),
-                            CreateMaterial(graphicsDevice)
-                        };
-
-                        data.Materials[0].Passes[0].Parameters.Set(OceanShadingCommonKeys.Lod, 0);
-                        data.Materials[1].Passes[0].Parameters.Set(OceanShadingCommonKeys.Lod, 1);
-                        data.Materials[2].Passes[0].Parameters.Set(OceanShadingCommonKeys.Lod, 2);
-                    }
-
-                    data.VertexDensity = component.VertexDensity;
-                    data.SkirtSize = component.SkirtSize;
-
-                    data.Center = CreateEntity(entity, "Center", CreatePlaneMesh(graphicsDevice, 2 * k, 2 * k, 1, Seams.All), data.Materials.Last());
-
-                    var ring = CreateRingMesh(graphicsDevice, k, 1);
-                    var trim = CreateTrimMesh(graphicsDevice, k, 1);
-
-                    for (var i = 0; i < component.ClipLevels; i++)
-                    {
-                        data.Rings.Add(CreateEntity(entity, $"Ring_{i}", ring, data.Materials.Last()));
-                        data.Trims.Add(CreateEntity(entity, $"Trim_{i}", trim, data.Materials.Last()));
-                    }
-
-                    data.Skirt = CreateEntity(entity, "Skirt", CreateSkirtMesh(graphicsDevice, k, data.SkirtSize), data.Materials.Last());
-                }
-
-                // Update mesh positions
-                var activeLevels = component.GetActiveLodLevels(cameraPosition);
-
-                var scale = component.GetClipLevelScale(-1, activeLevels);
-
-                var previousSnappedPosition = Snap(cameraPosition, scale * 2);
-
-                data.Center.Transform.Position = previousSnappedPosition + component.OffsetFromCenter(-1, activeLevels);
-                data.Center.Transform.Scale = new Vector3(scale, 1, scale);
-
-                for (var i = 0; i < component.ClipLevels; i++)
-                {
-                    if (i >= activeLevels)
-                    {
-                        data.Rings[i].Transform.Parent = null;
-                        data.Trims[i].Transform.Parent = null;
-
-                        continue;
-                    }
-
-                    if (data.Rings[i].Transform.Parent == null)
-                        entity.AddChild(data.Rings[i]);
-
-                    if (data.Trims[i].Transform.Parent == null)
-                        entity.AddChild(data.Trims[i]);
-
-                    scale = component.GetClipLevelScale(i, activeLevels);
-                    var centerOffset = component.OffsetFromCenter(i, activeLevels);
-                    var snappedPosition = Snap(cameraPosition, scale * 2);
-
-                    var trimPosition = centerOffset + snappedPosition + scale * (k - 1) / 2 * new Vector3(1, 0, 1);
-                    var shiftX = previousSnappedPosition.X - snappedPosition.X < float.Epsilon ? 1 : 0;
-                    var shiftZ = previousSnappedPosition.Z - snappedPosition.Z < float.Epsilon ? 1 : 0;
-
-                    trimPosition += shiftX * (k + 1) * scale * Vector3.UnitX;
-                    trimPosition += shiftZ * (k + 1) * scale * Vector3.UnitZ;
-
-                    data.Trims[i].Transform.Position = trimPosition;
-                    data.Trims[i].Transform.Rotation = data.TrimRotations[shiftX + 2 * shiftZ];
-                    data.Trims[i].Transform.Scale = new Vector3(scale, 1, scale);
-
-                    data.Rings[i].Transform.Position = snappedPosition + centerOffset;
-                    data.Rings[i].Transform.Scale = new Vector3(scale, 1, scale);
-
-                    previousSnappedPosition = snappedPosition;
-                }
-
-                scale = component.LengthScale * 2 * MathF.Pow(2, component.ClipLevels);
-                data.Skirt.Transform.Position = new Vector3(-1, 0, -1) * scale * (component.SkirtSize + 0.5f - 0.5f / component.GridSize) + previousSnappedPosition;
-                data.Skirt.Transform.Scale = new Vector3(scale, 1, scale);
-
-                // Update materials
-
-                foreach (var material in data.Materials)
-                {
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Displacement_c0, data.Cascades[0].Displacement);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Displacement_c1, data.Cascades[1].Displacement);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Displacement_c2, data.Cascades[2].Displacement);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Turbulence_c0, data.Cascades[0].Turbulence);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Turbulence_c1, data.Cascades[1].Turbulence);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Turbulence_c2, data.Cascades[2].Turbulence);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Derivatives_c0, data.Cascades[0].Derivatives);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Derivatives_c1, data.Cascades[1].Derivatives);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Derivatives_c2, data.Cascades[2].Derivatives);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.LengthScale0, component.LengthScale0);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.LengthScale1, component.LengthScale1);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.LengthScale2, component.LengthScale2);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.LodScale, component.Material.LodScale);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.SSSBase, component.Material.SSSBase);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.SSSScale, component.Material.SSSScale);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.SSSStrength, component.Material.SSSStrength);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.SSSColor, component.Material.SSSColor);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamBiasLOD0, component.Material.FoamBiasLOD0);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamBiasLOD1, component.Material.FoamBiasLOD1);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamBiasLOD2, component.Material.FoamBiasLOD2);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamScale, component.Material.FoamScale);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamColor, component.Material.FoamColor);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Roughness, component.Material.Roughness);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.RoughnessScale, component.Material.RoughnessScale);
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.MaxGloss, component.Material.MaxGloss);
-
-                    material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Color, component.Material.Color);
-                    
-                    if (component.Sun != null)
-                    {
-                        var lightDirection = Vector3.TransformNormal(-Vector3.UnitZ, component.Sun.Entity.Transform.WorldMatrix);
-                        lightDirection.Normalize();
-
-                        material.Passes[0].Parameters.Set(OceanShadingCommonKeys.LightDirectionWS, lightDirection);
-                    }
-                }
-
-                //data.Materials[0].Passes[0].Parameters.Set(OceanShadingCommonKeys.Color, new Color3(1, 0, 0));
-                //data.Materials[1].Passes[0].Parameters.Set(OceanShadingCommonKeys.Color, new Color3(0, 1, 0));
-                //data.Materials[2].Passes[0].Parameters.Set(OceanShadingCommonKeys.Color, new Color3(0, 0, 1));
-
-                SetMaterial(data.Center, data.GetMaterial(component.ClipLevels - activeLevels - 1));
-
-                for (int i = 0; i < data.Rings.Count; i++)
-                {
-                    SetMaterial(data.Rings[i], data.GetMaterial(component.ClipLevels - activeLevels + i));
-                    SetMaterial(data.Trims[i], data.GetMaterial(component.ClipLevels - activeLevels + i));
-                }
-            });
-
-            static void SetMaterial(Entity entity, Material material)
-            {
-                var modelComponent = entity.Get<ModelComponent>();
-                if (modelComponent.Model.Materials[0].Material != material)
-                {
-                    modelComponent.Model.Materials[0] = material;
-                }
-            }
-
-            static Vector3 Snap(Vector3 coords, float scale)
-            {
-                if (coords.X >= 0)
-                    coords.X = MathF.Floor(coords.X / scale) * scale;
-                else
-                    coords.X = MathF.Ceiling((coords.X - scale + 1) / scale) * scale;
-
-                if (coords.Z < 0)
-                    coords.Z = MathF.Floor(coords.Z / scale) * scale;
-                else
-                    coords.Z = MathF.Ceiling((coords.Z - scale + 1) / scale) * scale;
-
-                coords.Y = 0;
-                return coords;
-            }
-
-            static Material CreateMaterial(GraphicsDevice graphicsDevice)
-            {
-                return Material.New(graphicsDevice, new MaterialDescriptor
-                {
-                    Attributes = new MaterialAttributes
-                    {
-                        MicroSurface = new MaterialGlossinessMapFeature
-                        {
-                            GlossinessMap = new ComputeFloat(0.9f)
-                        },
-                        Diffuse = new MaterialDiffuseMapFeature
-                        {
-                            DiffuseMap = new ComputeColor(new Color4(0, 0, 0.0f, 1))
-                        },
-                        DiffuseModel = new MaterialDiffuseLambertModelFeature(),
-                        Specular = new MaterialMetalnessMapFeature
-                        {
-                            MetalnessMap = new ComputeFloat(0.0f)
-                        },
-                        SpecularModel = new MaterialSpecularMicrofacetModelFeature
-                        {
-                            Environment = new MaterialSpecularMicrofacetEnvironmentGGXPolynomial() // TODO: Use lookup, need to find a way to locate the lookup texture first as the AttachedReferenceManager does not manage this at runtime ...
-                        },
-                        Emissive = new MaterialEmissiveMapFeature
-                        {
-                            EmissiveMap = new ComputeShaderClassColor
-                            {
-                                MixinReference = "OceanEmissive"
-                            },
-                            Intensity = new ComputeFloat(1.0f),
-                            UseAlpha = false
-                        },
-                        Displacement = new MaterialDisplacementMapFeature
-                        {
-                            ScaleAndBias = false,
-                            Intensity = new ComputeFloat(0),
-                            DisplacementMap = new ComputeShaderClassScalar
-                            {
-                                MixinReference = "OceanDisplacement"
-                            }
-                        },
-                        //Transparency = new MaterialTransparencyBlendFeature
-                        //{
-                        //    Alpha = new ComputeFloat(1),
-                        //    Tint = new ComputeColor(new Color4(0, 0, 0, 0))
-                        //}
-                    }
-                });
-            }
-        }
-
-        private Mesh CreateRingMesh(GraphicsDevice graphicsDevice, int k, float lengthScale)
-        {
-            return CreateMergedMesh(graphicsDevice,
-                (CreatePlaneMeshData(2 * k, (k - 1) / 2, lengthScale, Seams.Bottom | Seams.Right | Seams.Left), Matrix.Translation(Vector3.Zero)),
-                (CreatePlaneMeshData(2 * k, (k - 1) / 2, lengthScale, Seams.Top | Seams.Right | Seams.Left), Matrix.Translation(new Vector3(0, 0, k + 1 + (k - 1) / 2) * lengthScale)),
-                (CreatePlaneMeshData((k - 1) / 2, k + 1, lengthScale, Seams.Left), Matrix.Translation(new Vector3(0, 0, (k - 1) / 2) * lengthScale)),
-                (CreatePlaneMeshData((k - 1) / 2, k + 1, lengthScale, Seams.Right), Matrix.Translation(new Vector3(k + 1 + (k - 1) / 2, 0, (k - 1) / 2) * lengthScale))
-                );
-        }
-
-        private Mesh CreateTrimMesh(GraphicsDevice graphicsDevice, int k, float lengthScale)
-        {
-            return CreateMergedMesh(graphicsDevice,
-                (CreatePlaneMeshData(k + 1, 1, lengthScale, Seams.None, 1), Matrix.Translation(new Vector3(-k - 1, 0, -1) * lengthScale)),
-                (CreatePlaneMeshData(1, k, lengthScale, Seams.None, 1), Matrix.Translation(new Vector3(-1, 0, -k - 1) * lengthScale))
-                );
-        }
-
-        private Mesh CreateSkirtMesh(GraphicsDevice graphicsDevice, int k, float outerBorderScale)
-        {
-            var quad = CreatePlaneMeshData(1, 1, 1, Seams.None);
-            var hStrip = CreatePlaneMeshData(k, 1, 1, Seams.None);
-            var vStrip = CreatePlaneMeshData(1, k, 1, Seams.None);
-
-            Vector3 cornerQuadScale = new Vector3(outerBorderScale, 1, outerBorderScale);
-            Vector3 midQuadScaleVert = new Vector3(1f / k, 1, outerBorderScale);
-            Vector3 midQuadScaleHor = new Vector3(outerBorderScale, 1, 1f / k);
-
-            return CreateMergedMesh(graphicsDevice,
-                (quad, CreateTransform(Vector3.Zero, cornerQuadScale)),
-                (hStrip, CreateTransform(Vector3.UnitX * outerBorderScale, midQuadScaleVert)),
-                (quad, CreateTransform(Vector3.UnitX * (outerBorderScale + 1), cornerQuadScale)),
-                (vStrip, CreateTransform(Vector3.UnitZ * outerBorderScale, midQuadScaleHor)),
-                (vStrip, CreateTransform(Vector3.UnitX * (outerBorderScale + 1) + Vector3.UnitZ * outerBorderScale, midQuadScaleHor)),
-                (quad, CreateTransform(Vector3.UnitZ * (outerBorderScale + 1), cornerQuadScale)),
-                (hStrip, CreateTransform(Vector3.UnitX * outerBorderScale + Vector3.UnitZ * (outerBorderScale + 1), midQuadScaleVert)),
-                (quad, CreateTransform(Vector3.UnitX * (outerBorderScale + 1) + Vector3.UnitZ * (outerBorderScale + 1), cornerQuadScale))
-                );
-
-            Matrix CreateTransform(Vector3 position, Vector3 scale)
-                => Matrix.Transformation(Vector3.Zero, Quaternion.Identity, scale, Vector3.Zero, Quaternion.Identity, position);
-        }
-
-        private Mesh CreateMergedMesh(GraphicsDevice graphicsDevice, params ((VertexPositionNormalTexture[] vertices, int[] indices) mesh, Matrix transform)[] meshes)
-        {
-            var totalVertexCount = meshes.Sum(x => x.mesh.vertices.Length);
-            var totalIndexCount = meshes.Sum(x => x.mesh.indices.Length);
-
-            var mergedVertices = new VertexPositionNormalTexture[totalVertexCount];
-            var mergedIndices = new int[totalIndexCount];
-
-            var vertexOffset = 0;
-            var indexOffset = 0;
-
-            // Merge meshes
-            foreach (var ((vertices, indices), transform) in meshes)
-            {
-                for (var i = 0; i < vertices.Length; i++)
-                {
-                    mergedVertices[vertexOffset + i] = vertices[i];
-                    mergedVertices[vertexOffset + i].Position = Vector3.TransformCoordinate(mergedVertices[vertexOffset + i].Position, transform);
-                }
-
-                for (var i = 0; i < indices.Length; i++)
-                {
-                    mergedIndices[indexOffset + i] = indices[i] + vertexOffset;
-                }
-
-                vertexOffset += vertices.Length;
-                indexOffset += indices.Length;
-            }
-
-            var vertexBuffer = Buffer.Vertex.New(graphicsDevice, mergedVertices, GraphicsResourceUsage.Dynamic);
-            var indexBuffer = Buffer.Index.New(graphicsDevice, mergedIndices);
-
-            return new Mesh
-            {
-                Draw = new MeshDraw
-                {
-                    PrimitiveType = PrimitiveType.TriangleList,
-                    DrawCount = mergedIndices.Length,
-                    IndexBuffer = new IndexBufferBinding(indexBuffer, true, mergedIndices.Length),
-                    VertexBuffers = new[] { new VertexBufferBinding(vertexBuffer, VertexPositionNormalTexture.Layout, vertexBuffer.ElementCount) },
-                }
-            };
-        }
-
-        private Mesh CreatePlaneMesh(GraphicsDevice graphicsDevice, int width, int height, float lengthScale, Seams seams, int trianglesShift = 0)
-        {
-            var (vertices, indices) = CreatePlaneMeshData(width, height, lengthScale, seams, trianglesShift);
-
-            var vertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices, GraphicsResourceUsage.Dynamic);
-            var indexBuffer = Buffer.Index.New(graphicsDevice, indices);
-
-            return new Mesh
-            {
-                Draw = new MeshDraw
-                {
-                    PrimitiveType = PrimitiveType.TriangleList,
-                    DrawCount = indices.Length,
-                    IndexBuffer = new IndexBufferBinding(indexBuffer, true, indices.Length),
-                    VertexBuffers = new[] { new VertexBufferBinding(vertexBuffer, VertexPositionNormalTexture.Layout, vertexBuffer.ElementCount) },
-                }
-            };
-        }
-
-        private static (VertexPositionNormalTexture[] vertices, int[] indices) CreatePlaneMeshData(int width, int height, float lengthScale, Seams seams, int trianglesShift = 0)
-        {
-            var vertexCount = (width + 1) * (height + 1);
-            var indexCount = width * height * 2 * 3;
-
-            var vertices = new VertexPositionNormalTexture[vertexCount];
-            var indices = new int[indexCount];
-            for (int i = 0; i < height + 1; i++)
-            {
-                for (int j = 0; j < width + 1; j++)
-                {
-                    int x = j;
-                    int z = i;
-
-                    if ((i == 0 && seams.HasFlag(Seams.Bottom)) || (i == height && seams.HasFlag(Seams.Top)))
-                        x = x / 2 * 2;
-                    if ((j == 0 && seams.HasFlag(Seams.Left)) || (j == width && seams.HasFlag(Seams.Right)))
-                        z = z / 2 * 2;
-
-                    var index = j + i * (width + 1);
-                    vertices[index].Position = new Vector3(x, 0, z) * lengthScale;
-                    vertices[index].Normal = Vector3.UnitY;
-                }
-            }
-
-            int tris = 0;
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++)
-                {
-                    int k = j + i * (width + 1);
-                    if ((i + j + trianglesShift) % 2 == 0)
-                    {
-                        indices[tris++] = k;
-                        indices[tris++] = k + width + 2;
-                        indices[tris++] = k + width + 1;
-
-                        indices[tris++] = k;
-                        indices[tris++] = k + 1;
-                        indices[tris++] = k + width + 2;
+                        data.Materials = null;
                     }
                     else
                     {
-                        indices[tris++] = k;
-                        indices[tris++] = k + 1;
-                        indices[tris++] = k + width + 1;
-
-                        indices[tris++] = k + 1;
-                        indices[tris++] = k + width + 2;
-                        indices[tris++] = k + width + 1;
+                        data.Materials = new Material[]
+                        {
+                        data.Material.CreateMaterial(graphicsDevice, 0),
+                        data.Material.CreateMaterial(graphicsDevice, 1),
+                        data.Material.CreateMaterial(graphicsDevice, 2)
+                        };
                     }
                 }
-            }
 
-            return (vertices, indices);
-        }
+                // Bail out if no material set
+                if (data.Materials == null)
+                    return;
 
-        private Entity CreateEntity(Entity parent, string name, Mesh mesh, Material material)
-        {
-            var entity = new Entity(name);
-
-            var modelComponent = new ModelComponent
-            {
-                Model = new Model
+                if (data.Mesh != component.Mesh)
                 {
-                    mesh,
-                    material
+                    data.DestroyMesh();
+
+                    data.Mesh = component.Mesh;
+
+                    if (data.Mesh != null)
+                    {
+                        data.Mesh.SetOcean(component, data.Materials);
+                    }
                 }
-            };
 
-            modelComponent.Model.Materials[0].IsShadowCaster = false;
-            modelComponent.IsShadowCaster = false;
+                // We kinda need a mesh
+                if (data.Mesh == null)
+                    return;
 
-            entity.Add(modelComponent);
-
-            parent.AddChild(entity);
-
-            return entity;
-        }
-
-        private Vector3 GetCameraPosition(CameraComponent camera)
-        {
-            var viewMatrix = camera.ViewMatrix;
-            viewMatrix.Invert();
-
-            var cameraPosition = viewMatrix.TranslationVector;
-
-            return cameraPosition;
+                // Update mesh and materials
+                data.Material.UpdateMaterials(component, data.Materials, data.Cascades);
+                data.Mesh.Update(graphicsDevice, camera);
+            });
         }
 
         /// <summary>
@@ -600,15 +218,9 @@ namespace TR.Stride.Ocean
 
     public class OceanRenderData : IDisposable
     {
-        public List<Entity> Rings { get; set; } = new();
-        public List<Entity> Trims { get; set; } = new();
-        public Entity Center { get; set; }
-        public Entity Skirt { get; set; }
-
-        public int VertexDensity { get; set; }
-        public float SkirtSize { get; set; }
-
         public Material[] Materials { get; set; }
+        public IOceanMaterial Material { get; set; }
+        public IOceanMesh Mesh { get; set; }
 
         public Quaternion[] TrimRotations = new Quaternion[]
         {
@@ -625,51 +237,11 @@ namespace TR.Stride.Ocean
 
         public FastFourierTransform FFT { get; set; }
 
-        public Material GetMaterial(int lodLevel)
+        public void DestroyMesh()
         {
-            if (lodLevel - 2 <= 0)
-                return Materials[0];
-
-            if (lodLevel - 2 <= 2)
-                return Materials[1];
-
-            return Materials[2];
-        }
-
-        public void DestroyChildren()
-        {
-            foreach (var entity in Rings)
-                Destroy(entity);
-
-            foreach (var entity in Trims)
-                Destroy(entity);
-
-            if (Center != null)
-                Destroy(Center);
-
-            if (Skirt != null)
-                Destroy(Skirt);
-
-            Rings.Clear();
-            Trims.Clear();
-
-            Center = null;
-            Skirt = null;
-
-            static void Destroy(Entity entity)
+            if (Mesh is IDisposable disposable)
             {
-                if (entity == null)
-                    return;
-
-                entity.Transform.Parent = null;
-
-                var modelComponent = entity.Get<ModelComponent>();
-                if (modelComponent?.Model?.Meshes?.Count > 0)
-                {
-                    var meshDraw = modelComponent.Model.Meshes[0].Draw;
-                    meshDraw.IndexBuffer.Buffer.Dispose();
-                    meshDraw.VertexBuffers[0].Buffer.Dispose();
-                }
+                disposable.Dispose();
             }
         }
 
@@ -688,7 +260,7 @@ namespace TR.Stride.Ocean
 
         public void Dispose()
         {
-            DestroyChildren();
+            DestroyMesh();
             DestroyCascades();
             GaussianNoise?.Dispose();
         }
