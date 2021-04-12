@@ -93,6 +93,9 @@ Hierarchy:
                         Id: 58174ce0-00ce-4c33-aa55-34cd238919eb
                         Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
                         Materials: {}
+                    28e299b3e56dfd5a52e1cae0c045c4a2: !TR.Stride.Ocean.BuoyancyComponent,TR.Stride.Ocean
+                        Id: 1c633c3a-ab6a-4128-ad27-261dbf391bf6
+                        Ocean: ref!! 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
         -   Entity:
                 Id: b94a7908-f7d7-48ac-9516-20bf3bc9b730
                 Name: Atmosphere
@@ -186,7 +189,6 @@ Hierarchy:
                         Children: {}
                     266df22c9213fd7abb9f34d375557b6e: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
                         Id: 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
-                        SkirtSize: 5.41
                         WavesSettings:
                             G: 9.81
                             Depth: 500.0
@@ -210,8 +212,9 @@ Hierarchy:
                                 PeakEnhancement: 3.3
                                 ShortWavesFade: 0.01
                         AlwaysRecalculateInitials: false
-                        Material:
+                        Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
                             SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             Color: {R: 0.017500002, G: 0.06267854, B: 0.1}
-                        Sun: ref!! 1b0ce0b4-87f4-4f93-bb66-24a5a4f12eaa
+                            Sun: null
+                        Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}

@@ -48,7 +48,12 @@ Hierarchy:
                                 PeakEnhancement: 3.3
                                 ShortWavesFade: 0.01
                         AlwaysRecalculateInitials: true
-                        Sun: null
+                        Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
+                            SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
+                            FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                            Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
+                            Sun: null
+                        Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
         -   Entity:
                 Id: 68a38d07-e45d-446a-b3d2-7d69b0c354f1
                 Name: Directional light

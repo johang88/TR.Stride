@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
 using Stride.Rendering.ComputeEffect;
+using Stride.Rendering.Images;
 
 namespace TR.Stride.Ocean
 {
@@ -128,6 +129,21 @@ namespace TR.Stride.Ocean
                     cascade.CalculateWavesAtTime(renderDrawContext, _timeDependantSpectrumShader, _fillResultTexturesShader, _generateMipsShader, time, deltaTime);
                 }
 
+                // Read back wave data
+                if (data.Readback == null)
+                {
+                    data.Readback = new ();
+                }
+
+                data.Readback.FrameDelayCount = component.DisplacmentReadBackFrameDelay;
+                data.Readback.SetInput(data.Cascades[0].Displacement);
+                data.Readback.Draw(renderDrawContext);
+
+                if (data.Readback.IsResultAvailable)
+                {
+                    component.Displacement = data.Readback.Result;
+                }
+
                 // Create materials
                 if (data.Materials == null || component.Material != data.Material)
                 {
@@ -237,6 +253,8 @@ namespace TR.Stride.Ocean
 
         public FastFourierTransform FFT { get; set; }
 
+        public ImageReadback<Vector4> Readback { get; set; }
+
         public void DestroyMesh()
         {
             if (Mesh is IDisposable disposable)
@@ -263,6 +281,7 @@ namespace TR.Stride.Ocean
             DestroyMesh();
             DestroyCascades();
             GaussianNoise?.Dispose();
+            Readback?.Dispose();
         }
     }
 
