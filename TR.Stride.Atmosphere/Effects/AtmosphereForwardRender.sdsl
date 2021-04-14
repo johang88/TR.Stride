@@ -1,0 +1,48 @@
+﻿
+
+shader AtmosphereForwardRender
+    : ShadingBase, PositionStream4, Camera, Transformation, AtmosphereSamplers
+{
+	cbuffer PerView.Atmosphere
+	{
+		float BottomRadius;
+		float ScaleToSkyUnit;
+		stage float4 AerialPerspectiveSlicesAndDistancePerSlice;
+	}
+
+	rgroup PerView.Atmosphere
+	{
+		stage Texture3D<float4> AtmosphereCameraScatteringVolume;
+	}
+
+	float AerialPerspectiveDepthToSlice(float depth)
+	{
+		return depth * AerialPerspectiveSlicesAndDistancePerSlice.w;
+	}
+
+    stage override float4 Shading() 
+    {
+        float4 Destination = base.Shading();
+
+		float2 pixPos = streams.ShadingPosition.xy;
+
+		float3 CameraPosition = (Eye * ScaleToSkyUnit + float3(0, BottomRadius, 0));
+        float3 WorldPos = streams.PositionWS.xyz * ScaleToSkyUnit;
+
+		float tDepth = length(WorldPos.xyz - (CameraPosition + float3(0.0, -BottomRadius, 0.0)));
+		float Slice = AerialPerspectiveDepthToSlice(tDepth);
+		float Weight = 1.0;
+		if (Slice < 0.5)
+		{
+			// We multiply by weight to fade to 0 at depth 0. That works for luminance and opacity.
+			Weight = saturate(Slice * 2.0);
+			Slice = 0.5;
+		}
+		float w = sqrt(Slice * AerialPerspectiveSlicesAndDistancePerSlice.z);	// squared distribution
+
+		const float4 AP = Weight * AtmosphereCameraScatteringVolume.SampleLevel(SamplerLinearClamp, float3(pixPos / ViewSize.xy, w), 0);
+		float3 result = AP.rgb * 1.0f + Destination.rgb * (1.0f - AP.a);
+
+        return float4(result, Destination.a);
+    }
+};

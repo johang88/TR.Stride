@@ -1,16 +1,55 @@
 ﻿namespace Stride.Rendering.Lights
 {
-    shader AtmosphereLightDirectionalGroup<int TMaxLightCount, MemberName AtmosphereGroup> 
-        : DirectLightGroupPerView, LightDirectional, AtmosphereGetTransmittance<AtmosphereGroup>
+    shader AtmosphereLightDirectionalGroup<int TMaxLightCount> 
+        : DirectLightGroupPerView, LightDirectional, AtmosphereSamplers
     {
         cbuffer PerView.Lighting
         {
             DirectionalLightData Lights[TMaxLightCount];
+            float BottomRadius;
+            float TopRadius;
+            float ScaleToSkyUnit;
+        }
+
+        rgroup PerView.Lighting
+        {
+            stage Texture2D TransmittanceLutTexture;
         }
 
         override int GetMaxLightCount()
         {
             return TMaxLightCount;
+        }
+
+        void LutTransmittanceParamsToUv(in float viewHeight, in float viewZenithCosAngle, out float2 uv)
+	    {
+		    float H = sqrt(max(0.0f, TopRadius * TopRadius - BottomRadius * BottomRadius));
+		    float rho = sqrt(max(0.0f, viewHeight * viewHeight - BottomRadius * BottomRadius));
+
+		    float discriminant = viewHeight * viewHeight * (viewZenithCosAngle * viewZenithCosAngle - 1.0) + TopRadius * TopRadius;
+		    float d = max(0.0, (-viewHeight * viewZenithCosAngle + sqrt(discriminant))); // Distance to atmosphere boundary
+
+		    float d_min = TopRadius - viewHeight;
+		    float d_max = rho + H;
+		    float x_mu = (d - d_min) / (d_max - d_min);
+		    float x_r = rho / H;
+
+		    uv = float2(x_mu, x_r);
+	    }
+
+        float3 GetTransmittance(float4 worldPosition, float3 lightDirection)
+        {
+            float3 P0 = (worldPosition.xyz / worldPosition.w) * ScaleToSkyUnit + float3(0, BottomRadius, 0);
+            float viewHeight = length(P0);
+            const float3 UpVector = P0 / viewHeight;
+            float viewZenithCosAngle = dot(lightDirection, UpVector);
+
+            float2 uv;
+	        LutTransmittanceParamsToUv(viewHeight, viewZenithCosAngle, uv);
+            
+            const float3 transmittance = TransmittanceLutTexture.SampleLevel(SamplerLinearClamp, uv, 0).rgb;
+
+            return transmittance;
         }
 
         /// <summary>

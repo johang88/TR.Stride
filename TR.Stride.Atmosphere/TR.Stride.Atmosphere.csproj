@@ -18,6 +18,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Effects\AtmosphereForwardShadingEffect.sdfx.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Effects\AtmosphereFullscreenTriangle.sdsl.cs">
       <DesignTime>True</DesignTime>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -72,6 +77,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AtmosphereRenderSkyRayMarching.sdsl</DependentUpon>
     </Compile>
+    <Compile Update="Effects\AtmosphereForwardRender.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AtmosphereForwardRender.sdsl</DependentUpon>
+    </Compile>
     <Compile Update="Effects\AtmosphereRenderSkyViewLut.sdsl.cs">
       <DesignTime>True</DesignTime>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -82,10 +93,18 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Effects\AtmosphereSamplers.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Effects\AtmosphereCommon.sdsl">
       <LastGenOutput>AtmosphereCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereForwardShadingEffect.sdfx">
+      <LastGenOutput>AtmosphereForwardShadingEffect.sdfx.cs</LastGenOutput>
     </None>
     <None Update="Effects\AtmosphereFullscreenTriangle.sdsl">
       <LastGenOutput>AtmosphereFullscreenTriangle.sdsl.cs</LastGenOutput>
@@ -117,11 +136,17 @@
     <None Update="Effects\AtmosphereRenderSkyRayMarching.sdsl">
       <LastGenOutput>AtmosphereRenderSkyRayMarching.sdsl.cs</LastGenOutput>
     </None>
+    <None Update="Effects\AtmosphereForwardRender.sdsl">
+      <LastGenOutput>AtmosphereForwardRender.sdsl.cs</LastGenOutput>
+    </None>
     <None Update="Effects\AtmosphereRenderSkyViewLut.sdsl">
       <LastGenOutput>AtmosphereRenderSkyViewLut.sdsl.cs</LastGenOutput>
     </None>
     <None Update="Effects\AtmosphereRenderTransmittanceLut.sdsl">
       <LastGenOutput>AtmosphereRenderTransmittanceLut.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\AtmosphereSamplers.sdsl">
+      <LastGenOutput>AtmosphereSamplers.sdsl.cs</LastGenOutput>
     </None>
   </ItemGroup>
 </Project>

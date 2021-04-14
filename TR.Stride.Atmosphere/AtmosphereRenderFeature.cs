@@ -41,7 +41,7 @@ namespace TR.Stride.Atmosphere
         public Texture TransmittanceLutTexture { get; private set; }
         private Texture _multiScatteringTexture = null;
         private Texture _skyViewLutTexture = null;
-        private Texture _atmosphereCameraScatteringVolumeTexture = null;
+        public Texture AtmosphereCameraScatteringVolumeTexture { get; private set; }
         private Texture _atmosphereCubeMapRenderTarget = null;
         private Texture _atmosphereCubeMap = null;
         private Texture _atmosphereCubeMapSpecular = null;
@@ -67,12 +67,14 @@ namespace TR.Stride.Atmosphere
         private LambertianPrefilteringSH _lamberFiltering = null;
         private RadiancePrefilteringGGX _specularRadiancePrefilterGGX = null;
 
+        public AtmosphereComponent Atmosphere { get; private set; }
+
         protected override void InitializeCore()
         {
             base.InitializeCore();
 
             _skyViewLutTexture = Texture.New2D(Context.GraphicsDevice, SkyViewLutSettings.Width, SkyViewLutSettings.Height, SkyViewLutSettings.Format, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
-            _atmosphereCameraScatteringVolumeTexture = Texture.New3D(Context.GraphicsDevice, AtmosphereCameraScatteringVolumeSettings.Size, AtmosphereCameraScatteringVolumeSettings.Size, AtmosphereCameraScatteringVolumeSettings.Slices, AtmosphereCameraScatteringVolumeSettings.Format, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
+            AtmosphereCameraScatteringVolumeTexture = Texture.New3D(Context.GraphicsDevice, AtmosphereCameraScatteringVolumeSettings.Size, AtmosphereCameraScatteringVolumeSettings.Size, AtmosphereCameraScatteringVolumeSettings.Slices, AtmosphereCameraScatteringVolumeSettings.Format, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
             _multiScatteringTexture = Texture.New2D(Context.GraphicsDevice, MultiScatteringTextureSettings.Size, MultiScatteringTextureSettings.Size, MultiScatteringTextureSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.ShaderResource);
             TransmittanceLutTexture = Texture.New2D(Context.GraphicsDevice, TransmittanceLutSettings.Width, TransmittanceLutSettings.Height, TransmittanceLutSettings.Format, TextureFlags.UnorderedAccess | TextureFlags.RenderTarget | TextureFlags.ShaderResource);
             _atmosphereCubeMapRenderTarget = Texture.New2D(Context.GraphicsDevice, 64, 64, PixelFormat.R16G16B16A16_Float, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
@@ -120,8 +122,8 @@ namespace TR.Stride.Atmosphere
             _skyViewLutTexture?.Dispose();
             _skyViewLutTexture = null;
 
-            _atmosphereCameraScatteringVolumeTexture?.Dispose();
-            _atmosphereCameraScatteringVolumeTexture = null;
+            AtmosphereCameraScatteringVolumeTexture?.Dispose();
+            AtmosphereCameraScatteringVolumeTexture = null;
 
             _transmittanceLutEffect?.Dispose();
             _transmittanceLutEffect = null;
@@ -207,6 +209,8 @@ namespace TR.Stride.Atmosphere
             var renderNode = GetRenderNode(renderNodeReference);
             var renderObject = (AtmosphereRenderObject)renderNode.RenderObject;
 
+            Atmosphere = null;
+
             if (renderObject.Component.Sun == null)
                 return;
 
@@ -225,6 +229,8 @@ namespace TR.Stride.Atmosphere
             var drawAtmosphere = drawLayout.GetLogicalGroup(_atmosphereLogicalGroupKey);
             if (drawAtmosphere.Hash == ObjectId.Empty)
                 return;
+
+            Atmosphere = renderObject.Component;
 
             if (_atmopshereLayoutHash != drawAtmosphere.Hash)
             {
@@ -289,7 +295,7 @@ namespace TR.Stride.Atmosphere
                 RenderAtmosphereCameraScatteringVolume(context, renderView, renderObject.Component);
             }
 
-            commandList.ResourceBarrierTransition(_atmosphereCameraScatteringVolumeTexture, GraphicsResourceState.PixelShaderResource);
+            commandList.ResourceBarrierTransition(AtmosphereCameraScatteringVolumeTexture, GraphicsResourceState.PixelShaderResource);
 
             // Render cube map for ambient
             if (renderObject.Component.Sky != null && renderObject.Component.Sky.Type is LightSkybox lightSkybox && lightSkybox.Skybox != null)
@@ -386,7 +392,7 @@ namespace TR.Stride.Atmosphere
             renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 0, TransmittanceLutTexture);
             renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 1, _skyViewLutTexture);
             renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 2, _multiScatteringTexture);
-            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 3, _atmosphereCameraScatteringVolumeTexture);
+            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 3, AtmosphereCameraScatteringVolumeTexture);
 
             // Bind descriptor sets
             if (_descriptorSets == null || _descriptorSets.Length < EffectDescriptorSetSlotCount)
@@ -487,12 +493,12 @@ namespace TR.Stride.Atmosphere
 
             using (context.PushRenderTargetsAndRestore())
             {
-                commandList.ResourceBarrierTransition(_atmosphereCameraScatteringVolumeTexture, GraphicsResourceState.RenderTarget);
+                commandList.ResourceBarrierTransition(AtmosphereCameraScatteringVolumeTexture, GraphicsResourceState.RenderTarget);
 
-                commandList.SetRenderTarget(null, _atmosphereCameraScatteringVolumeTexture);
+                commandList.SetRenderTarget(null, AtmosphereCameraScatteringVolumeTexture);
 
                 var oldViewport = commandList.Viewport;
-                commandList.SetViewport(new Viewport(0, 0, _atmosphereCameraScatteringVolumeTexture.Width, _atmosphereCameraScatteringVolumeTexture.Height));
+                commandList.SetViewport(new Viewport(0, 0, AtmosphereCameraScatteringVolumeTexture.Width, AtmosphereCameraScatteringVolumeTexture.Height));
 
                 _renderAtmosphereScatteringVolumePipelineState.State.Output.CaptureState(commandList);
                 _renderAtmosphereScatteringVolumePipelineState.Update();
@@ -503,7 +509,7 @@ namespace TR.Stride.Atmosphere
 
                 SetParameters(context.RenderContext, renderView, component, parameters, null);
 
-                parameters.Set(AtmosphereCommonKeys.Resolution, new Vector2(_atmosphereCameraScatteringVolumeTexture.Width, _atmosphereCameraScatteringVolumeTexture.Height));
+                parameters.Set(AtmosphereCommonKeys.Resolution, new Vector2(AtmosphereCameraScatteringVolumeTexture.Width, AtmosphereCameraScatteringVolumeTexture.Height));
 
                 parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, TransmittanceLutTexture);
                 parameters.Set(AtmosphereParametersBaseKeys.MultiScatTexture, _multiScatteringTexture);
@@ -511,7 +517,7 @@ namespace TR.Stride.Atmosphere
 
                 _renderAtmosphereScatteringVolumeEffect.Apply(graphicsContext);
 
-                commandList.DrawInstanced(3, _atmosphereCameraScatteringVolumeTexture.Depth);
+                commandList.DrawInstanced(3, AtmosphereCameraScatteringVolumeTexture.Depth);
 
                 commandList.SetViewport(oldViewport);
             }
@@ -568,8 +574,8 @@ namespace TR.Stride.Atmosphere
 
             parameters.Set(AtmosphereParametersBaseKeys.AerialPerspectiveSlicesAndDistancePerSlice.TryComposeWith(compositionName),
                 new Vector4(
-                    _atmosphereCameraScatteringVolumeTexture.Depth, component.AtmosphereScatteringVolumeKmPerSlice,
-                    1.0f / _atmosphereCameraScatteringVolumeTexture.Depth, 1.0f / component.AtmosphereScatteringVolumeKmPerSlice
+                    AtmosphereCameraScatteringVolumeTexture.Depth, component.AtmosphereScatteringVolumeKmPerSlice,
+                    1.0f / AtmosphereCameraScatteringVolumeTexture.Depth, 1.0f / component.AtmosphereScatteringVolumeKmPerSlice
                     ));
 
             parameters.Set(AtmosphereParametersBaseKeys.ScaleToSkyUnit.TryComposeWith(compositionName), component.StrideToAtmosphereUnitScale);

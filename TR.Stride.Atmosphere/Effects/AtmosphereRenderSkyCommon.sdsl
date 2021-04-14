@@ -3,15 +3,6 @@
 
 shader AtmosphereRenderSkyCommon<bool MultiScatteringApproximationEnabled, MemberName AtmosphereGroup> : AtmosphereCommon<AtmosphereGroup>, Math
 {
-	float AerialPerspectiveDepthToSlice(float depth)
-	{
-		return depth * AerialPerspectiveSlicesAndDistancePerSlice.w;
-	}
-	float AerialPerspectiveSliceToDepth(float slice)
-	{
-		return slice * AerialPerspectiveSlicesAndDistancePerSlice.y;
-	}
-
 	float3 GetMultipleScattering(AtmosphereParameters Atmosphere, float3 scattering, float3 extinction, float3 worlPos, float viewZenithCosAngle)
 	{
 		float2 uv = saturate(float2(viewZenithCosAngle*0.5f + 0.5f, (length(worlPos) - Atmosphere.BottomRadius) / (Atmosphere.TopRadius - Atmosphere.BottomRadius)));

@@ -14,14 +14,13 @@ using Stride.Shaders;
 using Stride.Core.Mathematics;
 using Buffer = Stride.Graphics.Buffer;
 
-namespace Stride.Rendering.Lights
+namespace Stride.Rendering
 {
-    public static partial class AtmosphereLightDirectionalGroupKeys
+    public static partial class AtmosphereForwardRenderKeys
     {
-        public static readonly ValueParameterKey<DirectionalLightData> Lights = ParameterKeys.NewValue<DirectionalLightData>();
         public static readonly ValueParameterKey<float> BottomRadius = ParameterKeys.NewValue<float>();
-        public static readonly ValueParameterKey<float> TopRadius = ParameterKeys.NewValue<float>();
         public static readonly ValueParameterKey<float> ScaleToSkyUnit = ParameterKeys.NewValue<float>();
-        public static readonly ObjectParameterKey<Texture> TransmittanceLutTexture = ParameterKeys.NewObject<Texture>();
+        public static readonly ValueParameterKey<Vector4> AerialPerspectiveSlicesAndDistancePerSlice = ParameterKeys.NewValue<Vector4>();
+        public static readonly ObjectParameterKey<Texture> AtmosphereCameraScatteringVolume = ParameterKeys.NewObject<Texture>();
     }
 }

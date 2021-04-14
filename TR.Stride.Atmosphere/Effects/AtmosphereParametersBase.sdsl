@@ -147,4 +147,14 @@ shader AtmosphereParametersBase<MemberName AtmosphereGroup>
 
 		uv = float2(x_mu, x_r);
 	}
+
+	float AerialPerspectiveDepthToSlice(float depth)
+	{
+		return depth * AerialPerspectiveSlicesAndDistancePerSlice.w;
+	}
+
+	float AerialPerspectiveSliceToDepth(float slice)
+	{
+		return slice * AerialPerspectiveSlicesAndDistancePerSlice.y;
+	}
 };

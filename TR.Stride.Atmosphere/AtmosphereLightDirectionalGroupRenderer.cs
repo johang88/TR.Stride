@@ -51,7 +51,7 @@ namespace TR.Stride.Atmosphere
                 base.UpdateLightCount();
 
                 var mixin = new ShaderMixinSource();
-                mixin.Mixins.Add(new ShaderClassSource("AtmosphereLightDirectionalGroup", LightCurrentCount, "PerView.Lighting"));
+                mixin.Mixins.Add(new ShaderClassSource("AtmosphereLightDirectionalGroup", LightCurrentCount));
                 ShadowGroup?.ApplyShader(mixin);
 
                 ShaderSource = mixin;
@@ -80,8 +80,10 @@ namespace TR.Stride.Atmosphere
                 if (atmosphereRenderFeature == null || atmosphereRenderFeature.TransmittanceLutTexture == null)
                     return;
 
-                atmosphereRenderFeature.SetAtmoshpereParameters(light.Atmosphere, parameters, null);
-                parameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, atmosphereRenderFeature.TransmittanceLutTexture);
+                parameters.Set(AtmosphereLightDirectionalGroupKeys.BottomRadius.ComposeWith(_compositionName), light.Atmosphere.PlanetRadius);
+                parameters.Set(AtmosphereLightDirectionalGroupKeys.TopRadius.ComposeWith(_compositionName), light.Atmosphere.PlanetRadius + light.Atmosphere.AtmosphereHeight);
+                parameters.Set(AtmosphereLightDirectionalGroupKeys.ScaleToSkyUnit.ComposeWith(_compositionName), light.Atmosphere.StrideToAtmosphereUnitScale);
+                parameters.Set(AtmosphereLightDirectionalGroupKeys.TransmittanceLutTexture, atmosphereRenderFeature.TransmittanceLutTexture);
             }
 
             public override void ApplyViewParameters(RenderDrawContext context, int viewIndex, ParameterCollection parameters)

@@ -44,7 +44,7 @@ RenderFeatures:
             44cf4a95ef82544e9ce3c6507d5569a9: !Stride.Rendering.MeshTransparentRenderStageSelector,Stride.Rendering
                 OpaqueRenderStage: ref!! 31a53557-c966-47b3-8867-d0d3f4e4a231
                 TransparentRenderStage: ref!! ee0a9342-d8bb-4463-99e5-f15c4883f834
-                EffectName: StrideForwardShadingEffect
+                EffectName*: AtmosphereForwardShadingEffect
             6f7224048750e7260ea87c444f74b32c: !Stride.Rendering.Shadows.ShadowMapRenderStageSelector,Stride.Rendering
                 ShadowMapRenderStage: ref!! 6faccf70-8ced-4d8f-a2b9-f1cd36ad3aad
                 EffectName: StrideForwardShadingEffect.ShadowMapCaster
@@ -93,6 +93,7 @@ RenderFeatures:
                         d59ef45dd99e49d3af3887763d153aa7: !Stride.Rendering.Shadows.LightPointShadowMapRendererCubeMap,Stride.Rendering
                             ShadowCasterRenderStage: ref!! fcdca0fe-efba-4cb0-81ca-eb42352fadfa
             42be209952db58294c9f06c58809b8ca: !Stride.Rendering.InstancingRenderFeature,Stride.Rendering {}
+            25228744b1c4972e5c7a7a6bfe726bb3*: !TR.Stride.Atmosphere.AtmosphereTransparentRenderFeature,TR.Stride.Atmosphere {}
     28e9bf54a5adbe063f59fb17acb2723e: !Stride.Rendering.Sprites.SpriteRenderFeature,Stride.Rendering
         RenderStageSelectors:
             d74665cff080638a2439c4422e542d85: !Stride.Rendering.Sprites.SpriteTransparentRenderStageSelector,Stride.Rendering

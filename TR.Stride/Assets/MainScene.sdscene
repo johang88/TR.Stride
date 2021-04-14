@@ -87,13 +87,13 @@ Hierarchy:
                         Id: c61eccf7-f61e-4f0e-9a73-b555f5cacbc1
                         Position: {X: -15.185206, Y: 0.5543699, Z: -23.511969}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Scale: {X: 10.0, Y: 10.0, Z: 10.0}
                         Children: {}
                     8f4ba9bcfcf578ac9616b8af8624dc8d: !ModelComponent
                         Id: 58174ce0-00ce-4c33-aa55-34cd238919eb
                         Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
                         Materials: {}
-                    28e299b3e56dfd5a52e1cae0c045c4a2: !TR.Stride.Ocean.BuoyancyComponent,TR.Stride.Ocean
+                    1e2a53fe9ab1004f2c3bd2a89564b8ec: !TR.Stride.Ocean.BuoyancyComponent,TR.Stride.Ocean
                         Id: 1c633c3a-ab6a-4128-ad27-261dbf391bf6
                         Ocean: ref!! 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
         -   Entity:
@@ -187,7 +187,7 @@ Hierarchy:
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
-                    266df22c9213fd7abb9f34d375557b6e: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
+                    3714cd1b4a03325a3cc3a5854aff11e9: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
                         Id: 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
                         WavesSettings:
                             G: 9.81
@@ -211,10 +211,11 @@ Hierarchy:
                                 Swell: 1.0
                                 PeakEnhancement: 3.3
                                 ShortWavesFade: 0.01
-                        AlwaysRecalculateInitials: false
+                        AlwaysRecalculateInitials: true
                         Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
                             SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             Color: {R: 0.017500002, G: 0.06267854, B: 0.1}
                             Sun: null
                         Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
+                        DisplacmentReadBackFrameDelay: 4

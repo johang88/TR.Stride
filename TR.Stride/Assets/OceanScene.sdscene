@@ -23,7 +23,7 @@ Hierarchy:
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
-                    266df22c9213fd7abb9f34d375557b6e: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
+                    e26443493e6ae85a38bd385451323896: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
                         Id: 6335b5ba-2c9a-45a4-8854-dacd0acec688
                         WavesSettings:
                             G: 9.81

@@ -1,0 +1,15 @@
+﻿params AtmosphereForwardShadingEffectParameters
+{
+    bool RenderAerialPerspective = false;
+}
+
+// Forward shading effect to provide support for transparent materials
+effect AtmosphereForwardShadingEffect
+{
+    using params AtmosphereForwardShadingEffectParameters;
+
+    mixin StrideForwardShadingEffect;
+
+    if (AtmosphereForwardShadingEffectParameters.RenderAerialPerspective)
+        mixin AtmosphereForwardRender;
+}
