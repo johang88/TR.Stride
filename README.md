@@ -32,3 +32,4 @@ Implementation of https://github.com/gasgiant/FFT-Ocean/
 
 ### Issues
 * Currently requires that you have at least one other model in your scene, it will crash due to a missing model processor otherwise.
+* No MipMaps atm, generation exists in the code base but it does not look very well. Uncomment code in `WaveCascade.cs` to enable, and modify `OceanEmissive.sdsl` to use `TextureName.Sample(sampler, uv)` instead of `TextureName.SampleLevel(sampler, uv, 0)` to enable usage in pixel shader.

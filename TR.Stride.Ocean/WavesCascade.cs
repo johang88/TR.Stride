@@ -149,7 +149,7 @@ namespace TR.Stride.Ocean
             fillResultTexturesShader.Draw(context);
 
             // TODO: Mipsmaps dont look great, could potentially be used by using better filtering
-            // Not using them for now
+            // Not using them for now, uncomment to enable and switch Sample methods in OceanEmissive.sdsl
             //ResetState();
 
             //// Generate mip maps
@@ -162,34 +162,34 @@ namespace TR.Stride.Ocean
             commandList.ResourceBarrierTransition(Derivatives, GraphicsResourceState.PixelShaderResource);
             commandList.ResourceBarrierTransition(Turbulence, GraphicsResourceState.PixelShaderResource);
 
-            //void GenerateMipsMaps(Texture texture)
-            //{
-            //    for (var i = 0; i < texture.MipLevels - 1; i++)
-            //    {
-            //        // Copy source mip to staging texture
-            //        commandList.CopyRegion(texture, i, null, _mipStagingTexture, i);
+            void GenerateMipsMaps(Texture texture)
+            {
+                for (var i = 0; i < texture.MipLevels - 1; i++)
+                {
+                    // Copy source mip to staging texture
+                    commandList.CopyRegion(texture, i, null, _mipStagingTexture, i);
 
-            //        using var targetMip = texture.ToTextureView(ViewType.MipBand, 0, i + 1);
+                    using var targetMip = texture.ToTextureView(ViewType.MipBand, 0, i + 1);
 
-            //        generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.SrcMip, _mipStagingTexture);
-            //        generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.OutMip, targetMip);
+                    generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.SrcMip, _mipStagingTexture);
+                    generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.OutMip, targetMip);
 
-            //        generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.InvOutTexelSize, new Vector2(1.0f / targetMip.Width, 1.0f / targetMip.Height));
-            //        generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.SrcMipIndex, (uint)i);
+                    generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.InvOutTexelSize, new Vector2(1.0f / targetMip.Width, 1.0f / targetMip.Height));
+                    generateMipsShader.Parameters.Set(OceanGenerateMipsKeys.SrcMipIndex, (uint)i);
 
-            //        generateMipsShader.ThreadGroupCounts = new Int3(targetMip.Width / LOCAL_WORK_GROUPS_X, targetMip.Height / LOCAL_WORK_GROUPS_Y, 1);
-            //        generateMipsShader.ThreadNumbers = new Int3(LOCAL_WORK_GROUPS_X, LOCAL_WORK_GROUPS_Y, 1);
-            //        generateMipsShader.Draw(context);
-            //    }
-            //}
+                    generateMipsShader.ThreadGroupCounts = new Int3(targetMip.Width / LOCAL_WORK_GROUPS_X, targetMip.Height / LOCAL_WORK_GROUPS_Y, 1);
+                    generateMipsShader.ThreadNumbers = new Int3(LOCAL_WORK_GROUPS_X, LOCAL_WORK_GROUPS_Y, 1);
+                    generateMipsShader.Draw(context);
+                }
+            }
 
-            //void ResetState()
-            //{
-            //    // This is to solve an issue where child resources (texture views) bound as UAV wont be properly
-            //    // reset when binding the parent texture as an SRV and thus resulting in the SRV potentionally failing to bind
-            //    using (context.PushRenderTargetsAndRestore())
-            //        commandList.ClearState();
-            //}
+            void ResetState()
+            {
+                // This is to solve an issue where child resources (texture views) bound as UAV wont be properly
+                // reset when binding the parent texture as an SRV and thus resulting in the SRV potentionally failing to bind
+                using (context.PushRenderTargetsAndRestore())
+                    commandList.ClearState();
+            }
         }
 
         public void Dispose()
