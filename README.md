@@ -19,8 +19,6 @@ Implementation of https://github.com/sebh/UnrealEngineSkyAtmosphere
 * Done :)
 
 ### Issues
-* Transparent objects not supported
-* Some weird issues that requires sky view lut resolution to be hardcoded, meaning that it can't easily be changed
 * Atmosphere can not be moved
 * Diretional light might be incorrect in editor after a hot reload, this is due to an issue in stride where component references are not correctly restored
 
