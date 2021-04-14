@@ -97,17 +97,14 @@ namespace TR.Stride.Ocean
             {
                 if (i >= activeLevels)
                 {
-                    Rings[i].Transform.Parent = null;
-                    Trims[i].Transform.Parent = null;
+                    Rings[i].Get<ModelComponent>().Enabled = false;
+                    Trims[i].Get<ModelComponent>().Enabled = false;
 
                     continue;
                 }
 
-                if (Rings[i].Transform.Parent == null)
-                    _entity.AddChild(Rings[i]);
-
-                if (Trims[i].Transform.Parent == null)
-                    _entity.AddChild(Trims[i]);
+                Rings[i].Get<ModelComponent>().Enabled = true;
+                Trims[i].Get<ModelComponent>().Enabled = true;
 
                 scale = GetClipLevelScale(i, activeLevels);
                 var centerOffset = OffsetFromCenter(i, activeLevels);
@@ -368,7 +365,6 @@ namespace TR.Stride.Ocean
                 }
             };
 
-            modelComponent.Model.Materials[0].IsShadowCaster = false;
             modelComponent.IsShadowCaster = false;
 
             entity.Add(modelComponent);

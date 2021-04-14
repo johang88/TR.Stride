@@ -53,7 +53,7 @@ Hierarchy:
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
-                        Position: {X: -15.185206, Y: 54.204933, Z: -24.93195}
+                        Position: {X: -15.185206, Y: 10.826995, Z: -24.93195}
                         Rotation: {X: -0.036065757, Y: -0.09149129, Z: 0.034656636, W: 0.9945489}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -213,6 +213,7 @@ Hierarchy:
                                 ShortWavesFade: 0.01
                         AlwaysRecalculateInitials: true
                         Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
+                            LodScale: 1.0
                             SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             Color: {R: 0.017500002, G: 0.06267854, B: 0.1}

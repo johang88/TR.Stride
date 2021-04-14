@@ -31,5 +31,4 @@ Implementation of https://github.com/gasgiant/FFT-Ocean/
 * Add OceanComponent to the entity
 
 ### Issues
-* Mesh rendering bugs
 * Currently requires that you have at least one other model in your scene, it will crash due to a missing model processor otherwise.

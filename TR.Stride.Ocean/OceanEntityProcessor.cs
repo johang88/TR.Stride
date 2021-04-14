@@ -25,6 +25,11 @@ namespace TR.Stride.Ocean
 
         public VisibilityGroup VisibilityGroup { get; set; }
 
+        public OceanEntityProcessor()
+        {
+            Order = -200;
+        }
+
         protected override OceanRenderData GenerateComponentData([NotNull] Entity entity, [NotNull] OceanComponent component)
             => new OceanRenderData();
 
