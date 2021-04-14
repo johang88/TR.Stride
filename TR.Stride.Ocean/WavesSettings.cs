@@ -3,6 +3,7 @@ using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,11 +38,34 @@ namespace TR.Stride.Ocean
     [DataContract]
     public class WavesSettings
     {
-        [DataMember] public float G { get; set; }
-        [DataMember] public float Depth { get; set; }
-        [DataMember, DataMemberRange(0, 1)] public float Lambda { get; set; }
-        [DataMember] public DisplaySpectrumSettings Local { get; set; } = new();
-        [DataMember] public DisplaySpectrumSettings Swell { get; set; } = new();
+        [DataMember, DefaultValue(9.81f)] public float G { get; set; } = 9.81f;
+        [DataMember, DefaultValue(500.0f)] public float Depth { get; set; } = 500.0f;
+        [DataMember, DataMemberRange(0, 1), DefaultValue(1.0f)] public float Lambda { get; set; } = 1.0f;
+        [DataMember]
+        public DisplaySpectrumSettings Local { get; set; } = new()
+        {
+            Scale = 1.0f,
+            WindSpeed = 0.5f,
+            WindDirection = 90,
+            Fetch = 100000,
+            SpreadBlend = 1.0f,
+            Swell = 0.2f,
+            PeakEnhancement = 3.3f,
+            ShortWavesFade = 0.01f
+        };
+
+        [DataMember]
+        public DisplaySpectrumSettings Swell { get; set; } = new()
+        {
+            Scale = 0.0f,
+            WindSpeed = 1.0f,
+            WindDirection = 0.0f,
+            Fetch = 300000.0f,
+            SpreadBlend = 1.0f,
+            Swell = 1.0f,
+            PeakEnhancement = 3.3f,
+            ShortWavesFade = 0.01f
+        };
 
         internal readonly SpectrumSettings[] Spectrums = new SpectrumSettings[2];
 

@@ -22,7 +22,7 @@ namespace TR.Stride.Ocean
         private const string CategoryFoam = "Foam";
         private const string CategorySurface = "Surface";
 
-        [DataMember(0), DataMemberRange(0, 100, 0.01f, 0.1f, 4), DefaultValue(7.13f)] public float LodScale { get; set; } = 7.13f;
+        [DataMember(0), DataMemberRange(0, 100, 0.01f, 0.1f, 4), DefaultValue(1.0f)] public float LodScale { get; set; } = 1.0f;
 
         [DataMember(10), Display(name: "Base", category: CategorySSS), DataMemberRange(-1, 1, 0.01f, 0.1f, 4), DefaultValue(-0.1f)] public float SSSBase { get; set; } = -0.1f;
         [DataMember(11), Display(name: "Scale", category: CategorySSS), DataMemberRange(0, 10, 0.01f, 0.1f, 4), DefaultValue(4.8f)] public float SSSScale { get; set; } = 4.8f;
