@@ -32,6 +32,7 @@ namespace TR.Stride.Ocean
         public static readonly ValueParameterKey<float> FoamBiasLOD1 = ParameterKeys.NewValue<float>(1);
         public static readonly ValueParameterKey<float> FoamBiasLOD2 = ParameterKeys.NewValue<float>(1);
         public static readonly ValueParameterKey<float> FoamScale = ParameterKeys.NewValue<float>(1);
+        public static readonly ValueParameterKey<float> ContactFoam = ParameterKeys.NewValue<float>(1);
         public static readonly ValueParameterKey<Color4> FoamColor = ParameterKeys.NewValue<Color4>(new Color4(1,1,1,1));
         public static readonly ValueParameterKey<float> Roughness = ParameterKeys.NewValue<float>(0);
         public static readonly ValueParameterKey<float> RoughnessScale = ParameterKeys.NewValue<float>(0.1f);
@@ -46,5 +47,6 @@ namespace TR.Stride.Ocean
         public static readonly ObjectParameterKey<Texture> Displacement_c2 = ParameterKeys.NewObject<Texture>();
         public static readonly ObjectParameterKey<Texture> Derivatives_c2 = ParameterKeys.NewObject<Texture>();
         public static readonly ObjectParameterKey<Texture> Turbulence_c2 = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> FoamTexture = ParameterKeys.NewObject<Texture>();
     }
 }

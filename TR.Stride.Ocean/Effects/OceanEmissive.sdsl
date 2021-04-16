@@ -2,7 +2,7 @@
 namespace TR.Stride.Ocean
 {
     shader OceanEmissive 
-        : ComputeColor, OceanShadingCommon, MaterialPixelStream, NormalStream, PositionStream4, Transformation
+        : ComputeColor, OceanShadingCommon, MaterialPixelStream, NormalStream, PositionStream4, Transformation, DepthBase, ShaderBase, Global
     {
         float pow5(float f)
         {
@@ -11,7 +11,21 @@ namespace TR.Stride.Ocean
 
         override float4 Compute()
         {
-            // float4 derivatives = tex2D(_Derivatives_c0, IN.worldUV / LengthScale0);
+            // Sample depth buffer
+		    float2 screenPos = streams.ShadingPosition.xy;
+		    float2 screenSpaceUv = float2(screenPos.x / ViewSize.x, screenPos.y / ViewSize.y);
+		    float sceneDepthVS = ComputeDepthFromUV(screenSpaceUv);
+
+            // Compute view space depth
+		    float depthPS = streams.ShadingPosition.z;
+		    float depthVS = ComputeDepthFromZProj(depthPS);
+            float2 depthUV = streams.ShadingPosition.xy;
+
+            if (sceneDepthVS <= depthVS)
+                discard;
+
+            float alpha = saturate(abs(sceneDepthVS - depthVS));
+
             float4 derivatives = Derivatives_c0.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale0, 0);
             if (Lod == 0 || Lod == 1)
             {
@@ -49,8 +63,12 @@ namespace TR.Stride.Ocean
                 jacobian = min(1, max(0, (-jacobian + FoamBiasLOD0) * FoamScale));
             }
 
-            streams.matDiffuse = lerp(0, FoamColor, jacobian);
-            streams.matDiffuse.a = 1.0f;
+            float depthDifference = max(0, sceneDepthVS - depthVS - 1);
+            float foam = FoamTexture.Sample(AnisotropicRepeatSampler, streams.worldUV).x;
+            jacobian = saturate(ContactFoam * saturate(max(0, foam - depthDifference) * 5) * 0.9);
+
+            streams.matDiffuse = lerp(0, FoamColor, jacobian) * alpha; // Premultiply alpha
+            streams.matDiffuse.a = alpha;
 
             float3 viewVector = Eye.xyz - streams.PositionWS.xyz;
             float distanceGloss = lerp(1 - Roughness, MaxGloss, 1 / (1 + length(viewVector) * RoughnessScale));
@@ -66,7 +84,7 @@ namespace TR.Stride.Ocean
             fresnel = saturate(1 - fresnel);
             fresnel =  0.02f + 0.98f * pow5(fresnel);
             
-            float3 emissive = lerp(color * (1 - fresnel), 0, jacobian);
+            float3 emissive = lerp(color * (1 - fresnel), 0, jacobian) * alpha;
 
             return float4(emissive, 1);
         }

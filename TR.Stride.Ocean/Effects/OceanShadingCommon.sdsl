@@ -21,6 +21,7 @@
             stage float FoamBiasLOD1 = 1;
             stage float FoamBiasLOD2 = 1;
             stage float FoamScale = 1;
+            stage float ContactFoam = 1;
 
             [Color] stage float4 FoamColor = float4(1, 1, 1, 1);
 
@@ -44,6 +45,8 @@
             stage Texture2D Displacement_c2;
             stage Texture2D Derivatives_c2;
             stage Texture2D Turbulence_c2;
+
+            stage Texture2D FoamTexture;
         }
 
         stage stream float2 worldUV;

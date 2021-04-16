@@ -30,7 +30,7 @@ Hierarchy:
                         Projection: Perspective
                         FarClipPlane: 5000.0
                         Slot: d75902e9-539b-4ac1-aaa7-580efc5ac7fd
-                    806f4e4cb4105f244abff8dc0bb6ea47: !TR.Stride.BasicCameraController,TR.Stride
+                    0dfa09a9ff6ecb8dad9f67e943d2964a: !TR.Stride.BasicCameraController,TR.Stride
                         Id: af93382b-4874-4d7f-802e-a6ac6d3d9cd9
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -39,7 +39,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    1734e61f431daedda8edbf92148c4896: !TR.Stride.GameProfiler,TR.Stride
+                    dabee121a92a319be54bbbf5d6195ee6: !TR.Stride.GameProfiler,TR.Stride
                         Id: 767d37de-f8b8-40a5-b60e-62780eec4f54
                         Enabled: false
                         TextColor: {R: 144, G: 238, B: 144, A: 255}
@@ -100,7 +100,7 @@ Hierarchy:
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
-                    8d9cdb371d3ab018d2debccbed555652: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
+                    985aa7b0c54656baf3e6d03eb86b2942: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
                         Id: aa8de90b-ef53-4767-9e01-6d4688424982
                         WavesSettings:
                             Local:
@@ -122,16 +122,14 @@ Hierarchy:
                                 PeakEnhancement: 3.3
                                 ShortWavesFade: 0.01
                         AlwaysRecalculateInitials: true
-                        Material: !TR.Stride.TerrainOceanMaterial,TR.Stride
-                            SSSBase: -0.7479
+                        Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
+                            LodScale: 6.0
                             SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
-                            FoamBiasLOD0: 1.685
-                            FoamScale: 1.062
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                            ContactFoam: 1.0
+                            FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:FoamTexture
                             Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
                             Sun: null
-                            Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain/Terrain_Heightmap
-                            FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:Terrain/Foam003_1K_Opacity
                         Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
         -   Folder: Atmosphere
             Entity:

@@ -17,16 +17,4 @@
     <ProjectReference Include="..\TR.Stride.Gameplay\TR.Stride.Gameplay.csproj" />
     <ProjectReference Include="..\TR.Stride.Terrain\TR.Stride.Terrain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Effects\TerrainOceanEmissive.sdsl.cs">
-      <DesignTime>True</DesignTime>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Effects\TerrainOceanEmissive.sdsl">
-      <LastGenOutput>TerrainOceanEmissive.sdsl.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
 </Project>

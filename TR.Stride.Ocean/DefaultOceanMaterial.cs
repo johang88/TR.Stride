@@ -16,11 +16,7 @@ using System.Threading.Tasks;
 namespace TR.Stride.Ocean
 {
     [DataContract]
-    public class DefaultOceanMaterial : OceanMaterialBase
-    { 
-    }
-    
-    public abstract class OceanMaterialBase : IOceanMaterial
+    public class DefaultOceanMaterial : IOceanMaterial
     {
         private const string CategorySSS = "SSS";
         private const string CategoryFoam = "Foam";
@@ -38,6 +34,8 @@ namespace TR.Stride.Ocean
         [DataMember(22), Display(name: "Bias LOD 2", category: CategoryFoam), DataMemberRange(0, 10, 0.01f, 0.1f, 4), DefaultValue(2.72f)] public float FoamBiasLOD2 { get; set; } = 2.72f;
         [DataMember(23), Display(name: "Scale", category: CategoryFoam), DataMemberRange(0, 10, 0.01f, 0.1f, 4), DefaultValue(2.4f)] public float FoamScale { get; set; } = 2.4f;
         [DataMember(24), Display(name: "Color", category: CategoryFoam)] public Color4 FoamColor { get; set; } = new Color4(1, 1, 1, 1);
+        [DataMember(25), Display(name: "Contact Foam", category: CategoryFoam)] public float ContactFoam { get; set; } = 1.0f;
+        [DataMember(26), Display(name: "Foam Texture", category: CategoryFoam)] public Texture FoamTexture { get; set; }
 
         [DataMember(30), Display(name: "Roguhness", category: CategorySurface), DataMemberRange(0, 1, 0.01f, 0.1f, 4), DefaultValue(0.311f)] public float Roughness { get; set; } = 0.311f;
         [DataMember(31), Display(name: "Roguhness scale", category: CategorySurface), DataMemberRange(0, 1, 0.01f, 0.1f, 4), DefaultValue(0.0044f)] public float RoughnessScale { get; set; } = 0.0044f;
@@ -53,6 +51,27 @@ namespace TR.Stride.Ocean
             {
                 Attributes = new MaterialAttributes
                 {
+                    // Setup shaders
+                    Emissive = new MaterialEmissiveMapFeature
+                    {
+                        EmissiveMap = new ComputeShaderClassColor
+                        {
+                            MixinReference = "OceanEmissive" // TODO: Use transaparent feature instead
+                        },
+                        Intensity = new ComputeFloat(1.0f),
+                        UseAlpha = false
+                    },
+                    Displacement = new MaterialDisplacementMapFeature
+                    {
+                        ScaleAndBias = false,
+                        Intensity = new ComputeFloat(0),
+                        DisplacementMap = new ComputeShaderClassScalar
+                        {
+                            MixinReference = "OceanDisplacement"
+                        }
+                    },
+                    // Rest is just to make sure we get the render features we want
+                    // Actual values are overriden in emissive shader
                     MicroSurface = new MaterialGlossinessMapFeature
                     {
                         GlossinessMap = new ComputeFloat(0.9f)
@@ -70,23 +89,10 @@ namespace TR.Stride.Ocean
                     {
                         Environment = new MaterialSpecularMicrofacetEnvironmentGGXPolynomial() // TODO: Use lookup, need to find a way to locate the lookup texture first as the AttachedReferenceManager does not manage this at runtime ...
                     },
-                    Emissive = new MaterialEmissiveMapFeature
+                    Transparency = new MaterialTransparencyBlendFeature
                     {
-                        EmissiveMap = new ComputeShaderClassColor
-                        {
-                            MixinReference = "OceanEmissive"
-                        },
-                        Intensity = new ComputeFloat(1.0f),
-                        UseAlpha = false
-                    },
-                    Displacement = new MaterialDisplacementMapFeature
-                    {
-                        ScaleAndBias = false,
-                        Intensity = new ComputeFloat(0),
-                        DisplacementMap = new ComputeShaderClassScalar
-                        {
-                            MixinReference = "OceanDisplacement"
-                        }
+                        Alpha = new ComputeFloat(1),
+                        Tint = new ComputeColor(new Color4(1, 1, 1, 1))
                     }
                 }
             };
@@ -132,6 +138,8 @@ namespace TR.Stride.Ocean
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamBiasLOD2, FoamBiasLOD2);
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamScale, FoamScale);
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamColor, FoamColor);
+                material.Passes[0].Parameters.Set(OceanShadingCommonKeys.ContactFoam, ContactFoam);
+                material.Passes[0].Parameters.Set(OceanShadingCommonKeys.FoamTexture, FoamTexture);
 
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Roughness, Roughness);
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.RoughnessScale, RoughnessScale);
