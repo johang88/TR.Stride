@@ -89,7 +89,7 @@ namespace TR.Stride.Ocean
                     {
                         Environment = new MaterialSpecularMicrofacetEnvironmentGGXPolynomial() // TODO: Use lookup, need to find a way to locate the lookup texture first as the AttachedReferenceManager does not manage this at runtime ...
                     },
-                    Transparency = new MaterialTransparencyBlendFeature
+                    Transparency = new MaterialTransparencyBlendFeatureNoPremultiply
                     {
                         Alpha = new ComputeFloat(1),
                         Tint = new ComputeColor(new Color4(1, 1, 1, 1))
