@@ -1,6 +1,0 @@
-!TerrainBrushAsset
-Id: 9467d651-0960-4f9d-9c1a-0aa540b910d7
-SerializedVersion: {Stride: 3.0.0.0}
-Tags: []
-Source: !file ../Resources/Basic Brush.png
-sRGB sampling: false

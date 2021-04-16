@@ -7,12 +7,11 @@ Offset: {X: 0.0, Y: 16.97323, Z: 0.0}
 Hierarchy:
     RootParts:
         - ref!! 26cdafcf-427b-454b-bb17-00ace7b05a42
-        - ref!! 4eadaa21-a9e5-41b9-b7db-88e4771865f2
-        - ref!! b7275e3e-ff31-4dec-bec0-9461bff33d2c
-        - ref!! b94a7908-f7d7-48ac-9516-20bf3bc9b730
-        - ref!! cd498803-0c95-4a0d-a1d4-172b831e9182
-        - ref!! cdeaa5bf-6c96-4a88-90ad-f71f364f66d5
         - ref!! f182e1ae-4e80-44c9-a5bb-c703192ca6cf
+        - ref!! 4eadaa21-a9e5-41b9-b7db-88e4771865f2
+        - ref!! b94a7908-f7d7-48ac-9516-20bf3bc9b730
+        - ref!! cdeaa5bf-6c96-4a88-90ad-f71f364f66d5
+        - ref!! e27fda20-b6f9-4019-9968-c9b24b7f50db
     Parts:
         -   Entity:
                 Id: 26cdafcf-427b-454b-bb17-00ace7b05a42
@@ -41,13 +40,14 @@ Hierarchy:
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
                     1734e61f431daedda8edbf92148c4896: !TR.Stride.GameProfiler,TR.Stride
                         Id: 767d37de-f8b8-40a5-b60e-62780eec4f54
-                        Enabled: true
+                        Enabled: false
                         TextColor: {R: 144, G: 238, B: 144, A: 255}
                         RefreshTime: 500.0
                         SortingMode: ByName
                         FilteringMode: GpuEvents
                         ResultPage: 1
-        -   Entity:
+        -   Folder: Atmosphere
+            Entity:
                 Id: 4eadaa21-a9e5-41b9-b7db-88e4771865f2
                 Name: Sun
                 Components:
@@ -75,28 +75,8 @@ Hierarchy:
                                 BiasParameters: {}
                             Atmosphere: ref!! 534e54d1-cf9c-4a87-89ba-e5d71ba26343
                         Intensity: 5.0
-                    a68ecd3fa5a98e44a0ce59b85987b99f: !TR.Stride.RotateComponent,TR.Stride
-                        Id: d8eafe5e-9155-4368-b2c3-7203f31cbe56
-                        Axis: {X: 0.0, Y: 0.0, Z: 1.0}
-                        Speed: 0.0
-        -   Entity:
-                Id: b7275e3e-ff31-4dec-bec0-9461bff33d2c
-                Name: Sphere
-                Components:
-                    e9859e8e1b90ae1bf9224352dad45d1c: !TransformComponent
-                        Id: c61eccf7-f61e-4f0e-9a73-b555f5cacbc1
-                        Position: {X: -15.185206, Y: 0.5543699, Z: -23.511969}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 10.0, Y: 10.0, Z: 10.0}
-                        Children: {}
-                    8f4ba9bcfcf578ac9616b8af8624dc8d: !ModelComponent
-                        Id: 58174ce0-00ce-4c33-aa55-34cd238919eb
-                        Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
-                        Materials: {}
-                    1e2a53fe9ab1004f2c3bd2a89564b8ec: !TR.Stride.Ocean.BuoyancyComponent,TR.Stride.Ocean
-                        Id: 1c633c3a-ab6a-4128-ad27-261dbf391bf6
-                        Ocean: ref!! 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
-        -   Entity:
+        -   Folder: Atmosphere
+            Entity:
                 Id: b94a7908-f7d7-48ac-9516-20bf3bc9b730
                 Name: Atmosphere
                 Components:
@@ -131,7 +111,7 @@ Hierarchy:
                         GroundAlbedo: {R: 0.1125, G: 0.1125, B: 0.1125}
                         SunLuminanceFactor: 20.0
                         RenderSunDisk: true
-                        AerialPerspectiveDistanceScale: 500.0
+                        AerialPerspectiveDistanceScale: 200.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 0.15
@@ -139,30 +119,8 @@ Hierarchy:
                         CloudScale: 0.0001
                         CloudSpeed: 0.01
                         Cloudiness: 0.8
-                    4c309dce325a5c0ed38739395ac7a685: !TR.Stride.AtmosphereController,TR.Stride
-                        Id: c990fcd6-fead-486d-a74a-c17f2df34c8c
-        -   Entity:
-                Id: cd498803-0c95-4a0d-a1d4-172b831e9182
-                Name: Terrain
-                Components:
-                    07107f0027a4bb5e91d9419ad90e9e11: !TransformComponent
-                        Id: 4b561bed-6e09-48fd-9f02-0ee2a1414f3e
-                        Position: {X: 0.0, Y: -5.81, Z: 0.0}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    fa5f022490f60f84f515a08da9d1f09a: !Stride.Terrain.TerrainComponent,Stride.Engine
-                        Id: e18dd808-c8e1-4299-9a27-0b2c7f58d782
-                        Terrain: 48f3ad4f-4810-4c36-a826-d9aa8675fdd3:Terrain
-                        CastShadows: true
-                        Material: null
-                    66c09030d0793ed7968a33c7341c1924: !Stride.Terrain.TerrainToolsComponent,Stride.Engine
-                        Id: 920f23e6-d0b3-4573-8f74-2ed8527f584e
-                        Brush: d8ddd90a-6bc7-48ea-b33d-3e3ff5d70f73:Brush Mountain
-                        Intensity: 104.2
-                        Size: 68
-                        Tool: !Stride.Terrain.Tools.RaiseLower,Stride.Engine {}
-        -   Entity:
+        -   Folder: Atmosphere
+            Entity:
                 Id: cdeaa5bf-6c96-4a88-90ad-f71f364f66d5
                 Name: Ambient
                 Components:
@@ -178,6 +136,22 @@ Hierarchy:
                             Skybox: 22ec7478-64dc-464f-a9b1-8e89110288e9:Skybox
                         Intensity: 2.0
         -   Entity:
+                Id: e27fda20-b6f9-4019-9968-c9b24b7f50db
+                Name: Terrain
+                Components:
+                    80e1b454cd398b1b5a16d4a8597fb610: !TransformComponent
+                        Id: ea58a5ce-df9a-4d45-8c17-4ab4e6212cb5
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    12fc4a1dabadbccc9998a867bb29cc7b: !TerrainComponent
+                        Id: 75a1d7d8-c35e-4491-88f8-eeddef5d00e4
+                        Material: a49ffbf1-d19b-4f7b-b0cc-76e1e75d184b:Terrain/Ground037_2K/Ground037_2K
+                        Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain_Heightmap
+                        Size: 512.0
+                        CastShadows: false
+        -   Entity:
                 Id: f182e1ae-4e80-44c9-a5bb-c703192ca6cf
                 Name: Ocean
                 Components:
@@ -190,9 +164,6 @@ Hierarchy:
                     3714cd1b4a03325a3cc3a5854aff11e9: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
                         Id: 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
                         WavesSettings:
-                            G: 9.81
-                            Depth: 500.0
-                            Lambda: 1.0
                             Local:
                                 Scale: 1.0
                                 WindSpeed: 0.5
@@ -213,7 +184,6 @@ Hierarchy:
                                 ShortWavesFade: 0.01
                         AlwaysRecalculateInitials: true
                         Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
-                            LodScale: 1.0
                             SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             Color: {R: 0.017500002, G: 0.06267854, B: 0.1}

@@ -38,5 +38,5 @@ Attributes:
         NormalDistribution: !MaterialSpecularMicrofacetNormalDistributionGGX {}
         Environment: !MaterialSpecularMicrofacetEnvironmentGGXLUT {}
     Overrides:
-        UVScale: {X: 1.0, Y: 1.0}
+        UVScale: {X: 256.0, Y: 256.0}
 Layers: {}
