@@ -65,7 +65,7 @@ namespace TR.Stride.Ocean
 
             float depthDifference = max(0, sceneDepthVS - depthVS - 1);
             float foam = FoamTexture.Sample(AnisotropicRepeatSampler, streams.worldUV).x;
-            jacobian = max(0, ContactFoam * saturate(max(0, foam - depthDifference) * 5) * 0.9);
+            jacobian += max(0, ContactFoam * saturate(max(0, foam - depthDifference) * 5) * 0.9);
 
             streams.matDiffuse = lerp(0, FoamColor, jacobian);
             streams.matDiffuse.a = alpha;
