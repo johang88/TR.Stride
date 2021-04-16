@@ -12,6 +12,6 @@ namespace TR.Stride.Ocean
     public interface IOceanMaterial
     {
         Material CreateMaterial(GraphicsDevice graphicsDevice, int lod);
-        void UpdateMaterials(OceanComponent component, Material[] materials, WavesCascade[] cascades);
+        void UpdateMaterials(GraphicsDevice graphicsDevice, OceanComponent component, Material[] materials, WavesCascade[] cascades);
     }
 }

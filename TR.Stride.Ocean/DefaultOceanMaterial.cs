@@ -16,7 +16,11 @@ using System.Threading.Tasks;
 namespace TR.Stride.Ocean
 {
     [DataContract]
-    public class DefaultOceanMaterial : IOceanMaterial
+    public class DefaultOceanMaterial : OceanMaterialBase
+    { 
+    }
+    
+    public abstract class OceanMaterialBase : IOceanMaterial
     {
         private const string CategorySSS = "SSS";
         private const string CategoryFoam = "Foam";
@@ -43,9 +47,9 @@ namespace TR.Stride.Ocean
 
         [DataMember(40)] public LightComponent Sun { get; set; }
 
-        public Material CreateMaterial(GraphicsDevice graphicsDevice, int lod)
+        protected virtual MaterialDescriptor CreateDescriptor(int lod)
         {
-            var material = Material.New(graphicsDevice, new MaterialDescriptor
+            return new MaterialDescriptor
             {
                 Attributes = new MaterialAttributes
                 {
@@ -85,14 +89,19 @@ namespace TR.Stride.Ocean
                         }
                     }
                 }
-            });
+            };
+        }
+
+        public virtual Material CreateMaterial(GraphicsDevice graphicsDevice, int lod)
+        {
+            var material = Material.New(graphicsDevice, CreateDescriptor(lod));
 
             material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Lod, lod);
 
             return material;
         }
 
-        public void UpdateMaterials(OceanComponent component, Material[] materials, WavesCascade[] cascades)
+        public virtual void UpdateMaterials(GraphicsDevice graphicsDevice, OceanComponent component, Material[] materials, WavesCascade[] cascades)
         {
             foreach (var material in materials)
             {

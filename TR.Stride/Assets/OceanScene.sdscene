@@ -26,9 +26,6 @@ Hierarchy:
                     e26443493e6ae85a38bd385451323896: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
                         Id: 6335b5ba-2c9a-45a4-8854-dacd0acec688
                         WavesSettings:
-                            G: 9.81
-                            Depth: 500.0
-                            Lambda: 1.0
                             Local:
                                 Scale: 1.0
                                 WindSpeed: 0.5

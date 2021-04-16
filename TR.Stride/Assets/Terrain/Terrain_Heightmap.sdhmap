@@ -2,9 +2,9 @@
 Id: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96
 SerializedVersion: {Stride: 3.0.0.0}
 Tags: []
-Source: !file ../Resources/Terrain_Heightmap.png
+Source: !file ../../Resources/Terrain_Heightmap.png
 HeightConversionParameters: !Stride.Assets.Physics.ShortHeightmapHeightConversionParameters,Stride.Assets
-    HeightRange: {X: -300.0, Y: 420.0}
+    HeightRange: {X: -300.0, Y: 425.0}
     HeightScaleCalculator: !Stride.Physics.HeightScaleCalculator,Stride.Physics {}
 Resize:
     Enabled: false

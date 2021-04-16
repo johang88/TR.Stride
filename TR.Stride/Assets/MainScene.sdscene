@@ -7,11 +7,12 @@ Offset: {X: 0.0, Y: 16.97323, Z: 0.0}
 Hierarchy:
     RootParts:
         - ref!! 26cdafcf-427b-454b-bb17-00ace7b05a42
-        - ref!! f182e1ae-4e80-44c9-a5bb-c703192ca6cf
         - ref!! 4eadaa21-a9e5-41b9-b7db-88e4771865f2
         - ref!! b94a7908-f7d7-48ac-9516-20bf3bc9b730
         - ref!! cdeaa5bf-6c96-4a88-90ad-f71f364f66d5
         - ref!! e27fda20-b6f9-4019-9968-c9b24b7f50db
+        - ref!! 48ba5f73-01a5-48cb-963e-c198f6227281
+        - ref!! 9b2dfd34-b806-49bc-8dc7-25f759391414
     Parts:
         -   Entity:
                 Id: 26cdafcf-427b-454b-bb17-00ace7b05a42
@@ -46,6 +47,20 @@ Hierarchy:
                         SortingMode: ByName
                         FilteringMode: GpuEvents
                         ResultPage: 1
+        -   Entity:
+                Id: 48ba5f73-01a5-48cb-963e-c198f6227281
+                Name: Entity
+                Components:
+                    7a816f735e5eb34d0b9ac48dee457c33: !TransformComponent
+                        Id: dc8be8b0-eeac-4b0a-9243-0ec174dfcc7e
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    705d376e7174aa69039aa0c526eea7d3: !ModelComponent
+                        Id: 3115bac9-e6fd-48a1-ab9a-1b65e57d4fa2
+                        Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
+                        Materials: {}
         -   Folder: Atmosphere
             Entity:
                 Id: 4eadaa21-a9e5-41b9-b7db-88e4771865f2
@@ -75,6 +90,49 @@ Hierarchy:
                                 BiasParameters: {}
                             Atmosphere: ref!! 534e54d1-cf9c-4a87-89ba-e5d71ba26343
                         Intensity: 5.0
+        -   Entity:
+                Id: 9b2dfd34-b806-49bc-8dc7-25f759391414
+                Name: Ocean
+                Components:
+                    519c2cd1f1f800da4c449c345a0fba8a: !TransformComponent
+                        Id: 895dd9d1-8421-4ba4-b473-d39a439a4375
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    8d9cdb371d3ab018d2debccbed555652: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
+                        Id: aa8de90b-ef53-4767-9e01-6d4688424982
+                        WavesSettings:
+                            Local:
+                                Scale: 1.0
+                                WindSpeed: 0.5
+                                WindDirection: 90.0
+                                Fetch: 100000.0
+                                SpreadBlend: 1.0
+                                Swell: 0.2
+                                PeakEnhancement: 3.3
+                                ShortWavesFade: 0.01
+                            Swell:
+                                Scale: 0.0
+                                WindSpeed: 1.0
+                                WindDirection: 0.0
+                                Fetch: 300000.0
+                                SpreadBlend: 1.0
+                                Swell: 1.0
+                                PeakEnhancement: 3.3
+                                ShortWavesFade: 0.01
+                        AlwaysRecalculateInitials: true
+                        Material: !TR.Stride.TerrainOceanMaterial,TR.Stride
+                            SSSBase: -0.7479
+                            SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
+                            FoamBiasLOD0: 1.685
+                            FoamScale: 1.062
+                            FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                            Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
+                            Sun: null
+                            Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain/Terrain_Heightmap
+                            FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:Terrain/Foam003_1K_Opacity
+                        Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
         -   Folder: Atmosphere
             Entity:
                 Id: b94a7908-f7d7-48ac-9516-20bf3bc9b730
@@ -148,45 +206,6 @@ Hierarchy:
                     12fc4a1dabadbccc9998a867bb29cc7b: !TerrainComponent
                         Id: 75a1d7d8-c35e-4491-88f8-eeddef5d00e4
                         Material: a49ffbf1-d19b-4f7b-b0cc-76e1e75d184b:Terrain/Ground037_2K/Ground037_2K
-                        Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain_Heightmap
+                        Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain/Terrain_Heightmap
                         Size: 512.0
-                        CastShadows: false
-        -   Entity:
-                Id: f182e1ae-4e80-44c9-a5bb-c703192ca6cf
-                Name: Ocean
-                Components:
-                    aeb0f1cf021d89d2113f0f41276a08ee: !TransformComponent
-                        Id: 88f6f725-b704-44d0-be63-11fb1a639183
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    3714cd1b4a03325a3cc3a5854aff11e9: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
-                        Id: 7c3cb33a-f82e-4941-98a4-25fcf6ac0cb7
-                        WavesSettings:
-                            Local:
-                                Scale: 1.0
-                                WindSpeed: 0.5
-                                WindDirection: 90.0
-                                Fetch: 100000.0
-                                SpreadBlend: 1.0
-                                Swell: 0.2
-                                PeakEnhancement: 3.3
-                                ShortWavesFade: 0.01
-                            Swell:
-                                Scale: 0.0
-                                WindSpeed: 1.0
-                                WindDirection: 0.0
-                                Fetch: 300000.0
-                                SpreadBlend: 1.0
-                                Swell: 1.0
-                                PeakEnhancement: 3.3
-                                ShortWavesFade: 0.01
-                        AlwaysRecalculateInitials: true
-                        Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
-                            SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
-                            FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
-                            Color: {R: 0.017500002, G: 0.06267854, B: 0.1}
-                            Sun: null
-                        Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
-                        DisplacmentReadBackFrameDelay: 4
+                        CastShadows: true

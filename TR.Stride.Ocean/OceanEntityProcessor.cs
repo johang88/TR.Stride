@@ -190,7 +190,7 @@ namespace TR.Stride.Ocean
                     return;
 
                 // Update mesh and materials
-                data.Material.UpdateMaterials(component, data.Materials, data.Cascades);
+                data.Material.UpdateMaterials(graphicsDevice, component, data.Materials, data.Cascades);
                 data.Mesh.Update(graphicsDevice, camera);
             });
         }

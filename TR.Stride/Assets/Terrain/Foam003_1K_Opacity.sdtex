@@ -1,0 +1,6 @@
+!Texture
+Id: 14d96665-4850-4a11-8fe7-2478998bd73b
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Foam003_1K_Opacity.jpg
+Type: !GrayscaleTextureType {}
