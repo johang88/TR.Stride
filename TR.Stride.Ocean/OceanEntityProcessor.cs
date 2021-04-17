@@ -46,8 +46,13 @@ namespace TR.Stride.Ocean
             base.Draw(context);
 
             var graphicsDevice = Services.GetService<IGraphicsDeviceService>().GraphicsDevice;
-            var camera = GetCamera();
+
             var sceneSystem = context.Services.GetService<SceneSystem>();
+            
+            var camera = sceneSystem.TryGetMainCamera();
+            if (camera == null)
+                return;
+            
             var time = (float)sceneSystem.Game.UpdateTime.Total.TotalSeconds;
             var deltaTime = (float)sceneSystem.Game.UpdateTime.Elapsed.TotalSeconds;
 
@@ -193,47 +198,6 @@ namespace TR.Stride.Ocean
                 data.Material.UpdateMaterials(graphicsDevice, component, data.Materials, data.Cascades);
                 data.Mesh.Update(graphicsDevice, camera);
             });
-        }
-
-        /// <summary>
-        /// Try to get the main camera, this can probably be done waaaaaaay better
-        /// Contains a work around to get stuff working in the editor
-        /// 
-        /// Might not be needed if we switch to some kind of render feature instead 
-        /// but will leave for now as we only really need to support the main camera 
-        /// and it works ... usually
-        /// </summary>
-        private CameraComponent GetCamera()
-        {
-            var sceneSystem = Services.GetService<SceneSystem>();
-
-            CameraComponent camera = null;
-            if (sceneSystem.GraphicsCompositor.Cameras.Count == 0)
-            {
-                // The compositor wont have any cameras attached if the game is running in editor mode
-                // Search through the scene systems until the camera entity is found
-                // This is what you might call "A Hack"
-                foreach (var system in sceneSystem.Game.GameSystems)
-                {
-                    if (system is SceneSystem editorSceneSystem)
-                    {
-                        foreach (var entity in editorSceneSystem.SceneInstance.RootScene.Entities)
-                        {
-                            if (entity.Name == "Camera Editor Entity")
-                            {
-                                camera = entity.Get<CameraComponent>();
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                camera = sceneSystem.GraphicsCompositor.Cameras[0].Camera;
-            }
-
-            return camera;
         }
     }
 

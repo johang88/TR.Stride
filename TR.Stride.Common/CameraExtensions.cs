@@ -1,9 +1,9 @@
 ﻿using Stride.Engine;
 using Stride.Core.Mathematics;
 
-namespace TR.Stride.Ocean
+namespace TR.Stride
 {
-    public static class CameraHelpers
+    public static class CameraExtensions
     {
         public static Vector3 GetWorldPosition(this CameraComponent camera)
         {

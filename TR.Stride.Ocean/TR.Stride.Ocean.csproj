@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TR.Stride.Common\TR.Stride.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Effects\OceanCalculateConjugatedSpectrum.sdsl.cs">
       <DesignTime>True</DesignTime>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

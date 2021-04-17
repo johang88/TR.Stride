@@ -49,7 +49,9 @@ namespace TR.Stride.Terrain
         {
             base.Draw(context);
 
-            var camera = GetCamera();
+            var camera = Services.GetService<SceneSystem>().TryGetMainCamera();
+            if (camera == null)
+                return;
 
             Dispatcher.ForEach(ComponentDatas, (pair) =>
             {
@@ -191,7 +193,7 @@ namespace TR.Stride.Terrain
             if (camera == null || renderData.Pages == null)
                 return;
 
-            var cameraPosition = GetCameraPosition(camera);
+            var cameraPosition = camera.GetWorldPosition();
             cameraPosition.Y = 0.0f; // Only cull in xz plane
 
             var maxPageDistance = component.ViewDistance + PageSize;
@@ -209,7 +211,7 @@ namespace TR.Stride.Terrain
             }
 
             // Reset camera position for individual instance culling
-            cameraPosition = GetCameraPosition(camera);
+            cameraPosition = camera.GetWorldPosition();
 
             float maxDistance = component.ViewDistance;
             float minDistance = maxDistance * 0.8f;
@@ -244,57 +246,6 @@ namespace TR.Stride.Terrain
                     }
                 }
             }
-        }
-
-        private Vector3 GetCameraPosition(CameraComponent camera)
-        {
-            var viewMatrix = camera.ViewMatrix;
-            viewMatrix.Invert();
-
-            var cameraPosition = viewMatrix.TranslationVector;
-
-            return cameraPosition;
-        }
-
-        /// <summary>
-        /// Try to get the main camera, this can probably be done waaaaaaay better
-        /// Contains a work around to get stuff working in the editor
-        /// 
-        /// Might not be needed if we switch to some kind of render feature instead 
-        /// but will leave for now as we only really need to support the main camera 
-        /// and it works ... usually
-        /// </summary>
-        private CameraComponent GetCamera()
-        {
-            var sceneSystem = Services.GetService<SceneSystem>();
-
-            CameraComponent camera = null;
-            if (sceneSystem.GraphicsCompositor.Cameras.Count == 0)
-            {
-                // The compositor wont have any cameras attached if the game is running in editor mode
-                // Search through the scene systems until the camera entity is found
-                // This is what you might call "A Hack"
-                foreach (var system in sceneSystem.Game.GameSystems)
-                {
-                    if (system is SceneSystem editorSceneSystem)
-                    {
-                        foreach (var entity in editorSceneSystem.SceneInstance.RootScene.Entities)
-                        {
-                            if (entity.Name == "Camera Editor Entity")
-                            {
-                                camera = entity.Get<CameraComponent>();
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                camera = sceneSystem.GraphicsCompositor.Cameras[0].Camera;
-            }
-
-            return camera;
         }
     }
 

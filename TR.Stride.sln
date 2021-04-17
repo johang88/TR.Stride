@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
@@ -14,6 +13,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Ocean", "TR.Stride.Ocean\TR.Stride.Ocean.csproj", "{A9857F88-25E0-46A7-AC43-ADA1700B4221}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Terrain", "TR.Stride.Terrain\TR.Stride.Terrain.csproj", "{C681A3AF-F943-4605-9734-A1C20AC85492}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TR.Stride.Common", "TR.Stride.Common\TR.Stride.Common.csproj", "{338D2292-7F83-4EB0-BB6C-44DE46D06D3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +46,10 @@ Global
 		{C681A3AF-F943-4605-9734-A1C20AC85492}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C681A3AF-F943-4605-9734-A1C20AC85492}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C681A3AF-F943-4605-9734-A1C20AC85492}.Release|Any CPU.Build.0 = Release|Any CPU
+		{338D2292-7F83-4EB0-BB6C-44DE46D06D3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{338D2292-7F83-4EB0-BB6C-44DE46D06D3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{338D2292-7F83-4EB0-BB6C-44DE46D06D3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{338D2292-7F83-4EB0-BB6C-44DE46D06D3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

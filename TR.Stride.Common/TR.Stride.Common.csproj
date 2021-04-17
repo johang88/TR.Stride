@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0</TargetFrameworks>
+    <RootNamespace>TR.Stride</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,9 +16,5 @@
     <PackageReference Include="Stride.Core" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
 
     <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TR.Stride.Common\TR.Stride.Common.csproj" />
   </ItemGroup>
 </Project>
