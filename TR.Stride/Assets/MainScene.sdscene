@@ -53,7 +53,7 @@ Hierarchy:
                 Components:
                     7a816f735e5eb34d0b9ac48dee457c33: !TransformComponent
                         Id: dc8be8b0-eeac-4b0a-9243-0ec174dfcc7e
-                        Position: {X: 1.7440795, Y: 1.1488309, Z: -211.88646}
+                        Position: {X: 10.591537, Y: -1.924938, Z: -194.62401}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -69,8 +69,8 @@ Hierarchy:
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
-                        Position: {X: 0.0, Y: 3.583897, Z: -186.84956}
-                        Rotation: {X: -0.14134651, Y: 0.12200008, Z: -0.031050934, W: 0.9819231}
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: -0.19126223, Y: 0.12025689, Z: -0.037235193, W: 0.9734323}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -78,7 +78,7 @@ Hierarchy:
                         Type: !AtmosphereLightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow:
+                            Shadow: !LightDirectionalShadowMap
                                 Enabled: true
                                 Filter: !LightShadowMapFilterTypePcf {}
                                 Size: XLarge
@@ -125,7 +125,7 @@ Hierarchy:
                         AlwaysRecalculateInitials: true
                         Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
                             LodScale: 6.0
-                            SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
+                            SSSColor: {R: 0.08609375, G: 0.32871708, B: 0.3625, A: 1.0}
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             ContactFoam: 1.0
                             FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:FoamTexture

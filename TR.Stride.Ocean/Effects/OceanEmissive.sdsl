@@ -2,7 +2,7 @@
 namespace TR.Stride.Ocean
 {
     shader OceanEmissive 
-        : ComputeColor, OceanShadingCommon, MaterialPixelStream, NormalStream, PositionStream4, Transformation, DepthBase, ShaderBase, Global
+        : ComputeColor, OceanShadingCommon, MaterialPixelStream, NormalStream, PositionStream4, Transformation, DepthBase, ShaderBase, Global, OpaqueBase
     {
         float pow5(float f)
         {
@@ -76,7 +76,7 @@ namespace TR.Stride.Ocean
 
             float3 viewDir = normalize(viewVector);
 
-            float3 H = normalize(-streams.normalWS + -LightDirectionWS);
+            float3 H = normalize(-worldNormal + -LightDirectionWS);
             float ViewDotH = pow5(saturate(dot(viewDir, -H))) * 30 * SSSStrength;
             float3 color = lerp(Color, saturate(Color + SSSColor.xyz * ViewDotH * streams.lodScales.w), streams.lodScales.z);
 
@@ -85,6 +85,19 @@ namespace TR.Stride.Ocean
             fresnel =  0.02f + 0.98f * pow5(fresnel);
             
             float3 emissive = lerp(color * (1 - fresnel), 0, jacobian);
+            
+            const float IOR = 1.325f;
+            float3 refracted = refract(Eye.xyz, worldNormal.xyz, IOR);
+            float refractionDistanceScale = pow(1.0f - saturate((depthVS - NearClipPlane) / FarClipPlane), 5);
+
+            float refractionStrength = pow(0.1, (Lod + 1));
+
+            float2 bend = streams.ShadingPosition.xy + worldNormal.xz * 50;
+            float2 refractionUV = bend.xy / ViewSize.xy;
+
+            alpha = saturate(abs(sceneDepthVS - depthVS) * 0.02);
+            float3 refraction = GetOpaqueColor(refractionUV);
+            emissive += lerp(refraction * SSSColor, Color, alpha);
 
             return float4(emissive, 1);
         }
