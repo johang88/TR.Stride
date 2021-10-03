@@ -171,10 +171,18 @@ Hierarchy:
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 0.15
-                        EnableClouds: false
-                        CloudScale: 0.0001
-                        CloudSpeed: 0.01
-                        Cloudiness: 0.8
+                        EnableClouds: true
+                        CloudHeightTexture: ba5f0667-8759-4f7d-99af-d889448aa0ce:Clouds
+                        CloudHeight: 1000.0
+                        CloudThickness: 600.0
+                        CloudOpacity: 0.01
+                        CloudSoftness: 0.1
+                        CloudSpeed: {X: 100.0, Y: 0.0, Z: 200.0, W: 0.0}
+                        CloudScale: {X: 20000.0, Y: 20000.0, Z: 2500.0, W: 2500.0}
+                        TopSurfaceScale: 2.5
+                        BottomSurfaceScale: 0.6
+                        TurbulenceScale: 0.1
+                        GradientTexture: 15abf9d9-82d4-4708-ac5c-45f3490660ea:CloudsLightRamp
         -   Folder: Atmosphere
             Entity:
                 Id: cdeaa5bf-6c96-4a88-90ad-f71f364f66d5

@@ -1,0 +1,113 @@
+﻿
+
+shader AtmosphereClouds<MemberName AtmosphereGroup>
+ : AtmosphereCommon<AtmosphereGroup>, ShaderBase
+{
+    #define SampleCount 50
+
+    cbuffer AtmosphereGroup
+    {
+        stage float CloudHeight;
+        stage float CloudThickness;
+        stage float CloudOpacity;
+        stage float4 CloudSpeed;
+        stage float4 CloudScale;
+        stage float Time;
+        stage float TopSurfaceScale;
+        stage float BottomSurfaceScale;
+        stage float TurbulenceScale;
+        stage float CloudSoftness;
+    }
+
+    rgroup AtmosphereGroup
+    {
+        stage Texture2D CloudHeightTexture;
+        stage Texture2D GradientTexture;
+    }
+
+    stage SamplerState CloudSampler
+    {
+        Filter = MIN_MAG_MIP_LINEAR;
+        AddressU = Wrap;
+        AddressV = Wrap;
+    };
+
+    float4 CalculateClouds(float3 cameraPositionWS, float3 worldDir, float3 worldPos, AtmosphereParameters atmosphere)
+    {
+        worldDir = worldDir / worldDir.y;
+
+        float3 position = cameraPositionWS + worldDir * (CloudHeight - cameraPositionWS.y);
+        float3 stepSize = worldDir * CloudThickness / SampleCount;
+
+        float stepOpacity = 1 - (1 / (CloudOpacity * length(stepSize) + 1));
+
+        float4 result = 0;
+
+        float LDotE = dot(normalize(SunDirection), normalize(worldDir));
+
+        for (int i = 0; i < SampleCount; i++)
+        {
+            position += stepSize;
+
+            float2 uv = (position.xz + CloudSpeed.xy * Time) / CloudScale.xy;
+            float h = CloudHeightTexture.Sample(CloudSampler, uv).x;
+
+            // Get two additional heights for the turbulence on the top and bottom of the clouds
+			float2 uvt1 = (position.xz + CloudSpeed.zw * Time) / CloudScale.zw;
+			float2 uvt2 = uvt1;
+			uvt2.y += 0.5;
+
+			float ht1 = CloudHeightTexture.Sample(CloudSampler, uvt1).x;
+			float ht2 = CloudHeightTexture.Sample(CloudSampler, uvt2).x;
+
+            // Get the top and bottom surface heights of the clouds
+			float cloudTopHeight = 1 - (h * TopSurfaceScale + ht1 * TurbulenceScale);
+			float cloudBottomHeight = (h * BottomSurfaceScale + ht2 * TurbulenceScale);
+
+            float f = (position.y - CloudHeight) / CloudThickness;
+            if (f > cloudBottomHeight && f < cloudTopHeight)
+            {
+                // Darkness is determined by the distance to the top of the clouds
+                // It ignores the turbulence heights to make the shadows a bit smoother
+                float cloudTopHeightSmooth = 1 - (h * TopSurfaceScale);
+                float cloudDarkness = 1 - saturate(cloudTopHeightSmooth - f);
+
+                float4 cloudColor = GradientTexture.Sample(CloudSampler, float2(cloudDarkness, 0));
+
+                // Opacity is determined by the distance to the nearest surface (top or bottom)
+                float distanceToSurface = min(cloudTopHeight - f, f - cloudBottomHeight);
+                float localOpacity = saturate(distanceToSurface / CloudSoftness);
+
+                result += (1 - result.a) * stepOpacity * localOpacity * cloudColor;
+
+                // If it's almost completely opaque, stop marching
+				if (result.a > 0.99)
+				{
+					// Scale the existing RGB values to compensate for stopping
+					result.rgb *= 1 / result.a;
+					result.a = 1;
+					break;
+				}
+            }
+        }
+
+        // Aerial perspective
+        float3 DepthBufferWorldPos = (cameraPositionWS + worldDir * (CloudHeight - cameraPositionWS.y)) * ScaleToSkyUnit;
+
+		float tDepth = length(DepthBufferWorldPos.xyz - (worldPos + float3(0.0, -atmosphere.BottomRadius, 0.0)));
+		float Slice = AerialPerspectiveDepthToSlice(tDepth);
+		float Weight = 1.0;
+		if (Slice < 0.5)
+		{
+			// We multiply by weight to fade to 0 at depth 0. That works for luminance and opacity.
+			Weight = saturate(Slice * 2.0);
+			Slice = 0.5;
+		}
+		float w = sqrt(Slice * AerialPerspectiveSlicesAndDistancePerSlice.z);	// squared distribution
+
+		const float4 AP = Weight * AtmosphereCameraScatteringVolume.SampleLevel(samplerLinearClamp, float3(streams.ShadingPosition.xy / float2(Resolution), w), 0);
+        result.rgb = AP.rgb * 1.0f + result.rgb * (1.0f - AP.a);
+
+        return result;
+    }
+};

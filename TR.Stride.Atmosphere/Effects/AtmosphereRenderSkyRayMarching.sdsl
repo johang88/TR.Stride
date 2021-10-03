@@ -1,17 +1,8 @@
 ﻿
 
 shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspectiveEnabled, bool RenderSunDisk, bool MultiScatteringApproximationEnabled, bool EnableClouds, MemberName AtmosphereGroup>
-: ShaderBase, AtmosphereFullscreenTriangle, Math, DepthBase, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled, AtmosphereGroup>, AtmosphereGetSunLuminence<RenderSunDisk, AtmosphereGroup>
+: ShaderBase, AtmosphereFullscreenTriangle, Math, DepthBase, AtmosphereRenderSkyCommon<MultiScatteringApproximationEnabled, AtmosphereGroup>, AtmosphereGetSunLuminence<RenderSunDisk, AtmosphereGroup>, AtmosphereClouds<AtmosphereGroup>
 {
-	cbuffer AtmosphereGroup
-	{
-		// Clouds
-		stage float Time = 0.0f;
-		stage float CloudScale = 0.0001f;
-		stage float CloudSpeed = 0.1f;
-		stage float Cloudiness = 0.8f;
-	};
-
 	struct RayMarchPixelOutputStruct
 	{
 		float4 Luminance;
@@ -72,8 +63,9 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 
 				if (EnableClouds)
 				{
-					float clouds = CalculateClouds(WorldDir);
-					output.Luminance.xyz = lerp(output.Luminance.xyz, 2, clouds);
+					float4 clouds = CalculateClouds(CameraPositionWS, WorldDir, WorldPos, Atmosphere);
+					output.Luminance.xyz = output.Luminance.xyz * (1.0f - clouds.a) + clouds.xyz * clouds.a;
+					//output.Luminance.xyz = lerp(output.Luminance.xyz, 2, clouds);
 				}
 
 				return output;
@@ -137,102 +129,6 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 		}
 
 		return output;
-	}
-
-	float TracePlane(float3 o, float3 d, float3 planeOrigin, float3 planeNormal)
-	{
-		return dot(planeNormal, (planeOrigin - o) / dot(planeNormal, d));
-	}
-
-	float2 Hash(float2 p)
-	{
-		p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)));
-		return -1.0 + 2.0 * frac(sin(p) * 43758.5453123);
-	}
-
-	float Noise(in float2 p)
-	{
-		const float K1 = 0.366025404; // (sqrt(3)-1)/2;
-		const float K2 = 0.211324865; // (3-sqrt(3))/6;
-		float2 i = floor(p + (p.x + p.y) * K1);
-		float2 a = p - i + (i.x + i.y) * K2;
-		float2 o = (a.x > a.y) ? float2(1.0, 0.0) : float2(0.0, 1.0); //float2 of = 0.5 + 0.5*float2(sign(a.x-a.y), sign(a.y-a.x));
-		float2 b = a - o + K2;
-		float2 c = a - 1.0 + 2.0 * K2;
-		float3 h = max(0.5 - float3(dot(a, a), dot(b, b), dot(c, c)), 0.0);
-		float3 n = h * h * h * h * float3(dot(a, Hash(i + 0.0)), dot(b, Hash(i + o)), dot(c, Hash(i + 1.0)));
-		return dot(n, float3(70.0, 70.0, 70.0));
-	}
-
-	float CalculateClouds(float3 V)
-	{
-		const float3 o = CameraPositionWS.xyz;
-		const float3 d = V;
-		const float3 planeOrigin = float3(0, 1000, 0);
-		const float3 planeNormal = float3(0, -1, 0);
-
-		const float t = TracePlane(o, d, planeOrigin, planeNormal);
-
-		if (t < 0.0f)
-			return 0.0f;
-
-		const float3 cloudPos = o + d * t;
-		const float2 cloudUV = cloudPos.xz * CloudScale;
-		const float cloudTime = Time * CloudSpeed;
-		const float2x2 m = float2x2(1.6, 1.2, -1.2, 1.6);
-		const uint quality = 8;
-
-		// rotate uvs like a flow effect:
-		float flow = 0;
-		{
-			float2 uv = cloudUV * 0.5f;
-			float amount = 0.1;
-			for (uint i = 0; i < quality; i++)
-			{
-				flow += Noise(uv) * amount;
-				uv = mul(m, uv);
-				amount *= 0.4;
-			}
-		}
-
-		// Main shape:
-		float clouds = 0.0;
-		{
-			const float time = cloudTime * 0.2f;
-			float density = 1.1f;
-			float2 uv = cloudUV * 0.8f;
-			uv -= flow - time;
-			for (uint i = 0; i < quality; i++)
-			{
-				clouds += density * Noise(uv);
-				uv = mul(m, uv) + time;
-				density *= 0.6f;
-			}
-		}
-
-		// Detail shape:
-		{
-			float detail_shape = 0.0;
-			const float time = cloudTime * 0.1f;
-			float density = 0.8f;
-			float2 uv = cloudUV;
-			uv -= flow - time;
-			for (uint i = 0; i < quality; i++)
-			{
-				detail_shape += abs(density * Noise(uv));
-				uv = mul(m, uv) + time;
-				density *= 0.7f;
-			}
-			clouds *= detail_shape + clouds;
-			clouds *= detail_shape;
-		}
-
-		// lerp between "choppy clouds" and "uniform clouds". Lower cloudiness will produce choppy clouds, but very high cloudiness will switch to overcast unfiform clouds:
-		clouds = lerp(clouds * 9.0f * Cloudiness + 0.3f, clouds * 0.5f + 0.5f, pow(saturate(Cloudiness), 8));
-		clouds = saturate(clouds - (1 - Cloudiness)); // modulate constant cloudiness
-		clouds *= pow(1 - saturate(length(abs(cloudPos.xz * 0.00001f))), 16); //fade close to horizon
-
-		return clouds;
 	}
 
     stage override void PSMain()

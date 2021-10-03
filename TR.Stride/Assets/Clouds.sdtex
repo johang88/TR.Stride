@@ -1,0 +1,8 @@
+!Texture
+Id: ba5f0667-8759-4f7d-99af-d889448aa0ce
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../Resources/Clouds.png
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+IsStreamable: false

@@ -190,7 +190,7 @@ namespace TR.Stride.Atmosphere
                     renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.FastSkyEnabled, FastSky);
                     renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.FastAerialPerspectiveEnabled, FastAerialPerspectiveEnabled);
                     renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.RenderSunDisk, renderObject.Component.RenderSunDisk);
-                    renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.EnableClouds, renderObject.Component.EnableClouds);
+                    renderEffect.EffectValidator.ValidateParameter(AtmosphereParameters.EnableClouds, renderObject.Component.EnableClouds && renderObject.Component.CloudHeightTexture != null);
                 }
             }
         }
@@ -360,6 +360,18 @@ namespace TR.Stride.Atmosphere
             using (context.QueryManager.BeginProfile(Color4.Black, ProfilingKeys.RayMarching))
             {
                 SetParameters(context.RenderContext, renderView, renderObject.Component, _atmosphereParameters, null);
+
+                _atmosphereParameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, TransmittanceLutTexture);
+                _atmosphereParameters.Set(AtmosphereParametersBaseKeys.SkyViewLutTexture, _skyViewLutTexture);
+                _atmosphereParameters.Set(AtmosphereParametersBaseKeys.MultiScatTexture, _multiScatteringTexture);
+                _atmosphereParameters.Set(AtmosphereParametersBaseKeys.AtmosphereCameraScatteringVolume, AtmosphereCameraScatteringVolumeTexture);
+
+                if (Atmosphere.CloudHeightTexture != null)
+                    _atmosphereParameters.Set(AtmosphereCloudsKeys.CloudHeightTexture, Atmosphere.CloudHeightTexture);
+
+                if (Atmosphere.GradientTexture != null)
+                    _atmosphereParameters.Set(AtmosphereCloudsKeys.GradientTexture, Atmosphere.GradientTexture);
+
                 UpdateCBuffers(commandList, renderNodeReference, renderNode, renderEffect, ref drawAtmosphere);
 
                 RenderAtmosphere(commandList, renderEffect);
@@ -389,12 +401,6 @@ namespace TR.Stride.Atmosphere
             // Update cbuffer
             var resourceGroupOffset = ComputeResourceGroupOffset(renderNodeReference);
             renderEffect.Reflection.BufferUploader.Apply(commandList, ResourceGroupPool, resourceGroupOffset);
-
-            // Set texture resources
-            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 0, TransmittanceLutTexture);
-            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 1, _skyViewLutTexture);
-            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 2, _multiScatteringTexture);
-            renderNode.Resources.DescriptorSet.SetShaderResourceView(drawAtmosphere.DescriptorSlotStart + 3, AtmosphereCameraScatteringVolumeTexture);
 
             // Bind descriptor sets
             if (_descriptorSets == null || _descriptorSets.Length < EffectDescriptorSetSlotCount)
@@ -458,6 +464,14 @@ namespace TR.Stride.Atmosphere
                     _atmosphereParameters.Set(AtmosphereCommonKeys.Resolution, new Vector2(_atmosphereCubeMapRenderTarget.Width, _atmosphereCubeMapRenderTarget.Height));
                     _atmosphereParameters.Set(AtmosphereCommonKeys.RenderStage, 1);
                     _atmosphereParameters.Set(AtmosphereCommonKeys.InvViewProjectionMatrix, Matrix.Invert(Matrix.Multiply(viewMatrix, projectionMatrix)));
+
+                    _atmosphereParameters.Set(AtmosphereParametersBaseKeys.TransmittanceLutTexture, TransmittanceLutTexture);
+                    _atmosphereParameters.Set(AtmosphereParametersBaseKeys.SkyViewLutTexture, _skyViewLutTexture);
+                    _atmosphereParameters.Set(AtmosphereParametersBaseKeys.MultiScatTexture, _multiScatteringTexture);
+                    _atmosphereParameters.Set(AtmosphereParametersBaseKeys.AtmosphereCameraScatteringVolume, AtmosphereCameraScatteringVolumeTexture);
+
+                    if (Atmosphere.CloudHeightTexture != null)
+                        _atmosphereParameters.Set(AtmosphereCloudsKeys.CloudHeightTexture, Atmosphere.CloudHeightTexture);
 
                     UpdateCBuffers(commandList, renderNodeReference, renderNode, renderEffect, ref drawAtmosphere);
 
@@ -616,12 +630,18 @@ namespace TR.Stride.Atmosphere
             parameters.Set(AtmosphereCommonKeys.SunLuminanceFactor.TryComposeWith(compositionName), component.SunLuminanceFactor);
             parameters.Set(AtmosphereCommonKeys.RenderStage, 0);
 
-            parameters.Set(AtmosphereRenderSkyRayMarchingKeys.CloudScale, component.CloudScale);
-            parameters.Set(AtmosphereRenderSkyRayMarchingKeys.CloudSpeed, component.CloudSpeed);
-            parameters.Set(AtmosphereRenderSkyRayMarchingKeys.Cloudiness, component.Cloudiness);
+            parameters.Set(AtmosphereCloudsKeys.CloudHeight, component.CloudHeight);
+            parameters.Set(AtmosphereCloudsKeys.CloudThickness, component.CloudThickness);
+            parameters.Set(AtmosphereCloudsKeys.CloudOpacity, component.CloudOpacity);
+            parameters.Set(AtmosphereCloudsKeys.CloudSoftness, component.CloudSoftness);
+            parameters.Set(AtmosphereCloudsKeys.CloudSpeed, component.CloudSpeed);
+            parameters.Set(AtmosphereCloudsKeys.CloudScale, component.CloudScale);
+            parameters.Set(AtmosphereCloudsKeys.TopSurfaceScale, component.TopSurfaceScale);
+            parameters.Set(AtmosphereCloudsKeys.BottomSurfaceScale, component.BottomSurfaceScale);
+            parameters.Set(AtmosphereCloudsKeys.TurbulenceScale, component.TurbulenceScale);
 
             if (renderContext != null)
-                parameters.Set(AtmosphereRenderSkyRayMarchingKeys.Time, (float)renderContext.Time.Total.TotalSeconds);
+                parameters.Set(AtmosphereCloudsKeys.Time, (float)renderContext.Time.Total.TotalSeconds);
         }
 
         static Vector4 CalculateResolutionVector(Texture texutre)

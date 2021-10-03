@@ -234,6 +234,7 @@ SharedRenderers:
                     Color: {R: 0.0, G: 0.0, B: 0.0}
         Antialiasing: !FXAAEffect
             Enabled*: false
+        DepthMinMax: {}
     ee80a20a9bd99f2d70711114e15fe7ca: !Stride.Rendering.Compositing.DebugRenderer,Stride.Rendering
         Id: 409c93be-ed44-4398-9a5c-ce86c5235545
         DebugRenderStages: {}

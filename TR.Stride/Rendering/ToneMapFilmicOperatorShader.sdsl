@@ -1,0 +1,77 @@
+﻿namespace Stride.Rendering.Images
+{
+    /// <summary>
+    /// The ACES tonemap operator.
+    /// </summary>
+    internal shader ToneMapFilmicOperatorShader : ToneMapCommonOperatorShader
+    {
+	    // ACES filmic tonemapper with highlight desaturation ("crosstalk").
+		// Based on the curve fit by Krzysztof Narkowicz.
+		// https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+
+        override float4 Compute(float4 color)
+        {
+			float3 c =  XyzToLinearAp1(D65ToD60(LinearBt709ToXyz(color.xyz)));
+			c = AcesFilm(c);
+			c = XyzToLinearBt709(c);
+
+			return float4(c, 1);
+        }
+
+		float3 AcesFilm(float3 x)
+		{
+			x *= 0.6;
+			float a = 2.51f;
+			float b = 0.03f;
+			float c = 2.43f;
+			float d = 0.59f;
+			float e = 0.14f;
+
+			return saturate((x*(a*x+b))/(x*(c*x+d)+e));
+		}
+
+		float3 LinearBt709ToXyz(float3 x)
+		{
+			static const float3x3 m = {
+				0.4124f, 0.2126f, 0.0193f,
+				0.3576f, 0.7152f, 0.1192f,
+				0.1805f, 0.0722f, 0.9505f
+			};
+
+			return mul(x, m);
+		}
+
+		float3 D65ToD60(float3 x)
+		{
+			static const float3x3 m = {
+				1.0130f, 0.0077f, -0.0029f,
+				0.0061f, 0.9982f, 0.0047f,
+				-0.0149f, -0.0050f, 0.9246f
+			};
+
+			return mul(x, m);
+		}
+
+		float3 XyzToLinearAp1(float3 x)
+		{
+			static const float3x3 m = {
+				1.6410f, -0.6636f, 0.0117f,
+				-0.3248f, 1.6153f, -0.0082f,
+				-0.2364f, 0.0167f, 0.9883f
+			};
+
+			return mul(x, m);
+		}
+
+		float3 XyzToLinearBt709(float3 x)
+		{
+			static const float3x3 m = {
+				3.2409f, -0.9692f, 0.0556f,
+				-1.5373f, 1.8759f, -0.2039f,
+				-0.4986f, 0.0415f, 1.0569f
+			};
+
+			return mul(x, m);
+		}
+    };
+}

@@ -3,6 +3,7 @@ using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Design;
+using Stride.Graphics;
 using Stride.Input;
 using System;
 using System.Collections.Generic;
@@ -64,8 +65,17 @@ namespace TR.Stride.Atmosphere
         [DataMember(203)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
 
         [DataMember(300)] public bool EnableClouds { get; set; } = true;
-        [DataMember(301)] public float CloudScale { get; set; } = 0.0001f;
-        [DataMember(302)] public float CloudSpeed { get; set; } = 0.01f;
-        [DataMember(303)] public float Cloudiness { get; set; } = 0.8f;
+        [DataMember(300)] public Texture CloudHeightTexture { get; set; }
+        [DataMember(302)] public float CloudHeight { get; set; } = 1000.0f;
+        [DataMember(303)] public float CloudThickness { get; set; } = 600.0f;
+        [DataMember(304)] public float CloudOpacity { get; set; } = 0.01f;
+        [DataMember(305)] public float CloudSoftness { get; set; } = 0.1f;
+        [DataMember(306)] public Vector4 CloudSpeed { get; set; } = new (100, 0, 200, 0);
+        [DataMember(307)] public Vector4 CloudScale { get; set; } = new (20000, 20000, 2500, 2500);
+        [DataMember(308)] public float TopSurfaceScale { get; set; } = 2.5f;
+        [DataMember(309)] public float BottomSurfaceScale { get; set; } = 0.6f;
+        [DataMember(310)] public float TurbulenceScale { get; set; } = 0.1f;
+
+        [DataMember(311)] public Texture GradientTexture { get; set; }
     }
 }

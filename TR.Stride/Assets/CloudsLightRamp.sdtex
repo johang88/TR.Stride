@@ -1,0 +1,10 @@
+!Texture
+Id: 15abf9d9-82d4-4708-ac5c-45f3490660ea
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../../GitHub/volumetric-clouds/Raymarched Sky/Assets/Textures/CloudsLightRamp.png
+IsCompressed: false
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+GenerateMipmaps: false
+IsStreamable: false

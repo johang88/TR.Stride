@@ -3,18 +3,30 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Stride.Engine" Version="4.1.0.1-beta" />
-    <PackageReference Include="Stride.Video" Version="4.1.0.1-beta" />
-    <PackageReference Include="Stride.Physics" Version="4.1.0.1-beta" />
-    <PackageReference Include="Stride.Navigation" Version="4.1.0.1-beta" />
-    <PackageReference Include="Stride.Particles" Version="4.1.0.1-beta" />
-    <PackageReference Include="Stride.UI" Version="4.1.0.1-beta" />
-    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />
+    <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta" />
+    <PackageReference Include="Stride.Video" Version="4.1.0.1459-beta" />
+    <PackageReference Include="Stride.Physics" Version="4.1.0.1459-beta" />
+    <PackageReference Include="Stride.Navigation" Version="4.1.0.1459-beta" />
+    <PackageReference Include="Stride.Particles" Version="4.1.0.1459-beta" />
+    <PackageReference Include="Stride.UI" Version="4.1.0.1459-beta" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1459-beta" IncludeAssets="build;buildTransitive" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TR.Stride.Atmosphere\TR.Stride.Atmosphere.csproj" />
     <ProjectReference Include="..\TR.Stride.Ocean\TR.Stride.Ocean.csproj" />
     <ProjectReference Include="..\TR.Stride.Gameplay\TR.Stride.Gameplay.csproj" />
     <ProjectReference Include="..\TR.Stride.Terrain\TR.Stride.Terrain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Rendering\ToneMapFilmicOperatorShader.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Rendering\ToneMapFilmicOperatorShader.sdsl">
+      <LastGenOutput>ToneMapFilmicOperatorShader.sdsl.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>
