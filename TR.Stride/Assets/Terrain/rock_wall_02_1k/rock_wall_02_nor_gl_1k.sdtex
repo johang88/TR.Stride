@@ -1,0 +1,6 @@
+!Texture
+Id: 22725be5-eda9-4bb2-896b-226a93c3b82a
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/rock_wall_02_1k/rock_wall_02_nor_gl_1k.png
+Type: !NormalMapTextureType {}

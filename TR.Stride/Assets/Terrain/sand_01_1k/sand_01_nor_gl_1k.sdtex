@@ -1,0 +1,6 @@
+!Texture
+Id: dd087a55-51c1-4af3-b085-7ac40361f927
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/sand_01_1k/sand_01_nor_gl_1k.png
+Type: !NormalMapTextureType {}

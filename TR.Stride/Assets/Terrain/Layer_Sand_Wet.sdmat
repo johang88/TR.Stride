@@ -1,0 +1,47 @@
+!MaterialAsset
+Id: 6f05d494-39be-497e-aade-7417ecd10c8b
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Archetype: a49ffbf1-d19b-4f7b-b0cc-76e1e75d184b:Terrain/BaseMaterial
+Attributes:
+    Surface: !MaterialNormalMapFeature
+        NormalMap: !ComputeTextureColor
+            Texture*: dd087a55-51c1-4af3-b085-7ac40361f927:Terrain/sand_01_1k/sand_01_nor_gl_1k
+            FallbackValue:
+                Value: {R: 0.5019608, G: 0.5019608, B: 1.0, A: 1.0}
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+            Swizzle: null
+        IsXYNormal: true
+    MicroSurface: !MaterialGlossinessMapFeature
+        GlossinessMap: !ComputeTextureScalar
+            Texture*: f9563fbb-c1eb-4b60-9f99-20fd671c3f8f:Terrain/sand_01_1k/sand_01_rough_1k
+            FallbackValue:
+                Value: 1.0
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+        Invert*: false
+    Diffuse: !MaterialDiffuseMapFeature
+        DiffuseMap*: !ComputeBinaryColor
+            Operator: Multiply
+            LeftChild: !ComputeTextureColor
+                Texture: 0dd36db1-78b1-45ee-b475-3ad4e30e1b42:Terrain/sand_01_1k/sand_01_diff_1k
+                FallbackValue:
+                    Value: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                Scale: {X: 1.0, Y: 1.0}
+                Offset: {X: 0.0, Y: 0.0}
+                Swizzle: null
+            RightChild: !ComputeColor
+                Value: {R: 0.425, G: 0.425, B: 0.425, A: 1.0}
+    DiffuseModel: !MaterialDiffuseLambertModelFeature {}
+    Specular: !MaterialMetalnessMapFeature
+        MetalnessMap: !ComputeFloat
+            Value: 0.0
+    SpecularModel: !MaterialSpecularMicrofacetModelFeature
+        Fresnel: !MaterialSpecularMicrofacetFresnelSchlick {}
+        Visibility: !MaterialSpecularMicrofacetVisibilitySmithSchlickGGX {}
+        NormalDistribution: !MaterialSpecularMicrofacetNormalDistributionGGX {}
+        Environment: !MaterialSpecularMicrofacetEnvironmentGGXLUT {}
+    Overrides:
+        UVScale*: {X: 512.0, Y: 512.0}
+Layers: {}

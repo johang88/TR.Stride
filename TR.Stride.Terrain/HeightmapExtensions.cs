@@ -50,9 +50,9 @@ namespace TR.Stride.Terrain
 
         public static float GetHeightAt(this Heightmap heightmap, int x, int y)
         {
-            if (!IsValidCoordinate(heightmap, x, y))
+            if (!IsValidCoordinate(heightmap, x, y) || x == 0 || y == 0 || x == heightmap.Size.X - 1 || y == heightmap.Size.Y - 1)
             {
-                return 0.0f;
+                return -heightmap.HeightRange.Y;
             }
 
             var index = GetHeightIndex(heightmap, x, y);

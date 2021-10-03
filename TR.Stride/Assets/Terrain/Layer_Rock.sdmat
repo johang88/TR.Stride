@@ -1,0 +1,43 @@
+!MaterialAsset
+Id: c08b0f46-966c-45a9-a688-2842634dcaee
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Archetype: a49ffbf1-d19b-4f7b-b0cc-76e1e75d184b:Terrain/BaseMaterial
+Attributes:
+    Surface: !MaterialNormalMapFeature
+        NormalMap: !ComputeTextureColor
+            Texture*: 22725be5-eda9-4bb2-896b-226a93c3b82a:Terrain/rock_wall_02_1k/rock_wall_02_nor_gl_1k
+            FallbackValue:
+                Value: {R: 0.5019608, G: 0.5019608, B: 1.0, A: 1.0}
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+            Swizzle: null
+        IsXYNormal: true
+    MicroSurface: !MaterialGlossinessMapFeature
+        GlossinessMap: !ComputeTextureScalar
+            Texture*: d91efd57-82b4-40e9-9da3-dcc44c52df28:Terrain/rock_wall_02_1k/rock_wall_02_rough_1k
+            FallbackValue:
+                Value: 1.0
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+        Invert: true
+    Diffuse: !MaterialDiffuseMapFeature
+        DiffuseMap: !ComputeTextureColor
+            Texture*: b5cd50c7-ceb5-4658-9646-2b3682651943:Terrain/rock_wall_02_1k/rock_wall_02_diff_1k
+            FallbackValue:
+                Value: {R: 1.0, G: 0.8856508, B: 0.6091625, A: 1.0}
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+            Swizzle: null
+    DiffuseModel: !MaterialDiffuseLambertModelFeature {}
+    Specular: !MaterialMetalnessMapFeature
+        MetalnessMap: !ComputeFloat
+            Value: 0.0
+    SpecularModel: !MaterialSpecularMicrofacetModelFeature
+        Fresnel: !MaterialSpecularMicrofacetFresnelSchlick {}
+        Visibility: !MaterialSpecularMicrofacetVisibilitySmithSchlickGGX {}
+        NormalDistribution: !MaterialSpecularMicrofacetNormalDistributionGGX {}
+        Environment: !MaterialSpecularMicrofacetEnvironmentGGXLUT {}
+    Overrides:
+        UVScale*: {X: 32.0, Y: 32.0}
+Layers: {}

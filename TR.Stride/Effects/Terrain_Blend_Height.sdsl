@@ -1,0 +1,24 @@
+﻿shader Terrain_Blend_Height : ComputeColor, PositionStream4
+{
+	compose ComputeColor MinHeight;
+	compose ComputeColor MaxHeight;
+	compose ComputeColor Strength;
+	
+    override float4 Compute()
+    {
+		float minHeight = MinHeight.Compute().x;
+		float maxHeight = MaxHeight.Compute().x;
+		float strength = Strength.Compute().x;
+	
+		float height = streams.Position.y;
+
+		float blendAmount = 0.0;
+
+		if (height >= minHeight && height <= maxHeight)
+		{
+			blendAmount = saturate(((height - minHeight ) * (1.0 / (maxHeight - minHeight))) * strength);
+		}
+		
+		return float4(blendAmount, 0, 0, 0);
+    }
+};

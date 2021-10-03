@@ -1,0 +1,7 @@
+!Texture
+Id: b5cd50c7-ceb5-4658-9646-2b3682651943
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/rock_wall_02_1k/rock_wall_02_diff_1k.png
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}

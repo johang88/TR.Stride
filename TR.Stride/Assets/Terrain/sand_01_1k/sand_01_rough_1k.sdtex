@@ -1,0 +1,6 @@
+!Texture
+Id: f9563fbb-c1eb-4b60-9f99-20fd671c3f8f
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/sand_01_1k/sand_01_rough_1k.png
+Type: !GrayscaleTextureType {}

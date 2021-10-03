@@ -59,6 +59,12 @@ namespace TR.Stride.Terrain
         private float _maxSlope = 1.0f;
         [DataMember(90), DefaultValue(1.0f)] public float MaxSlope { get { return _maxSlope; } set { _maxSlope = value; IsDirty = true; } }
 
+        private float _minHeight = 0.0f;
+        [DataMember(95), DefaultValue(1.0f)] public float MinHeight { get { return _minHeight; } set { _minHeight = value; IsDirty = true; } }
+
+        private float _maxHeight = 1024.0f;
+        [DataMember(95), DefaultValue(1.0f)] public float MaxHeight { get { return _maxHeight; } set { _maxHeight = value; IsDirty = true; } }
+
         private int _seed;
         [DataMember(100)] public int Seed { get { return _seed; } set { _seed = value; IsDirty = true; } }
 

@@ -189,6 +189,17 @@ SharedRenderers:
         MSAAResolver: {}
     34ecb9b2633eacfc439ba8744fe05102: !PostProcessingEffects
         Id: 7edd1799-6bbf-4734-9c44-147a409c3939
+        Outline:
+            Enabled: false
+            NormalWeight: 2.0
+            DepthWeight: 0.2
+            NormalNearCutoff: 0.1
+        Fog:
+            Enabled: false
+            Density: 0.1
+            Color: {R: 1.0, G: 1.0, B: 1.0}
+            FogStart: 10.0
+            SkipBackground: false
         AmbientOcclusion:
             Enabled: false
         LocalReflections:
@@ -199,10 +210,10 @@ SharedRenderers:
             Enabled: false
             DOFAreas: {X: 0.5, Y: 6.0, Z: 50.0, W: 200.0}
         BrightFilter:
-            Enabled*: false
+            Enabled*: true
             Color: {R: 1.0, G: 1.0, B: 1.0}
         Bloom:
-            Enabled*: false
+            Enabled*: true
             Distortion: {X: 1.0, Y: 1.0}
             Afterimage:
                 Enabled: false
@@ -216,14 +227,13 @@ SharedRenderers:
             Transforms:
                 1e06f805f8b2e949a06c30d45fe413ef: !ToneMap
                     Enabled*: true
-                    Operator*: !ToneMapHejl2Operator
-                        WhitePoint*: 5.0
-                    AutoKeyValue*: false
+                    Operator*: !ToneMapACESOperator {}
+                    AutoKeyValue*: true
                     KeyValue*: 0.13
-                    AutoExposure*: false
+                    AutoExposure*: true
                     Exposure*: 0.1
-                    TemporalAdaptation*: false
-                    UseLocalLuminance*: false
+                    TemporalAdaptation*: true
+                    UseLocalLuminance*: true
                     LuminanceLocalFactor*: 0.5
                     Contrast*: 0.0
                     Brightness*: 0.0

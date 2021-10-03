@@ -149,6 +149,9 @@ namespace TR.Stride.Terrain
 
                             position.Y = terrain.GetHeightAt(position.X, position.Z);
 
+                            if (position.Y < component.MinHeight || position.Y > component.MaxHeight)
+                                continue;
+
                             var tx = (int)((position.X + terrainOffset) / terrain.Size * mask.Width);
                             var ty = (int)((position.Z + terrainOffset) / terrain.Size * mask.Height);
 

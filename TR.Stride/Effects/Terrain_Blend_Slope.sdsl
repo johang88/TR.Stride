@@ -1,0 +1,24 @@
+﻿shader Terrain_Blend_Slope : ComputeColor, NormalStream
+{
+	compose ComputeColor MinSlope;
+	compose ComputeColor MaxSlope;
+	compose ComputeColor Strength;
+	
+    override float4 Compute()
+    {
+		float minSlope = MinSlope.Compute().x;
+		float maxSlope = MaxSlope.Compute().x;
+		float strength = Strength.Compute().x;
+	
+		float slope = 1.0 - abs(streams.meshNormal.y);
+		
+		float blendAmount = 0.0;
+		if (slope >= minSlope && slope <= maxSlope)
+		{
+			blendAmount = 1.0;
+			blendAmount = saturate(((slope - minSlope ) * (1.0 / (maxSlope - minSlope))) * strength);
+		}
+		
+		return float4(blendAmount, 0, 0, 0);
+    }
+};

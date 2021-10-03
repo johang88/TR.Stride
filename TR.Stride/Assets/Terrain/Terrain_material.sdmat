@@ -1,0 +1,59 @@
+!MaterialAsset
+Id: f7e47621-bcca-4b58-a19a-36efa5ec5831
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Attributes:
+    Overrides:
+        UVScale: {X: 1.0, Y: 1.0}
+Layers:
+    cbdf9c644d2e8ab6e9538f861df5553d:
+        Material: 6f05d494-39be-497e-aade-7417ecd10c8b:Terrain/Layer_Sand_Wet
+        BlendMap: !ComputeTextureScalar
+            FallbackValue:
+                Value: 1.0
+            Scale: {X: 1.0, Y: 1.0}
+            Offset: {X: 0.0, Y: 0.0}
+        Overrides:
+            UVScale: {X: 1.0, Y: 1.0}
+    351551b094453431758e901c334cb7db:
+        Material: 25cba38e-04b6-4573-b384-f11e354d6ca2:Terrain/Layer_Sand
+        BlendMap: !ComputeShaderClassScalar
+            MixinReference: Terrain_Blend_Height
+            Generics: {}
+            CompositionNodes:
+                019b91068c0200c61a5ebc42606f694e~MinHeight: !ComputeFloat
+                    Value: 0.0
+                9885dab7f2364eebe21bf29ea8b656ea~MaxHeight: !ComputeFloat
+                    Value: 1024.0
+                9885dab7f2364eebe21bf29ea8b656eb~Strength: !ComputeFloat
+                    Value: 400.0
+        Overrides:
+            UVScale: {X: 1.0, Y: 1.0}
+    9fb6362db334d418d4cbd1533aad2250:
+        Material: 6c383820-b43b-46fc-b9fd-005843f488d2:Terrain/Layer_Grass
+        BlendMap: !ComputeShaderClassScalar
+            MixinReference: Terrain_Blend_Height
+            Generics: {}
+            CompositionNodes:
+                e1b746aab592980c88b7c26f4947bbdf~MinHeight: !ComputeFloat
+                    Value: 2.0
+                be6ad82f8ded299b9739e977d86105bb~MaxHeight: !ComputeFloat
+                    Value: 1024.0
+                10ccb629ba507e58dfab975ca9403817~Strength: !ComputeFloat
+                    Value: 500.0
+        Overrides:
+            UVScale: {X: 1.0, Y: 1.0}
+    d25dbad24bb3aa037028e983369a7e96:
+        Material: c08b0f46-966c-45a9-a688-2842634dcaee:Terrain/Layer_Rock
+        BlendMap: !ComputeShaderClassScalar
+            MixinReference: Terrain_Blend_Slope
+            Generics: {}
+            CompositionNodes:
+                88cd16840e95faaa493c2a5c9e6ead43~Strength: !ComputeFloat
+                    Value: 5.0
+                726c1977755648cb86f357d4c3aec3c0~MinSlope: !ComputeFloat
+                    Value: 0.15
+                650b1f448c42e5b4eba87c61a1e0d4d4~MaxSlope: !ComputeFloat
+                    Value: 1.0
+        Overrides:
+            UVScale: {X: 1.0, Y: 1.0}

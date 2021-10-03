@@ -1,0 +1,6 @@
+!Texture
+Id: d91efd57-82b4-40e9-9da3-dcc44c52df28
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/rock_wall_02_1k/rock_wall_02_rough_1k.png
+Type: !GrayscaleTextureType {}

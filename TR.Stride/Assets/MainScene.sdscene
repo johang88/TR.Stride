@@ -20,8 +20,8 @@ Hierarchy:
                 Components:
                     98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
                         Id: cf510d5b-aacf-45f0-805b-48734d043a40
-                        Position: {X: -12.585207, Y: 47.107437, Z: -24.511969}
-                        Rotation: {X: 0.0, Y: 0.82903755, Z: 0.0, W: 0.5591929}
+                        Position: {X: -0.94584465, Y: 8.803342, Z: -30.686745}
+                        Rotation: {X: 0.0, Y: 0.99807674, Z: 0.0, W: 0.06199062}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     b66dd7950f1f71e708dcf771b29841d6: !CameraComponent
@@ -49,13 +49,13 @@ Hierarchy:
                         ResultPage: 1
         -   Entity:
                 Id: 48ba5f73-01a5-48cb-963e-c198f6227281
-                Name: Entity
+                Name: Sphere
                 Components:
                     7a816f735e5eb34d0b9ac48dee457c33: !TransformComponent
                         Id: dc8be8b0-eeac-4b0a-9243-0ec174dfcc7e
-                        Position: {X: -84.21937, Y: -3.5186927, Z: 41.852203}
+                        Position: {X: 1.7440795, Y: 1.1488309, Z: -211.88646}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 10.0, Y: 10.0, Z: 10.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     705d376e7174aa69039aa0c526eea7d3: !ModelComponent
                         Id: 3115bac9-e6fd-48a1-ab9a-1b65e57d4fa2
@@ -68,8 +68,8 @@ Hierarchy:
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
-                        Position: {X: -15.185206, Y: 10.826995, Z: -24.93195}
-                        Rotation: {X: -0.036065757, Y: -0.09149129, Z: 0.034656636, W: 0.9945489}
+                        Position: {X: 0.0, Y: 3.583897, Z: -186.84956}
+                        Rotation: {X: -0.14134651, Y: 0.12200008, Z: -0.031050934, W: 0.9819231}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -77,7 +77,7 @@ Hierarchy:
                         Type: !AtmosphereLightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow: !LightDirectionalShadowMap
+                            Shadow:
                                 Enabled: true
                                 Filter: !LightShadowMapFilterTypePcf {}
                                 Size: XLarge
@@ -89,7 +89,7 @@ Hierarchy:
                                 ComputeTransmittance: false
                                 BiasParameters: {}
                             Atmosphere: ref!! 534e54d1-cf9c-4a87-89ba-e5d71ba26343
-                        Intensity: 5.0
+                        Intensity: 20.0
         -   Entity:
                 Id: 9b2dfd34-b806-49bc-8dc7-25f759391414
                 Name: Ocean
@@ -106,7 +106,7 @@ Hierarchy:
                             Local:
                                 Scale: 1.0
                                 WindSpeed: 0.5
-                                WindDirection: 90.0
+                                WindDirection: 60.0
                                 Fetch: 100000.0
                                 SpreadBlend: 1.0
                                 Swell: 0.2
@@ -114,7 +114,7 @@ Hierarchy:
                                 ShortWavesFade: 0.01
                             Swell:
                                 Scale: 0.0
-                                WindSpeed: 1.0
+                                WindSpeed: 0.5
                                 WindDirection: 0.0
                                 Fetch: 300000.0
                                 SpreadBlend: 1.0
@@ -128,8 +128,9 @@ Hierarchy:
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             ContactFoam: 1.0
                             FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:FoamTexture
+                            Roughness: 0.3082
                             Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
-                            Sun: null
+                            Sun: ref!! 1b0ce0b4-87f4-4f93-bb66-24a5a4f12eaa
                         Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
         -   Folder: Atmosphere
             Entity:
@@ -138,7 +139,7 @@ Hierarchy:
                 Components:
                     848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
                         Id: 8032bd41-6285-4803-8c88-71e9f7eedd91
-                        Position: {X: -15.185206, Y: 49.13556, Z: -23.511969}
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -170,8 +171,8 @@ Hierarchy:
                         AerialPerspectiveDistanceScale: 200.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
-                        AtmosphereScatteringVolumeKmPerSlice: 0.15
-                        EnableClouds: false
+                        AtmosphereScatteringVolumeKmPerSlice: 0.25
+                        EnableClouds: true
                         CloudScale: 0.0001
                         CloudSpeed: 0.01
                         Cloudiness: 0.8
@@ -203,7 +204,7 @@ Hierarchy:
                         Children: {}
                     12fc4a1dabadbccc9998a867bb29cc7b: !TerrainComponent
                         Id: 75a1d7d8-c35e-4491-88f8-eeddef5d00e4
-                        Material: a49ffbf1-d19b-4f7b-b0cc-76e1e75d184b:Terrain/Ground037_2K/Ground037_2K
+                        Material: f7e47621-bcca-4b58-a19a-36efa5ec5831:Terrain/Terrain_material
                         Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain/Terrain_Heightmap
-                        Size: 512.0
+                        Size: 1024.0
                         CastShadows: true
