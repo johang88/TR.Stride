@@ -60,7 +60,8 @@ Hierarchy:
                     705d376e7174aa69039aa0c526eea7d3: !ModelComponent
                         Id: 3115bac9-e6fd-48a1-ab9a-1b65e57d4fa2
                         Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
-                        Materials: {}
+                        Materials:
+                            59f2d071822e80c515558fdc9de6684c~0: 613801b7-2372-4166-a8b8-d802c0d73f73:Sphere Material
         -   Folder: Atmosphere
             Entity:
                 Id: 4eadaa21-a9e5-41b9-b7db-88e4771865f2
@@ -168,11 +169,11 @@ Hierarchy:
                         GroundAlbedo: {R: 0.1125, G: 0.1125, B: 0.1125}
                         SunLuminanceFactor: 20.0
                         RenderSunDisk: true
-                        AerialPerspectiveDistanceScale: 200.0
+                        AerialPerspectiveDistanceScale: 100.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 0.25
-                        EnableClouds: true
+                        EnableClouds: false
                         CloudScale: 0.0001
                         CloudSpeed: 0.01
                         Cloudiness: 0.8

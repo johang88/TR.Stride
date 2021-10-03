@@ -44,16 +44,40 @@ Layers:
         Overrides:
             UVScale: {X: 1.0, Y: 1.0}
     d25dbad24bb3aa037028e983369a7e96:
+        Material: 6b63ef30-f333-40ae-8040-1900b7b416c9:Terrain/Layer_Grass_Large
+        BlendMap: !ComputeBinaryScalar
+            Operator: Multiply
+            LeftChild: !ComputeShaderClassScalar
+                MixinReference: Terrain_Blend_Height
+                Generics: {}
+                CompositionNodes:
+                    5ba65494f37f0a0c85a043d78e057f71~MinHeight: !ComputeFloat
+                        Value: 2.0
+                    a7000721c883f701b5ea7ab30851d6f2~MaxHeight: !ComputeFloat
+                        Value: 1024.0
+                    eee0abbbb4f8df66fd7d436c09c57b66~Strength: !ComputeFloat
+                        Value: 500.0
+            RightChild: !ComputeShaderClassScalar
+                MixinReference: Terrain_Blend_Distance
+                Generics: {}
+                CompositionNodes:
+                    fa464039eb593ce81b40950eabe92939~MinDepth: !ComputeFloat
+                        Value: 100.0
+                    93e568c598e880fed086bc0c4a5f90e7~Strength: !ComputeFloat
+                        Value: 0.05
+        Overrides:
+            UVScale: {X: 1.0, Y: 1.0}
+    79d83467c8013cce834949f8caa95b77:
         Material: c08b0f46-966c-45a9-a688-2842634dcaee:Terrain/Layer_Rock
         BlendMap: !ComputeShaderClassScalar
             MixinReference: Terrain_Blend_Slope
             Generics: {}
             CompositionNodes:
-                88cd16840e95faaa493c2a5c9e6ead43~Strength: !ComputeFloat
-                    Value: 5.0
-                726c1977755648cb86f357d4c3aec3c0~MinSlope: !ComputeFloat
+                5f29e2ffc0e3cfbaed45ff47d1f963b0~MinSlope: !ComputeFloat
                     Value: 0.15
-                650b1f448c42e5b4eba87c61a1e0d4d4~MaxSlope: !ComputeFloat
+                417c63b4a5f0d0618f308ddd98e13b91~MaxSlope: !ComputeFloat
                     Value: 1.0
+                82348bc131989e830759b0ed20c56c67~Strength: !ComputeFloat
+                    Value: 5.0
         Overrides:
             UVScale: {X: 1.0, Y: 1.0}

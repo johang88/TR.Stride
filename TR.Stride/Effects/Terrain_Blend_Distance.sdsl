@@ -1,0 +1,29 @@
+﻿shader Terrain_Blend_Distance : ComputeColor, ShaderBase, Camera
+{
+	compose ComputeColor MinDepth;
+	compose ComputeColor Strength;
+
+	float ComputeDepthFromZProj(float depth)
+	{
+        // Retro project non linear 1/z depth to linear depth in view space
+        return ZProjection.y / (depth - ZProjection.x);
+    }
+	
+    override float4 Compute()
+    {
+		float minDepth = MinDepth.Compute().x;
+		float strength = Strength.Compute().x;
+	
+		float depthPS = streams.ShadingPosition.z;
+		float depth = ComputeDepthFromZProj(depthPS);
+
+		float blendAmount = 0.0;
+
+		if (depth >= minDepth)
+		{
+			blendAmount = saturate((depth - minDepth) * strength);
+		}
+		
+		return float4(blendAmount, 0, 0, 0);
+    }
+};
