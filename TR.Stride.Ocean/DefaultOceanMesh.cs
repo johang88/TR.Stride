@@ -13,6 +13,9 @@ using Buffer = Stride.Graphics.Buffer;
 
 namespace TR.Stride.Ocean
 {
+    /// <summary>
+    /// Default ocean mesh with clip levels for lod
+    /// </summary>
     [DataContract]
     public class DefaultOceanMesh : IOceanMesh, IDisposable
     {

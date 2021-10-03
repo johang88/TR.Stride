@@ -48,18 +48,18 @@ namespace TR.Stride.Ocean
             var graphicsDevice = Services.GetService<IGraphicsDeviceService>().GraphicsDevice;
 
             var sceneSystem = context.Services.GetService<SceneSystem>();
-            
+
             var camera = sceneSystem.TryGetMainCamera();
             if (camera == null)
                 return;
-            
+
             var time = (float)sceneSystem.Game.UpdateTime.Total.TotalSeconds;
             var deltaTime = (float)sceneSystem.Game.UpdateTime.Elapsed.TotalSeconds;
 
             if (_calculateInitialSpectrumShader == null)
             {
                 // TODO: DISPOSE AT SYSTEM REMOVAL!
-                _calculateInitialSpectrumShader = new ComputeEffectShader(context) { ShaderSourceName = "OceanCalculateInitialSpectrum", Name = "OceanCalculateInitialSpectrum"};
+                _calculateInitialSpectrumShader = new ComputeEffectShader(context) { ShaderSourceName = "OceanCalculateInitialSpectrum", Name = "OceanCalculateInitialSpectrum" };
                 _calculateConjugatedSpectrumShader = new ComputeEffectShader(context) { ShaderSourceName = "OceanCalculateConjugatedSpectrum", Name = "OceanCalculateConjugatedSpectrum" };
                 _timeDependantSpectrumShader = new ComputeEffectShader(context) { ShaderSourceName = "OceanTimeDependentSpectrum", Name = "OceanTimeDependentSpectrum" };
                 _fillResultTexturesShader = new ComputeEffectShader(context) { ShaderSourceName = "OceanFillResultTextures", Name = "OceanFillResultTextures" };
@@ -142,7 +142,7 @@ namespace TR.Stride.Ocean
                 // Read back wave data
                 if (data.Readback == null)
                 {
-                    data.Readback = new ();
+                    data.Readback = new();
                 }
 
                 data.Readback.FrameDelayCount = component.DisplacmentReadBackFrameDelay;
@@ -155,8 +155,10 @@ namespace TR.Stride.Ocean
                 }
 
                 // Create materials
+                var materialsDirty = false;
                 if (data.Materials == null || component.Material != data.Material)
                 {
+                    materialsDirty = true;
                     data.Material = component.Material;
 
                     if (data.Material == null)
@@ -165,20 +167,30 @@ namespace TR.Stride.Ocean
                     }
                     else
                     {
-                        data.Materials = new Material[]
-                        {
-                        data.Material.CreateMaterial(graphicsDevice, 0),
-                        data.Material.CreateMaterial(graphicsDevice, 1),
-                        data.Material.CreateMaterial(graphicsDevice, 2)
-                        };
+                        var materialLod0 = data.Material.CreateMaterial(graphicsDevice, 0);
+                        var materialLod1 = data.Material.CreateMaterial(graphicsDevice, 1);
+                        var materialLod2 = data.Material.CreateMaterial(graphicsDevice, 2);
+
+                        if (materialLod0 == null || materialLod1 == null || materialLod2 == null)
+                            data.Materials = null;
+                        else
+                            data.Materials = new Material[] { materialLod0, materialLod1, materialLod2 };
                     }
                 }
 
                 // Bail out if no material set
                 if (data.Materials == null)
-                    return;
+                {
+                    if (data.Mesh != null)
+                    {
+                        data.DestroyMesh();
+                        data.Mesh = null;
+                    }
 
-                if (data.Mesh != component.Mesh)
+                    return;
+                }
+
+                if (data.Mesh != component.Mesh || materialsDirty)
                 {
                     data.DestroyMesh();
 
