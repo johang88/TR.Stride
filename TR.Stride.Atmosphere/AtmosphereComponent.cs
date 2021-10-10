@@ -63,6 +63,8 @@ namespace TR.Stride.Atmosphere
         /// </summary>
         [DataMember(203)] public float AtmosphereScatteringVolumeKmPerSlice { get; set; } = 4.0f;
 
+        [DataMember(204)] public float Exposure { get; set; } = 2.0f;
+
         [DataMember(300)] public bool EnableClouds { get; set; } = true;
         [DataMember(301)] public float CloudScale { get; set; } = 0.0001f;
         [DataMember(302)] public float CloudSpeed { get; set; } = 0.01f;

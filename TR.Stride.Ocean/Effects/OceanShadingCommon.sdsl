@@ -30,6 +30,10 @@
             stage float MaxGloss = 0;
 
             stage float3 LightDirectionWS;
+
+            [Color] stage float3 ShoreColor = float4(1, 1, 1, 1);
+            stage float RefractionStrength = 50;
+            stage float RefractionDistanceMultiplier = 0.02;
         }
 
         rgroup PerMaterial

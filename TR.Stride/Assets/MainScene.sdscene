@@ -3,10 +3,11 @@ Id: a1c3d38a-dce5-4fc3-aa33-1b6f3e049c28
 SerializedVersion: {Stride: 3.1.0.1}
 Tags: []
 ChildrenIds: []
-Offset: {X: 0.0, Y: 16.97323, Z: 0.0}
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
 Hierarchy:
     RootParts:
         - ref!! 26cdafcf-427b-454b-bb17-00ace7b05a42
+        - ref!! 4df54d17-7d50-4f53-ba4b-bad669439b0d
         - ref!! 4eadaa21-a9e5-41b9-b7db-88e4771865f2
         - ref!! b94a7908-f7d7-48ac-9516-20bf3bc9b730
         - ref!! cdeaa5bf-6c96-4a88-90ad-f71f364f66d5
@@ -20,7 +21,7 @@ Hierarchy:
                 Components:
                     98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
                         Id: cf510d5b-aacf-45f0-805b-48734d043a40
-                        Position: {X: -0.94584465, Y: 8.803342, Z: -30.686745}
+                        Position: {X: 34.74209, Y: 130.59221, Z: -454.29507}
                         Rotation: {X: 0.0, Y: 0.99807674, Z: 0.0, W: 0.06199062}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -53,15 +54,45 @@ Hierarchy:
                 Components:
                     7a816f735e5eb34d0b9ac48dee457c33: !TransformComponent
                         Id: dc8be8b0-eeac-4b0a-9243-0ec174dfcc7e
-                        Position: {X: 10.591537, Y: -1.924938, Z: -194.62401}
+                        Position: {X: 13.920225, Y: 127.0, Z: -194.62401}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Scale: {X: 10.0, Y: 10.0, Z: 10.0}
                         Children: {}
                     705d376e7174aa69039aa0c526eea7d3: !ModelComponent
                         Id: 3115bac9-e6fd-48a1-ab9a-1b65e57d4fa2
                         Model: ae21c795-fe1c-4d96-8218-846c3072cb34:Sphere
                         Materials:
                             59f2d071822e80c515558fdc9de6684c~0: 613801b7-2372-4166-a8b8-d802c0d73f73:Sphere Material
+        -   Entity:
+                Id: 4df54d17-7d50-4f53-ba4b-bad669439b0d
+                Name: Terrain Collision
+                Components:
+                    18cd3726713598a8b16121ed1190e967: !TransformComponent
+                        Id: e463a849-6558-41a0-bde3-a3120ea9c77f
+                        Position: {X: -1.0, Y: 128.0, Z: -1.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 2.0, Y: 1.0, Z: 2.0}
+                        Children: {}
+                    3004ab5fe9cec71445f0a729ad76c967: !StaticColliderComponent
+                        Id: f8194305-7a71-41d7-8a1c-e9cd4cb1b250
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        AlwaysUpdateNaviMeshCache: false
+                        ColliderShapes:
+                            70a4bffefa55062692babdf5bab59433: !HeightfieldColliderShapeDesc
+                                HeightStickArraySource: !Stride.Physics.HeightStickArraySourceFromHeightmap,Stride.Physics
+                                    Heightmap: e5255d8a-ac11-4ac0-9db2-1e5d45a47f96:Terrain/Terrain_Heightmap
+                                FlipQuadEdges: false
+                                Centering:
+                                    Enabled: true
+                                    CenterHeight: 0.0
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
         -   Folder: Atmosphere
             Entity:
                 Id: 4eadaa21-a9e5-41b9-b7db-88e4771865f2
@@ -69,8 +100,8 @@ Hierarchy:
                 Components:
                     6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
                         Id: 251c7921-c618-4806-b003-da21db30be29
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
-                        Rotation: {X: -0.19126223, Y: 0.12025689, Z: -0.037235193, W: 0.9734323}
+                        Position: {X: 0.0, Y: 128.0, Z: 0.0}
+                        Rotation: {X: -0.1028647, Y: 0.12312035, Z: -0.026259411, W: 0.9866968}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
                     3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
@@ -97,7 +128,7 @@ Hierarchy:
                 Components:
                     519c2cd1f1f800da4c449c345a0fba8a: !TransformComponent
                         Id: 895dd9d1-8421-4ba4-b473-d39a439a4375
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Position: {X: 0.0, Y: 128.2, Z: 0.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -122,15 +153,18 @@ Hierarchy:
                                 Swell: 1.0
                                 PeakEnhancement: 3.3
                                 ShortWavesFade: 0.01
+                        LengthScale2: 6.0
                         AlwaysRecalculateInitials: true
                         Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
                             LodScale: 6.0
-                            SSSColor: {R: 0.08609375, G: 0.32871708, B: 0.3625, A: 1.0}
+                            SSSColor: {R: 0.08235294, G: 0.3254902, B: 0.36078432, A: 1.0}
                             FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                             ContactFoam: 1.0
                             FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:FoamTexture
                             Roughness: 0.3082
                             Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
+                            ShoreColor: {R: 0.060156256, G: 0.21545748, B: 0.34375}
+                            RefractionStrength: 50.0
                             Sun: ref!! 1b0ce0b4-87f4-4f93-bb66-24a5a4f12eaa
                         Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
         -   Folder: Atmosphere
@@ -167,13 +201,14 @@ Hierarchy:
                         RayleighScaleHeight: 8.0
                         MieScaleHeight: 1.2
                         GroundAlbedo: {R: 0.1125, G: 0.1125, B: 0.1125}
-                        SunLuminanceFactor: 20.0
+                        SunLuminanceFactor: 50000.0
                         RenderSunDisk: true
                         AerialPerspectiveDistanceScale: 100.0
                         StrideToAtmosphereUnitScale: 0.001
                         MultipleScatteringFactor: 1.0
                         AtmosphereScatteringVolumeKmPerSlice: 0.25
-                        EnableClouds: false
+                        Exposure: 1.0
+                        EnableClouds: true
                         CloudScale: 0.0001
                         CloudSpeed: 0.01
                         Cloudiness: 0.8
@@ -192,16 +227,15 @@ Hierarchy:
                         Id: 92de2586-3e44-45a1-bea0-0bfacd173e53
                         Type: !LightSkybox
                             Skybox: 22ec7478-64dc-464f-a9b1-8e89110288e9:Skybox
-                        Intensity: 2.0
         -   Entity:
                 Id: e27fda20-b6f9-4019-9968-c9b24b7f50db
                 Name: Terrain
                 Components:
                     80e1b454cd398b1b5a16d4a8597fb610: !TransformComponent
                         Id: ea58a5ce-df9a-4d45-8c17-4ab4e6212cb5
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Position: {X: 0.0, Y: 128.0, Z: 0.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Scale: {X: 2.0, Y: 1.0, Z: 2.0}
                         Children: {}
                     12fc4a1dabadbccc9998a867bb29cc7b: !TerrainComponent
                         Id: 75a1d7d8-c35e-4491-88f8-eeddef5d00e4

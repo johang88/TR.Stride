@@ -43,6 +43,10 @@ namespace TR.Stride.Ocean
 
         [DataMember(33), Display(name: "Color", category: CategorySurface)] public Color3 Color { get; set; } = new Color3(0.03457636f, 0.1229746f, 0.1981132f);
 
+        [DataMember(34), Display(name: "Shore Color", category: CategorySurface)] public Color3 ShoreColor { get; set; } = new Color3(0.03457636f, 0.1229746f, 0.1981132f);
+        [DataMember(34), Display(name: "Refraction Strength", category: CategorySurface), DataMemberRange(0, 1000, 0.01f, 1.0f, 2), DefaultValue(0.02f)] public float RefractionStrength { get; set; } = 50.0f;
+        [DataMember(34), Display(name: "Refraction Distance Multiplier", category: CategorySurface), DataMemberRange(0, 1, 0.01f, 0.1f, 4), DefaultValue(0.02f)] public float RefractionDistanceMultiplier { get; set; } = 0.02f;
+
         [DataMember(40)] public LightComponent Sun { get; set; }
 
         public abstract Material CreateMaterial(GraphicsDevice graphicsDevice, int lod);
@@ -86,6 +90,10 @@ namespace TR.Stride.Ocean
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.MaxGloss, MaxGloss);
 
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Color, Color);
+
+                material.Passes[0].Parameters.Set(OceanShadingCommonKeys.ShoreColor, ShoreColor);
+                material.Passes[0].Parameters.Set(OceanShadingCommonKeys.RefractionStrength, RefractionStrength);
+                material.Passes[0].Parameters.Set(OceanShadingCommonKeys.RefractionDistanceMultiplier, RefractionDistanceMultiplier);
 
                 if (Sun != null)
                 {

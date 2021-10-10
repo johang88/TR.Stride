@@ -1,0 +1,78 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Stride.Engine" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Effects\BloomBrightPass.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\BloomDownSample.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\BloomUpSample.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\ExposureCommon.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\Histogram.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\HistogramReduce.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\PostEffectCommon.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Effects\ToneMapASEC.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Effects\BloomBrightPass.sdsl">
+      <LastGenOutput>BloomBrightPass.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\BloomDownSample.sdsl">
+      <LastGenOutput>BloomDownSample.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\BloomUpSample.sdsl">
+      <LastGenOutput>BloomUpSample.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\ExposureCommon.sdsl">
+      <LastGenOutput>ExposureCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\Histogram.sdsl">
+      <LastGenOutput>Histogram.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\HistogramReduce.sdsl">
+      <LastGenOutput>HistogramReduce.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\PostEffectCommon.sdsl">
+      <LastGenOutput>PostEffectCommon.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\ToneMapASEC.sdsl">
+      <LastGenOutput>ToneMapASEC.sdsl.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+</Project>

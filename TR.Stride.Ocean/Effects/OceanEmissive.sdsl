@@ -92,12 +92,12 @@ namespace TR.Stride.Ocean
 
             float refractionStrength = pow(0.1, (Lod + 1));
 
-            float2 bend = streams.ShadingPosition.xy + worldNormal.xz * 50;
+            float2 bend = streams.ShadingPosition.xy + worldNormal.xz * RefractionStrength;
             float2 refractionUV = bend.xy / ViewSize.xy;
 
-            alpha = saturate(abs(sceneDepthVS - depthVS) * 0.02);
+            alpha = saturate(abs(sceneDepthVS - depthVS) * RefractionDistanceMultiplier);
             float3 refraction = GetOpaqueColor(refractionUV);
-            emissive += lerp(refraction * SSSColor, Color, alpha);
+            emissive += lerp(refraction * ShoreColor, Color, alpha);
 
             return float4(emissive, 1);
         }

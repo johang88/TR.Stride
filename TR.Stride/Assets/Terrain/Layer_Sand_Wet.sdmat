@@ -14,13 +14,17 @@ Attributes:
             Swizzle: null
         IsXYNormal: true
     MicroSurface: !MaterialGlossinessMapFeature
-        GlossinessMap: !ComputeTextureScalar
-            Texture*: f9563fbb-c1eb-4b60-9f99-20fd671c3f8f:Terrain/sand_01_1k/sand_01_rough_1k
-            FallbackValue:
-                Value: 1.0
-            Scale: {X: 1.0, Y: 1.0}
-            Offset: {X: 0.0, Y: 0.0}
-        Invert*: false
+        GlossinessMap*: !ComputeBinaryScalar
+            Operator: Multiply
+            LeftChild: !ComputeTextureScalar
+                Texture: f9563fbb-c1eb-4b60-9f99-20fd671c3f8f:Terrain/sand_01_1k/sand_01_rough_1k
+                FallbackValue:
+                    Value: 1.0
+                Scale: {X: 1.0, Y: 1.0}
+                Offset: {X: 0.0, Y: 0.0}
+            RightChild: !ComputeFloat
+                Value: 0.6
+        Invert*: true
     Diffuse: !MaterialDiffuseMapFeature
         DiffuseMap*: !ComputeBinaryColor
             Operator: Multiply
@@ -32,7 +36,7 @@ Attributes:
                 Offset: {X: 0.0, Y: 0.0}
                 Swizzle: null
             RightChild: !ComputeColor
-                Value: {R: 0.61875, G: 0.61875, B: 0.61875, A: 1.0}
+                Value: {R: 0.593125, G: 0.6094765, B: 0.65, A: 1.0}
     DiffuseModel: !MaterialDiffuseLambertModelFeature {}
     Specular: !MaterialMetalnessMapFeature
         MetalnessMap: !ComputeFloat

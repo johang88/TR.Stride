@@ -22,5 +22,6 @@ namespace Stride.Rendering
         public static readonly ValueParameterKey<float> CloudScale = ParameterKeys.NewValue<float>(0.0001f);
         public static readonly ValueParameterKey<float> CloudSpeed = ParameterKeys.NewValue<float>(0.1f);
         public static readonly ValueParameterKey<float> Cloudiness = ParameterKeys.NewValue<float>(0.8f);
+        public static readonly ValueParameterKey<float> Exposure = ParameterKeys.NewValue<float>(2.0f);
     }
 }

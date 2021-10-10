@@ -10,6 +10,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 		stage float CloudScale = 0.0001f;
 		stage float CloudSpeed = 0.1f;
 		stage float Cloudiness = 0.8f;
+		stage float Exposure = 2.0f;
 	};
 
 	struct RayMarchPixelOutputStruct
@@ -62,7 +63,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 					LutTransmittanceParamsToUv(Atmosphere, viewHeight, viewZenithCosAngle, uv);
 					const float3 transmittance = TransmittanceLutTexture.SampleLevel(samplerLinearClamp, uv, 0).rgb;
 
-					output.Luminance.xyz += GetSunLuminance(WorldDir, transmittance);
+					output.Luminance.xyz += GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius, transmittance);
 				}
 
 				if (IntersectGround && RenderStage == 1)
@@ -82,7 +83,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 		else
 		{
 			if (DepthBufferValue == 1.0f)
-				L += GetSunLuminance(WorldDir, float3(1, 1, 1));
+				L += GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius, float3(1, 1, 1));
 		}
 
 		if (FastAerialPerspectiveEnabled)
@@ -117,7 +118,7 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
 			if (!MoveToTopAtmosphere(WorldPos, WorldDir, Atmosphere.TopRadius))
 			{
 				// Ray is not intersecting the atmosphere		
-				output.Luminance = float4(GetSunLuminance(WorldDir, float3(1, 1, 1)), 1.0);
+				output.Luminance = float4(GetSunLuminance(WorldPos, WorldDir, Atmosphere.BottomRadius, float3(1, 1, 1)), 1.0);
 				return output;
 			}
 
@@ -238,5 +239,6 @@ shader AtmosphereRenderSkyRayMarching<bool FastSkyEnabled, bool FastAerialPerspe
     stage override void PSMain()
     {   
         streams.ColorTarget = _PSMain().Luminance;
+		streams.ColorTarget.xyz *= Exposure;
     }
 };

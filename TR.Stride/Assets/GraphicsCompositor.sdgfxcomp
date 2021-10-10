@@ -155,7 +155,7 @@ SharedRenderers:
             87ff1d9cdd52418daf76385176a0e316: ref!! 0dc020f6-b70e-401f-8e83-4847d28bfb0d
             5e059d4cc2db4ee8a1f28a40f4ac3ae8: ref!! fcdca0fe-efba-4cb0-81ca-eb42352fadfa
         GBufferRenderStage: ref!! 71ad5e30-4791-4e12-825d-af59d9bb598d
-        PostEffects: !PostProcessingEffects ref!! 7edd1799-6bbf-4734-9c44-147a409c3939
+        PostEffects*: !CustomPostProcessingEffects ref!! d64612b8-02b2-4a76-bd76-b091290faebf
         LightShafts: null
         VRSettings:
             Enabled: false
@@ -165,6 +165,7 @@ SharedRenderers:
         MSAALevel: None
         MSAAResolver: {}
         BindDepthAsResourceDuringTransparentRendering*: true
+        BindOpaqueAsResourceDuringTransparentRendering*: true
     d5b2e71c088247e21556decdce138d96: !Stride.Rendering.Compositing.ForwardRenderer,Stride.Engine
         Id: 02046533-dacf-4bc0-a247-6271c78c8940
         Clear:
@@ -187,66 +188,13 @@ SharedRenderers:
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}
-    34ecb9b2633eacfc439ba8744fe05102: !PostProcessingEffects
-        Id: 7edd1799-6bbf-4734-9c44-147a409c3939
-        Outline:
-            Enabled: false
-            NormalWeight: 2.0
-            DepthWeight: 0.2
-            NormalNearCutoff: 0.1
-        Fog:
-            Enabled: false
-            Density: 0.1
-            Color: {R: 1.0, G: 1.0, B: 1.0}
-            FogStart: 10.0
-            SkipBackground: false
-        AmbientOcclusion:
-            Enabled: false
-        LocalReflections:
-            Enabled*: false
-            ResolvePassResolution: Full
-            DepthResolution: Half
-        DepthOfField:
-            Enabled: false
-            DOFAreas: {X: 0.5, Y: 6.0, Z: 50.0, W: 200.0}
-        BrightFilter:
-            Enabled*: true
-            Color: {R: 1.0, G: 1.0, B: 1.0}
-        Bloom:
-            Enabled*: true
-            Distortion: {X: 1.0, Y: 1.0}
-            Afterimage:
-                Enabled: false
-        LightStreak:
-            Enabled*: false
-            Attenuation: 0.7
-        LensFlare:
-            Enabled*: false
-        ColorTransforms:
-            Enabled*: true
-            Transforms:
-                1e06f805f8b2e949a06c30d45fe413ef: !ToneMap
-                    Enabled*: true
-                    Operator*: !ToneMapACESOperator {}
-                    AutoKeyValue*: true
-                    KeyValue*: 0.13
-                    AutoExposure*: true
-                    Exposure*: 0.1
-                    TemporalAdaptation*: true
-                    UseLocalLuminance*: true
-                    LuminanceLocalFactor*: 0.5
-                    Contrast*: 0.0
-                    Brightness*: 0.0
-                c57351444609d14ea258b3f511ec8a74: !FilmGrain
-                    Enabled: false
-                e86e22e9a5d65545b8b55fca26e0afee: !Vignetting
-                    Enabled*: false
-                    Color: {R: 0.0, G: 0.0, B: 0.0}
-        Antialiasing: !FXAAEffect
-            Enabled*: false
     ee80a20a9bd99f2d70711114e15fe7ca: !Stride.Rendering.Compositing.DebugRenderer,Stride.Rendering
         Id: 409c93be-ed44-4398-9a5c-ce86c5235545
         DebugRenderStages: {}
+    98ef4916874824e9c36594f3eb4209aa*: !CustomPostProcessingEffects
+        Id: d64612b8-02b2-4a76-bd76-b091290faebf
+        Exposure: {}
+    34ecb9b2633eacfc439ba8744fe05102: ~(Deleted)
 Game: !Stride.Rendering.Compositing.SceneCameraRenderer,Stride.Engine
     Id: 76fe87cf-f574-4ad6-85b8-e9a9586be0e2
     Camera: ref!! d75902e9-539b-4ac1-aaa7-580efc5ac7fd

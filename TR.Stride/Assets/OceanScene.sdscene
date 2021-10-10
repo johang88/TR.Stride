@@ -51,6 +51,8 @@ Hierarchy:
                             ContactFoam: 1.0
                             FoamTexture: null
                             Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
+                            ShoreColor: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
+                            RefractionStrength: 50.0
                             Sun: null
                         Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
         -   Entity:
@@ -68,7 +70,7 @@ Hierarchy:
                         Type: !LightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow:
+                            Shadow: !LightDirectionalShadowMap
                                 Enabled: true
                                 Filter: !LightShadowMapFilterTypePcf
                                     FilterSize: Filter7x7

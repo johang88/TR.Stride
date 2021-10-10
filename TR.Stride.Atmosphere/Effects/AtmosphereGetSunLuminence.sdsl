@@ -2,18 +2,24 @@
 
 shader AtmosphereGetSunLuminence<bool RenderSunDisk, MemberName AtmosphereGroup> : AtmosphereCommon<AtmosphereGroup>
 {
-	float3 GetSunLuminance(float3 WorldDir, float3 Transmittance)
+	float3 GetSunLuminance(float3 WorldPos, float3 WorldDir, float PlanetRadius, float3 Transmittance)
 	{
 		if (RenderSunDisk)
 		{
+			float c = cos(1.5*0.505*3.14159 / 180.0);
 			float vDotL = dot(WorldDir, SunDirection);
 
-			const float SunSize = cos(1*0.505*3.14159 / 180.0);
+			if (vDotL > c)
+			{
+				float t = RaySphereIntersectNearest(WorldPos, WorldDir, float3(0.0f, 0.0f, 0.0f), PlanetRadius);
+				if (t < 0.0f) // Does not intersect planet
+				{
+					float h = c + (1.0f - c) * 0.5f;
+					float w = 1.0f - saturate((h - vDotL) / (h - c));
 
-			float grad = vDotL - SunSize;
-			grad = grad / max(fwidth(vDotL), 0.0001f);
-
-			return Transmittance * SunIlluminance * SunLuminanceFactor * saturate(grad);
+					return Transmittance * SunIlluminance * SunLuminanceFactor * w;
+				}
+			}
 		}
 		return 0;
 	}

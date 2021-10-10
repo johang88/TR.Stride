@@ -85,6 +85,7 @@ namespace TR.Stride.Ocean
             }
 
             var cameraPosition = camera.GetWorldPosition();
+            cameraPosition.Y -= _entity.Transform.WorldMatrix.TranslationVector.Y;
 
             // Update mesh positions
             var activeLevels = GetActiveLodLevels(cameraPosition);
