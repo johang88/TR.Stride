@@ -194,7 +194,8 @@ SharedRenderers:
     98ef4916874824e9c36594f3eb4209aa*: !CustomPostProcessingEffects
         Id: d64612b8-02b2-4a76-bd76-b091290faebf
         Bloom: {}
-        Exposure: {}
+        Exposure:
+            Key: 0.2
     34ecb9b2633eacfc439ba8744fe05102: ~(Deleted)
 Game: !Stride.Rendering.Compositing.SceneCameraRenderer,Stride.Engine
     Id: 76fe87cf-f574-4ad6-85b8-e9a9586be0e2

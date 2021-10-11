@@ -31,14 +31,16 @@ namespace TR.Stride.PostProcess
         [DefaultValue(1.0f / 64.0f)] public float MinExposure { get; set; }  = 1.0f / 64.0f;
         [DefaultValue(64.0f)] public float MaxExposure { get; set; } = 64.0f;
         [DefaultValue(1.1f)] public float AdaptionSpeed { get; set; } = 1.1f;
+        [DefaultValue(2.0f)] public float Exposure { get; set; } = 2.0f;
+        [DefaultValue(true)] public bool AutoExposure { get; set; } = true;
     }
 
     [DataContract(nameof(CustomPostProcessingEffects))]
     [Display("Custom Post-processing effects")]
     public class CustomPostProcessingEffects : ImageEffect, IImageEffectRenderer, IPostProcessingEffects
     {
-        public bool RequiresVelocityBuffer => false;
-        public bool RequiresNormalBuffer => false;
+        public bool RequiresVelocityBuffer => true;
+        public bool RequiresNormalBuffer => true;
         public bool RequiresSpecularRoughnessBuffer => false;
 
         [DataMember] public Guid Id { get; set; } = Guid.NewGuid();
@@ -87,17 +89,10 @@ namespace TR.Stride.PostProcess
             _histogramReduceShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramReduce" });
             _histogramDrawDebug = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramDrawDebug" });
 
-            float initalMinLog = -12.0f;
-            float initialMaxLog = 2.0f;
-
             _histogram = Buffer.Raw.New(GraphicsDevice, new uint[256], BufferFlags.ShaderResource | BufferFlags.UnorderedAccess);
             _exposure = Buffer.Structured.New(
-                GraphicsDevice, 
-                new float[]
-                {
-                    2.0f, 1.0f / 2.0f, 2.0f, 0.0f,
-                    initalMinLog, initialMaxLog, initialMaxLog - initalMinLog, 1.0f / (initialMaxLog - initalMinLog)
-                }, 
+                GraphicsDevice,
+                GetManualExposureSettings(), 
                 true);
 
             _bloomUpSample.BlendState = new BlendStateDescription(Blend.One, Blend.One);
@@ -109,6 +104,18 @@ namespace TR.Stride.PostProcess
 
             _exposure?.Dispose();
             _histogram?.Dispose();
+        }
+
+        private float[] GetManualExposureSettings()
+        {
+            float initalMinLog = -12.0f;
+            float initialMaxLog = 2.0f;
+
+            return new float[]
+            {
+                ExposureSettings.Exposure, 1.0f / ExposureSettings.Exposure, ExposureSettings.Exposure, 0.0f,
+                initalMinLog, initialMaxLog, initialMaxLog - initalMinLog, 1.0f / (initialMaxLog - initalMinLog)
+            };
         }
 
         public void Collect(RenderContext context)
@@ -158,29 +165,36 @@ namespace TR.Stride.PostProcess
 
             var currentInput = input;
 
-            context.CommandList.ClearReadWrite(_histogram, UInt4.Zero);
+            if (ExposureSettings.AutoExposure)
+            {
+                context.CommandList.ClearReadWrite(_histogram, UInt4.Zero);
 
-            // Calculate histogram
-            _histogramShader.ThreadNumbers = new Int3(16, 16, 1);
-            _histogramShader.ThreadGroupCounts = new Int3((int)Math.Ceiling(currentInput.Width / (float)16), (int)Math.Ceiling(currentInput.Height / (float)16), 1);
-            _histogramShader.Parameters.Set(HistogramKeys.ColorInput, currentInput);
-            _histogramShader.Parameters.Set(HistogramKeys.HistogramBuffer, _histogram);
-            _histogramShader.Parameters.Set(HistogramKeys.Exposure, _exposure);
-            _histogramShader.Draw(context);
+                // Calculate histogram
+                _histogramShader.ThreadNumbers = new Int3(16, 16, 1);
+                _histogramShader.ThreadGroupCounts = new Int3((int)Math.Ceiling(currentInput.Width / (float)16), (int)Math.Ceiling(currentInput.Height / (float)16), 1);
+                _histogramShader.Parameters.Set(HistogramKeys.ColorInput, currentInput);
+                _histogramShader.Parameters.Set(HistogramKeys.HistogramBuffer, _histogram);
+                _histogramShader.Parameters.Set(HistogramKeys.Exposure, _exposure);
+                _histogramShader.Draw(context);
 
-            // Reduce histogram to get average luminance
-            _histogramReduceShader.ThreadNumbers = new Int3(256, 1, 1);
-            _histogramReduceShader.ThreadGroupCounts = new Int3(1, 1, 1);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.Histogram, _histogram);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.Exposure, _exposure);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.PixelCount, (uint)(currentInput.Width * currentInput.Height));
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.Tau, ExposureSettings.AdaptionSpeed);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.AutoKey, ExposureSettings.AutoKey);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.TargetLuminance, ExposureSettings.Key);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.MinExposure, ExposureSettings.MinExposure);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.MaxExposure, ExposureSettings.MaxExposure);
-            _histogramReduceShader.Parameters.Set(HistogramReduceKeys.TimeDelta, (float)context.RenderContext.Time.Elapsed.TotalSeconds);
-            _histogramReduceShader.Draw(context);
+                // Reduce histogram to get average luminance
+                _histogramReduceShader.ThreadNumbers = new Int3(256, 1, 1);
+                _histogramReduceShader.ThreadGroupCounts = new Int3(1, 1, 1);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.Histogram, _histogram);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.Exposure, _exposure);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.PixelCount, (uint)(currentInput.Width * currentInput.Height));
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.Tau, ExposureSettings.AdaptionSpeed);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.AutoKey, ExposureSettings.AutoKey);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.TargetLuminance, ExposureSettings.Key);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.MinExposure, ExposureSettings.MinExposure);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.MaxExposure, ExposureSettings.MaxExposure);
+                _histogramReduceShader.Parameters.Set(HistogramReduceKeys.TimeDelta, (float)context.RenderContext.Time.Elapsed.TotalSeconds);
+                _histogramReduceShader.Draw(context);
+            }
+            else
+            {
+                _exposure.SetData(context.CommandList, GetManualExposureSettings());
+            }
 
             // Bright Pass
             var brightPassTexture = NewScopedRenderTarget2D(currentInput.Width, currentInput.Height, currentInput.Format, 1);
