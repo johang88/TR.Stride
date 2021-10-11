@@ -11,7 +11,7 @@ Attributes:
         Enabled: false
     Emissive: !MaterialEmissiveMapFeature
         EmissiveMap: !ComputeColor
-            Value: {R: 0.0, G: 0.7750001, B: 1.0, A: 1.0}
+            Value: {R: 0.0, G: 0.77254903, B: 1.0, A: 1.0}
         Intensity: !ComputeFloat
             Value: 1000.0
     Overrides:

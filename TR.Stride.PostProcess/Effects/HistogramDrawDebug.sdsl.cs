@@ -16,9 +16,10 @@ using Buffer = Stride.Graphics.Buffer;
 
 namespace Stride.Rendering
 {
-    public static partial class BloomBrightPassKeys
+    public static partial class HistogramDrawDebugKeys
     {
-        public static readonly ValueParameterKey<float> BrightPassSteepness = ParameterKeys.NewValue<float>(2.0f);
-        public static readonly ValueParameterKey<float> ThresholdOffset = ParameterKeys.NewValue<float>(4.0f);
+        public static readonly ObjectParameterKey<Buffer> Histogram = ParameterKeys.NewObject<Buffer>();
+        public static readonly ObjectParameterKey<Buffer> Exposure = ParameterKeys.NewObject<Buffer>();
+        public static readonly ObjectParameterKey<Texture> ColorBuffer = ParameterKeys.NewObject<Texture>();
     }
 }

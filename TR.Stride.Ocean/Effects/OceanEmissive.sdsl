@@ -26,14 +26,14 @@ namespace TR.Stride.Ocean
 
             float alpha = saturate(abs(sceneDepthVS - depthVS));
 
-            float4 derivatives = Derivatives_c0.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale0, 0);
+            float4 derivatives = Derivatives_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0);
             if (Lod == 0 || Lod == 1)
             {
-                derivatives += Derivatives_c1.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale1, 0) * streams.lodScales.y;
+                derivatives += Derivatives_c1.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale1) * streams.lodScales.y;
             }
             if (Lod == 0)
             {
-                derivatives += Derivatives_c2.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale2, 0) * streams.lodScales.z;
+                derivatives += Derivatives_c2.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale2) * streams.lodScales.z;
             }
 
             float2 slope = float2(derivatives.x / (1 + derivatives.z), derivatives.y / (1 + derivatives.w));
@@ -45,21 +45,21 @@ namespace TR.Stride.Ocean
             if (Lod == 0)
             {
                 jacobian = 
-                    Turbulence_c0.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale0, 0).x
-                    + Turbulence_c1.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale1, 0).x
-                    + Turbulence_c2.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale2, 0).x;
+                    Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x
+                    + Turbulence_c1.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale1).x
+                    + Turbulence_c2.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale2).x;
                 jacobian = min(1, max(0, (-jacobian + FoamBiasLOD2) * FoamScale));
             }
             else if (Lod == 1)
             {
                 jacobian = 
-                    Turbulence_c0.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale0, 0).x
-                    + Turbulence_c1.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale1, 0).x;
+                    Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x
+                    + Turbulence_c1.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale1).x;
                 jacobian = min(1, max(0, (-jacobian + FoamBiasLOD1) * FoamScale));
             }
             else
             {
-                jacobian = Turbulence_c0.SampleLevel(AnisotropicRepeatSampler, streams.worldUV / LengthScale0, 0).x;
+                jacobian = Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x;
                 jacobian = min(1, max(0, (-jacobian + FoamBiasLOD0) * FoamScale));
             }
 

@@ -2,11 +2,6 @@
 {
     stage StructuredBuffer<float> Exposure;
 
-    float ExposureFromEv100(float ev100)
-    {
-        return rcp(pow(2.0f, ev100));
-    }
-
     float GetExposure()
 	{
         return Exposure[0];

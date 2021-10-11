@@ -1,14 +1,12 @@
 ﻿shader BloomBrightPass : ImageEffectShader, ExposureCommon, PostEffectCommon
 {
-    stage float Threshold = 1.0f;
+    stage float BrightPassSteepness = 2.0f;
+    stage float ThresholdOffset = 4.0f;
 
     stage override float4 Shading()
     {
         float3 c = Texture0.Sample(LinearSampler, streams.TexCoord).xyz;
         c *= GetExposure();
-
-        const float BrightPassSteepness = 2.0f;
-        const float ThresholdOffset = 0.2f;
 
         float luminance = CalculateLuminance(c);
         c *= smoothstep(0, 1, saturate(sqrt(luminance) / (BrightPassSteepness + 1) - ThresholdOffset));

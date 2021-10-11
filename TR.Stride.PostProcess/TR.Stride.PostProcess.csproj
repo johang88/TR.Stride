@@ -33,6 +33,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Effects\HistogramDrawDebug.sdsl.cs">
+      <DesignTime>True</DesignTime>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Effects\HistogramReduce.sdsl.cs">
       <DesignTime>True</DesignTime>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -64,6 +69,9 @@
     </None>
     <None Update="Effects\Histogram.sdsl">
       <LastGenOutput>Histogram.sdsl.cs</LastGenOutput>
+    </None>
+    <None Update="Effects\HistogramDrawDebug.sdsl">
+      <LastGenOutput>HistogramDrawDebug.sdsl.cs</LastGenOutput>
     </None>
     <None Update="Effects\HistogramReduce.sdsl">
       <LastGenOutput>HistogramReduce.sdsl.cs</LastGenOutput>

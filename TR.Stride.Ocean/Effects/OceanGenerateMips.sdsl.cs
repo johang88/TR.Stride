@@ -18,10 +18,14 @@ namespace TR.Stride.Ocean
 {
     public static partial class OceanGenerateMipsKeys
     {
-        public static readonly ObjectParameterKey<SamplerState> LinearSampler = ParameterKeys.NewObject<SamplerState>();
+        public static readonly ObjectParameterKey<SamplerState> BilinearClamp = ParameterKeys.NewObject<SamplerState>();
         public static readonly ObjectParameterKey<Texture> SrcMip = ParameterKeys.NewObject<Texture>();
-        public static readonly ObjectParameterKey<Texture> OutMip = ParameterKeys.NewObject<Texture>();
-        public static readonly ValueParameterKey<Vector2> InvOutTexelSize = ParameterKeys.NewValue<Vector2>();
-        public static readonly ValueParameterKey<uint> SrcMipIndex = ParameterKeys.NewValue<uint>();
+        public static readonly ObjectParameterKey<Texture> OutMip1 = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> OutMip2 = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> OutMip3 = ParameterKeys.NewObject<Texture>();
+        public static readonly ObjectParameterKey<Texture> OutMip4 = ParameterKeys.NewObject<Texture>();
+        public static readonly ValueParameterKey<uint> SrcMipLevel = ParameterKeys.NewValue<uint>();
+        public static readonly ValueParameterKey<uint> NumMipLevels = ParameterKeys.NewValue<uint>();
+        public static readonly ValueParameterKey<Vector2> TexelSize = ParameterKeys.NewValue<Vector2>();
     }
 }

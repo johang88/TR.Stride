@@ -18,14 +18,9 @@ namespace TR.Stride.PostProcess
     [DataContract]
     public class BloomSettings
     {
-        public float Strength;
-        public float Radius;
-
-        public BloomSettings()
-        {
-            Strength = 1;
-            Radius = 1;
-        }
+        [DataMember, DefaultValue(5)] public int NumberOfDownSamples { get; set; } = 5;
+        [DataMember, DefaultValue(2.0f)] public float BrightPassSteepness { get; set; } = 2.0f;
+        [DataMember, DefaultValue(4.0f)] public float ThresholdOffset { get; set; } = 4.0f;
     }
 
     [DataContract]
@@ -54,13 +49,14 @@ namespace TR.Stride.PostProcess
         private ImageEffectShader _toneMapShader;
         private ComputeEffectShader _histogramShader;
         private ComputeEffectShader _histogramReduceShader;
+        private ComputeEffectShader _histogramDrawDebug;
 
         private Buffer _histogram = null;
         private Buffer _exposure = null;
 
-        [DataMemberIgnore] public List<BloomSettings> Bloom { get; set; } = new List<BloomSettings>();
-
-        [DataMember("Exposure")] public ExposureSettings ExposureSettings { get; set; } = new ExposureSettings();
+        [DataMember("Bloom"), Category] public BloomSettings BloomSettings { get; set; } = new BloomSettings();
+        [DataMember("Exposure"), Category] public ExposureSettings ExposureSettings { get; set; } = new ExposureSettings();
+        [DataMemberIgnore] public bool DebugHistogram { get; set; } = false;
 
         private List<Texture> _bloomRenderTargets = new(5);
 
@@ -89,21 +85,12 @@ namespace TR.Stride.PostProcess
             _toneMapShader = ToLoadAndUnload(new ImageEffectShader("ToneMapASEC"));
             _histogramShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "Histogram" });
             _histogramReduceShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramReduce" });
-
-            Bloom = new List<BloomSettings>()
-            {
-                new BloomSettings { Strength = 0.5f, Radius = 1.0f },
-                new BloomSettings { Strength = 1.0f, Radius = 2.0f },
-                new BloomSettings { Strength = 2.0f, Radius = 2.0f },
-                new BloomSettings { Strength = 1.0f, Radius = 4.0f },
-                new BloomSettings { Strength = 2.0f, Radius = 4.0f }
-            };
+            _histogramDrawDebug = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramDrawDebug" });
 
             float initalMinLog = -12.0f;
             float initialMaxLog = 2.0f;
 
             _histogram = Buffer.Raw.New(GraphicsDevice, new uint[256], BufferFlags.ShaderResource | BufferFlags.UnorderedAccess);
-            //_histogram = Buffer.New(GraphicsDevice, 256 * sizeof(uint), 0, BufferFlags.ShaderResource | BufferFlags.UnorderedAccess, PixelFormat.R32_UInt);
             _exposure = Buffer.Structured.New(
                 GraphicsDevice, 
                 new float[]
@@ -112,6 +99,8 @@ namespace TR.Stride.PostProcess
                     initalMinLog, initialMaxLog, initialMaxLog - initalMinLog, 1.0f / (initialMaxLog - initalMinLog)
                 }, 
                 true);
+
+            _bloomUpSample.BlendState = new BlendStateDescription(Blend.One, Blend.One);
         }
 
         protected override void Unload()
@@ -196,6 +185,8 @@ namespace TR.Stride.PostProcess
             // Bright Pass
             var brightPassTexture = NewScopedRenderTarget2D(currentInput.Width, currentInput.Height, currentInput.Format, 1);
             _brightPassShader.Parameters.Set(ExposureCommonKeys.Exposure, _exposure);
+            _brightPassShader.Parameters.Set(BloomBrightPassKeys.BrightPassSteepness, BloomSettings.BrightPassSteepness);
+            _brightPassShader.Parameters.Set(BloomBrightPassKeys.ThresholdOffset, BloomSettings.ThresholdOffset);
             _brightPassShader.SetInput(0, currentInput);
             _brightPassShader.SetOutput(brightPassTexture);
             _brightPassShader.Draw(context, "Bright pass");
@@ -203,7 +194,7 @@ namespace TR.Stride.PostProcess
             // Bloom down sample
             var bloomInput = brightPassTexture;
             _bloomRenderTargets.Add(bloomInput);
-            for (var i = 0; i < Bloom.Count; i++)
+            for (var i = 0; i < BloomSettings.NumberOfDownSamples; i++)
             {
                 var bloomRenderTarget = NewScopedRenderTarget2D(bloomInput.Width / 2, bloomInput.Height / 2, bloomInput.Format, 1);
                 _bloomRenderTargets.Add(bloomRenderTarget);
@@ -216,15 +207,15 @@ namespace TR.Stride.PostProcess
             }
 
             // Up sample
-            for (var i = Bloom.Count - 1; i >= 0; i--)
+            for (var i = BloomSettings.NumberOfDownSamples - 1; i >= 0; i--)
             {
                 var bloomRenderTarget = _bloomRenderTargets[i];
 
                 _bloomUpSample.SetInput(0, bloomInput);
                 _bloomUpSample.SetOutput(bloomRenderTarget);
 
-                _bloomUpSample.Parameters.Set(BloomUpSampleKeys.Strength, Bloom[i].Strength);
-                _bloomUpSample.Parameters.Set(BloomUpSampleKeys.Radius, Bloom[i].Radius);
+                _bloomUpSample.Parameters.Set(BloomUpSampleKeys.Strength, 1.0f);
+                _bloomUpSample.Parameters.Set(BloomUpSampleKeys.Radius, 1.0f);
 
                 _bloomUpSample.Draw(context, $"Bloom up Sample {i}");
 
@@ -241,6 +232,23 @@ namespace TR.Stride.PostProcess
             _toneMapShader.SetInput(1, bloomOutput);
             _toneMapShader.SetOutput(output);
             _toneMapShader.Draw(context, "ToneMap ASEC");
+
+            if (DebugHistogram)
+            {
+                // Create UAV enabled debug target
+                var debugOutput = NewScopedRenderTarget2D(output.Width, output.Height, PixelFormat.R8G8B8A8_UNorm, TextureFlags.ShaderResource | TextureFlags.RenderTarget | TextureFlags.UnorderedAccess);
+                context.CommandList.Copy(output, debugOutput);
+                context.CommandList.Reset();
+
+                _histogramDrawDebug.ThreadNumbers = new Int3(256, 1, 1);
+                _histogramDrawDebug.ThreadGroupCounts = new Int3(1, 32, 1);
+                _histogramDrawDebug.Parameters.Set(HistogramDrawDebugKeys.Histogram, _histogram);
+                _histogramDrawDebug.Parameters.Set(HistogramDrawDebugKeys.Exposure, _exposure);
+                _histogramDrawDebug.Parameters.Set(HistogramDrawDebugKeys.ColorBuffer, debugOutput);
+                _histogramDrawDebug.Draw(context);
+
+                context.CommandList.Copy(debugOutput, output);
+            }
         }
     }
 }
