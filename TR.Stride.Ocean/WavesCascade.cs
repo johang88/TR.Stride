@@ -65,6 +65,8 @@ namespace TR.Stride.Ocean
 
         public void CalculateInitials(RenderDrawContext context, ComputeEffectShader initialSpectrumShader, ComputeEffectShader conjugatedSpectrumShader, WavesSettings wavesSettings, float lengthScale, float cutoffLow, float cutoffHigh)
         {
+            using var profileContext = context.QueryManager.BeginProfile(Color4.White, ProfilingKeys.CalculateInitials);
+
             _lambda = wavesSettings.Lambda;
 
             var commandList = context.CommandList;
@@ -101,6 +103,8 @@ namespace TR.Stride.Ocean
 
         public void CalculateWavesAtTime(RenderDrawContext context, ComputeEffectShader timeDependantSpectrumShader, ComputeEffectShader fillResultTexturesShader, ComputeEffectShader generateMipsShader, float time, float deltaTime)
         {
+            using var profileContext = context.QueryManager.BeginProfile(Color4.White, ProfilingKeys.CalculateWavesAtTime);
+
             var commandList = context.CommandList;
 
             commandList.ResourceBarrierTransition(_dxDz, GraphicsResourceState.UnorderedAccess);

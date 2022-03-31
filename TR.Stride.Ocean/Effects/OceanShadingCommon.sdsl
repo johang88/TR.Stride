@@ -31,9 +31,9 @@
 
             stage float3 LightDirectionWS;
 
-            [Color] stage float3 ShoreColor = float4(1, 1, 1, 1);
+            [Color] stage float3 ShoreColor = float3(1, 1, 1);
             stage float RefractionStrength = 50;
-            stage float RefractionDistanceMultiplier = 0.02;
+            stage float RefractionDistanceMultiplier = 0.02f;
         }
 
         rgroup PerMaterial
@@ -55,5 +55,10 @@
 
         stage stream float2 worldUV;
         stage stream float4 lodScales;
+
+        stage stream float sceneDepthVS;
+        stage stream float depthVS;
+
+        stage stream float jacobian;
     };
 }

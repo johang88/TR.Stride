@@ -234,7 +234,7 @@ Hierarchy:
                             FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:FoamTexture
                             Roughness: 0.3082
                             Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
-                            ShoreColor: {R: 0.060156256, G: 0.21545748, B: 0.34375}
+                            ShoreColor: {R: 0.2, G: 0.13375, B: 0.13375}
                             RefractionStrength: 50.0
                             Sun: ref!! 1b0ce0b4-87f4-4f93-bb66-24a5a4f12eaa
                         Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}

@@ -35,6 +35,10 @@ namespace TR.Stride.Ocean
 
             streams.lodScales = float4(lod_c0, lod_c1, lod_c2, max(displacement.y - largeWavesBias * 0.8 - SSSBase, 0) / SSSScale);
 
+            streams.sceneDepthVS = 0;
+            streams.depthVS = 0;
+            streams.jacobian = 0;
+
             return float4(0, 0, 0, 0);
         }
     };

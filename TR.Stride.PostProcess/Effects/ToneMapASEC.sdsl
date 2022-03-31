@@ -3,12 +3,11 @@ shader ToneMapASEC : ImageEffectShader, ExposureCommon, PostEffectCommon
 {
     stage override float4 Shading()
     {
-        float3 c = Texture0.Sample(LinearSampler, streams.TexCoord).xyz;
+        float3 c = Texture0.Sample(PointSampler, streams.TexCoord).xyz;
 		c *= GetExposure();
 
-        float3 b = Texture1.Sample(LinearSampler, streams.TexCoord).xyz;
-        c += InvSimpleToneMap(b);
-		c += b;
+        float3 b = InvSimpleToneMap(Texture1.Sample(PointSampler, streams.TexCoord).xyz);
+        c += b;
 
 		const float3x3 sRGB_2_AP1 = mul(XYZ_2_AP1, mul(D65_2_D60, sRGB_2_XYZ));
 		const float3x3 AP1_2_sRGB = mul(XYZ_2_sRGB, mul(D60_2_D65, AP1_2_XYZ));

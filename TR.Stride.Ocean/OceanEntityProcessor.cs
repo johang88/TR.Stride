@@ -122,6 +122,8 @@ namespace TR.Stride.Ocean
                     calculateInitials = true;
                 }
 
+                using var profileContext = renderDrawContext.QueryManager.BeginProfile(Color4.White, ProfilingKeys.Ocean);
+
                 // Calculate initial spectrums
                 if (calculateInitials)
                 {

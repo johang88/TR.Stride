@@ -37,10 +37,10 @@ namespace TR.Stride.Ocean
         public static readonly ValueParameterKey<float> Roughness = ParameterKeys.NewValue<float>(0);
         public static readonly ValueParameterKey<float> RoughnessScale = ParameterKeys.NewValue<float>(0.1f);
         public static readonly ValueParameterKey<float> MaxGloss = ParameterKeys.NewValue<float>(0);
-        public static readonly ValueParameterKey<Color3> ShoreColor = ParameterKeys.NewValue<Color3>(new Color3(1, 1, 1));
-        public static readonly ValueParameterKey<float> RefractionStrength = ParameterKeys.NewValue<float>(0);
-        public static readonly ValueParameterKey<float> RefractionDistanceMultiplier = ParameterKeys.NewValue<float>(0);
         public static readonly ValueParameterKey<Vector3> LightDirectionWS = ParameterKeys.NewValue<Vector3>();
+        public static readonly ValueParameterKey<Color3> ShoreColor = ParameterKeys.NewValue<Color3>(new Color3(1,1,1));
+        public static readonly ValueParameterKey<float> RefractionStrength = ParameterKeys.NewValue<float>(50);
+        public static readonly ValueParameterKey<float> RefractionDistanceMultiplier = ParameterKeys.NewValue<float>(0.02f);
         public static readonly ObjectParameterKey<Texture> Displacement_c0 = ParameterKeys.NewObject<Texture>();
         public static readonly ObjectParameterKey<Texture> Derivatives_c0 = ParameterKeys.NewObject<Texture>();
         public static readonly ObjectParameterKey<Texture> Turbulence_c0 = ParameterKeys.NewObject<Texture>();

@@ -10,7 +10,7 @@
 		float maxHeight = MaxHeight.Compute().x;
 		float strength = Strength.Compute().x;
 	
-		float height = streams.Position.y;
+		float height = streams.PositionWS.y;
 
 		float blendAmount = 0.0;
 

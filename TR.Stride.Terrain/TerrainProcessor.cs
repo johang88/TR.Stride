@@ -74,6 +74,7 @@ namespace TR.Stride.Terrain
                 // Regenerate mesh if needed
                 if (data.IsDirty(component))
                 {
+                    component.ShouldRecreateMesh = false;
                     data.Update(component);
 
                     DestroyMesh(data);
@@ -183,6 +184,6 @@ namespace TR.Stride.Terrain
         }
 
         public bool IsDirty(TerrainComponent component)
-            => Material != component.Material || Size != component.Size || Heightmap != component.Heightmap || Mesh == null;
+            => Material != component.Material || Size != component.Size || Heightmap != component.Heightmap || Mesh == null || component.ShouldRecreateMesh;
     }
 }

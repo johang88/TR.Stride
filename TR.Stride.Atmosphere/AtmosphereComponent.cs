@@ -3,6 +3,7 @@ using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Design;
+using Stride.Graphics;
 using Stride.Input;
 using System;
 using System.Collections.Generic;

@@ -39,8 +39,8 @@ namespace TR.Stride.PostProcess
     [Display("Custom Post-processing effects")]
     public class CustomPostProcessingEffects : ImageEffect, IImageEffectRenderer, IPostProcessingEffects
     {
-        public bool RequiresVelocityBuffer => true;
-        public bool RequiresNormalBuffer => true;
+        public bool RequiresVelocityBuffer => false;
+        public bool RequiresNormalBuffer => false;
         public bool RequiresSpecularRoughnessBuffer => false;
 
         [DataMember] public Guid Id { get; set; } = Guid.NewGuid();
@@ -85,9 +85,9 @@ namespace TR.Stride.PostProcess
             _bloomDownSample = ToLoadAndUnload(new ImageEffectShader("BloomDownSample"));
             _bloomUpSample = ToLoadAndUnload(new ImageEffectShader("BloomUpSample"));
             _toneMapShader = ToLoadAndUnload(new ImageEffectShader("ToneMapASEC"));
-            _histogramShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "Histogram" });
-            _histogramReduceShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramReduce" });
-            _histogramDrawDebug = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramDrawDebug" });
+            _histogramShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "Histogram", Name = "Histogram" });
+            _histogramReduceShader = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramReduce", Name = "Histogram Reduce" });
+            _histogramDrawDebug = ToLoadAndUnload(new ComputeEffectShader(Context) { ShaderSourceName = "HistogramDrawDebug", Name = "Histogram Draw Debug" });
 
             _histogram = Buffer.Raw.New(GraphicsDevice, new uint[256], BufferFlags.ShaderResource | BufferFlags.UnorderedAccess);
             _exposure = Buffer.Structured.New(

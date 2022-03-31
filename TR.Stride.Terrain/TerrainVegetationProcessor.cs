@@ -13,16 +13,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace TR.Stride.Terrain
 {
     public class TerrainVegetationProcessor : EntityProcessor<TerrainVegetationComponent, TerrainVegetationRenderData>, IEntityComponentRenderProcessor
     {
-        public const int PageSize = 16;
-
         public VisibilityGroup VisibilityGroup { get; set; }
 
         private FastList<TerrainVegetationPage> _activesPages = new FastList<TerrainVegetationPage>();
+
+        public int ActivePageCount { get; set; }
+        public int ActiveInstanceCount { get; set; }
+        public bool CullPages { get; set; } = false;
+        public bool CullInstances { get; set; } = false;
 
         public TerrainVegetationProcessor()
             : base(typeof(ModelComponent), typeof(InstancingComponent))
@@ -34,8 +38,6 @@ namespace TR.Stride.Terrain
         protected override void OnEntityComponentRemoved(Entity entity, [NotNull] TerrainVegetationComponent component, [NotNull] TerrainVegetationRenderData data)
         {
             base.OnEntityComponentRemoved(entity, component, data);
-
-            data?.Dispose();
         }
 
         protected override TerrainVegetationRenderData GenerateComponentData([NotNull] Entity entity, [NotNull] TerrainVegetationComponent component)
@@ -49,22 +51,33 @@ namespace TR.Stride.Terrain
         {
             base.Draw(context);
 
+            ActivePageCount = 0;
+            ActiveInstanceCount = 0;
+
             var camera = Services.GetService<SceneSystem>().TryGetMainCamera();
             if (camera == null)
                 return;
 
-            Dispatcher.ForEach(ComponentDatas, (pair) =>
+            foreach (var pair in ComponentDatas)
             {
                 var component = pair.Key;
                 var renderData = pair.Value;
 
                 ProcessComponent(component, renderData, camera);
-            });
+            }
+
+            //Dispatcher.ForEach(ComponentDatas, (pair) =>
+            //{
+            //    var component = pair.Key;
+            //    var renderData = pair.Value;
+
+            //    ProcessComponent(component, renderData, camera);
+            //});
         }
 
         private void ProcessComponent(TerrainVegetationComponent component, TerrainVegetationRenderData renderData, CameraComponent camera)
         {
-            if (component.Terrain == null || component.Terrain.Heightmap == null || component.Density <= 0.0f || component.Mask == null)
+            if (component.Terrain == null || component.Terrain.Heightmap == null || component.Density <= 0.0f)
             {
                 return;
             }
@@ -74,9 +87,10 @@ namespace TR.Stride.Terrain
                 return;
 
             UpdatePages(component.Terrain, component, renderData);
-            CollectVisiblePages(renderData, component, camera);
+            CollectVisiblePages(component.Terrain, renderData, component, camera);
 
-            instancingUserArray.UpdateWorldMatrices(renderData.TransformData.Items, renderData.TransformData.Count);
+            instancingUserArray.UpdateWorldMatrices(renderData.TransformData, renderData.Count);
+            ActiveInstanceCount += renderData.Count;
         }
 
         /// <summary>
@@ -84,114 +98,95 @@ namespace TR.Stride.Terrain
         /// </summary>
         private void UpdatePages(TerrainComponent terrain, TerrainVegetationComponent component, TerrainVegetationRenderData renderData)
         {
-            if (renderData.Pages != null && renderData.MaskImage != null && !component.IsDirty)
+            if (renderData.Pages != null && !component.IsDirty)
                 return;
-
-            if (renderData.MaskImage == null || renderData.Mask != component.Mask)
-            {
-                renderData.Mask = component.Mask;
-                renderData.MaskImage?.Dispose();
-
-                // Get mask image data
-                try
-                {
-                    var game = Services.GetService<IGame>();
-                    var graphicsContext = game.GraphicsContext;
-                    var commandList = graphicsContext.CommandList;
-                    renderData.MaskImage = component.Mask.GetDataAsImage(commandList);
-                }
-                catch
-                {
-                    // Image probably not loaded yet .. try again next frame :)
-                    return;
-                }
-            }
-
-            // Cache render data so we won't need to recreate pages
-            var mask = renderData.MaskImage.PixelBuffer[0];
-            var maskChannel = (int)component.MaskChannel;
 
             // Calculate terrain center offset
             var terrainOffset = terrain.Size / 2.0f;
 
             // Create vegetation pages
-            var rng = new Random(component.Seed);
-            var pagesPerRow = (int)terrain.Size / PageSize;
-
-            var instancesPerRow = (int)(PageSize * component.Density);
-            var distancePerInstance = PageSize / (float)instancesPerRow;
+            var pagesPerRow = (int)terrain.Size / component.PageSize;
 
             renderData.Pages = new TerrainVegetationPage[pagesPerRow * pagesPerRow];
-            var scaleRange = component.MaxScale - component.MinScale;
 
             for (var pz = 0; pz < pagesPerRow; pz++)
             {
                 for (var px = 0; px < pagesPerRow; px++)
                 {
-                    var radius = PageSize * 0.5f;
+                    var radius = component.PageSize * 0.5f;
 
-                    var pagePosition = new Vector3(px * PageSize - terrainOffset, 0, pz * PageSize - terrainOffset);
+                    var pagePosition = new Vector3(px * component.PageSize - terrainOffset, 0, pz * component.PageSize - terrainOffset);
 
                     var page = new TerrainVegetationPage();
                     renderData.Pages[pz * pagesPerRow + px] = page;
-
-                    for (var iz = 0; iz < instancesPerRow; iz++)
-                    {
-                        for (var ix = 0; ix < instancesPerRow; ix++)
-                        {
-                            var position = pagePosition;
-
-                            position.X += ix * distancePerInstance;
-                            position.Z += iz * distancePerInstance;
-
-                            position.X += (float)rng.NextDouble() * distancePerInstance * 2.0f - distancePerInstance;
-                            position.Z += (float)rng.NextDouble() * distancePerInstance * 2.0f - distancePerInstance;
-
-                            position.Y = terrain.GetHeightAt(position.X, position.Z);
-
-                            if (position.Y < component.MinHeight || position.Y > component.MaxHeight)
-                                continue;
-
-                            var tx = (int)((position.X + terrainOffset) / terrain.Size * mask.Width);
-                            var ty = (int)((position.Z + terrainOffset) / terrain.Size * mask.Height);
-
-                            if (tx < 0 || tx >= mask.Width || ty < 0 || ty >= mask.Height)
-                                continue;
-
-                            var maskDensity = mask.GetPixel<Color>(tx, ty)[maskChannel] / 255.0;
-                            if (rng.NextDouble() > maskDensity)
-                                continue;
-
-                            var normal = terrain.GetNormalAt(position.X, position.Z);
-                            var slope = 1.0f - Math.Abs(normal.Y);
-                            if (slope < component.MinSlope || slope > component.MaxSlope)
-                                continue;
-
-                            var scale = (float)rng.NextDouble() * scaleRange + component.MinScale;
-
-                            var rotation = Quaternion.RotationAxis(Vector3.UnitY, (float)rng.NextDouble() * MathUtil.TwoPi) * Quaternion.BetweenDirections(Vector3.UnitY, normal);
-
-                            var scaling = new Vector3(scale);
-
-                            Matrix.Transformation(ref scaling, ref rotation, ref position, out var transformation);
-
-                            page.Instances.Add(transformation);
-                        }
-                    }
-
                     page.WorldPosition = pagePosition + new Vector3(radius, 0, radius);
+                    page.PagePosition = new Int2(px, pz);
                 }
             }
 
             component.IsDirty = false;
         }
 
+        private void LoadPage(TerrainComponent terrain, TerrainVegetationComponent component, TerrainVegetationPage page)
+        {
+            page.Instances = new FastList<Matrix>();
+
+            // Calculate terrain center offset
+            var terrainOffset = terrain.Size / 2.0f;
+
+            var pagePosition = new Vector3(page.PagePosition.X * component.PageSize - terrainOffset, 0, page.PagePosition.Y * component.PageSize - terrainOffset);
+
+            var instancesPerRow = (int)(component.PageSize * component.Density);
+            var distancePerInstance = component.PageSize / (float)instancesPerRow;
+            var scaleRange = component.MaxScale - component.MinScale;
+
+            var seed = (page.PagePosition.X << 16 | page.PagePosition.Y) + component.Seed;
+            var rng = new RandomSeed((uint)seed);
+            uint index = 0;
+
+            for (var iz = 0; iz < instancesPerRow; iz++)
+            {
+                for (var ix = 0; ix < instancesPerRow; ix++)
+                {
+                    var position = pagePosition;
+
+                    position.X += ix * distancePerInstance;
+                    position.Z += iz * distancePerInstance;
+
+                    position.X += rng.GetFloat(index++) * distancePerInstance * 2.0f - distancePerInstance;
+                    position.Z += rng.GetFloat(index++) * distancePerInstance * 2.0f - distancePerInstance;
+
+                    position.Y = terrain.GetHeightAt(position.X, position.Z);
+
+                    if (position.Y < component.MinHeight || position.Y > component.MaxHeight)
+                        continue;
+
+                    var normal = terrain.GetNormalAt(position.X, position.Z);
+                    var slope = 1.0f - Math.Abs(normal.Y);
+                    if (slope < component.MinSlope || slope > component.MaxSlope)
+                        continue;
+
+                    var scale = rng.GetFloat(index++) * scaleRange + component.MinScale;
+
+                    var rotation = Quaternion.RotationAxis(Vector3.UnitY, rng.GetFloat(index++) * MathUtil.TwoPi);
+                    if (component.RotateToTerrainNormal)
+                        rotation *= Quaternion.BetweenDirections(Vector3.UnitY, normal);
+
+                    var scaling = new Vector3(scale);
+
+                    Matrix.Transformation(ref scaling, ref rotation, ref position, out var transformation);
+
+                    page.Instances.Add(transformation);
+                }
+            }
+        }
+
         private static int CrossProduct(Int2 v1, Int2 v2)
             => v1.X * v2.Y - v1.Y * v2.X;
 
-        private void CollectVisiblePages(TerrainVegetationRenderData renderData, TerrainVegetationComponent component, CameraComponent camera)
+        private void CollectVisiblePages(TerrainComponent terrain, TerrainVegetationRenderData renderData, TerrainVegetationComponent component, CameraComponent camera)
         {
-            renderData.TransformData.Clear();
+            renderData.Count = 0;
 
             if (camera == null || renderData.Pages == null)
                 return;
@@ -199,19 +194,42 @@ namespace TR.Stride.Terrain
             var cameraPosition = camera.GetWorldPosition();
             cameraPosition.Y = 0.0f; // Only cull in xz plane
 
-            var maxPageDistance = component.ViewDistance + PageSize;
+            var cameraFrustum = camera.Frustum;
+
+            var maxPageDistance = component.ViewDistance + component.PageSize;
+
+            var bounds = new BoundingBoxExt
+            {
+                Extent = new Vector3(component.PageSize * 0.5f, camera.FarClipPlane - camera.NearClipPlane, component.PageSize * 0.5f)
+            };
 
             _activesPages.Clear();
+            var maxInstanceCount = 0;
             for (var i = 0; i < renderData.Pages.Length; i++)
             {
                 var page = renderData.Pages[i];
-                if (page.Instances == null) // Skip uninitialized pages
-                    continue;
 
                 var distance = (cameraPosition - page.WorldPosition).Length();
                 if (distance < maxPageDistance)
-                    _activesPages.Add(page);
+                {
+                    bounds.Center = page.WorldPosition;
+
+                    if (!CullPages || VisibilityGroup.FrustumContainsBox(ref cameraFrustum, ref bounds, true))
+                    {
+                        _activesPages.Add(page);
+                    }
+                }
             }
+
+            foreach (var page in _activesPages)
+            {
+                if (page.Instances == null)
+                    LoadPage(terrain, component, page);
+
+                maxInstanceCount += page.Instances.Count;
+            }
+
+            ActivePageCount += _activesPages.Count;
 
             // Reset camera position for individual instance culling
             cameraPosition = camera.GetWorldPosition();
@@ -220,10 +238,19 @@ namespace TR.Stride.Terrain
             float minDistance = maxDistance * 0.8f;
             float distanceRange = maxDistance - minDistance;
 
-            // TODO: concurrency??? That would probably be a good thing here
-            var maxInstanceDistanceSquared = component.ViewDistance * component.ViewDistance;
-            foreach (var page in _activesPages)
+            // Make sure we have enough capacity for all instances
+            if (maxInstanceCount > renderData.TransformData.Length)
             {
+                renderData.TransformData = new Matrix[MathUtil.NextPowerOfTwo(maxInstanceCount)];
+            }
+
+            var modelComponent = component.Entity.Get<ModelComponent>();
+            var modelBounds = new BoundingBoxExt(modelComponent.BoundingBox);
+
+            var maxInstanceDistanceSquared = component.ViewDistance * component.ViewDistance;
+            Dispatcher.ForEach(_activesPages, page =>
+            {
+                
                 for (var p = 0; p < page.Instances.Count; p++)
                 {
                     var distance = (cameraPosition - page.Instances[p].TranslationVector).LengthSquared();
@@ -240,38 +267,38 @@ namespace TR.Stride.Terrain
                             var distanceScale = (float)MathUtil.Lerp(1.0f, 0.0f, Math.Pow(relativeScale, 2.0f));
                             var scale = Matrix.Scaling(distanceScale);
 
-                            renderData.TransformData.Add(scale * worldMatrix);
+                            worldMatrix = scale * worldMatrix;
                         }
-                        else
+
+                        var bounds = modelBounds;
+                        bounds.Center = Vector3.Zero;
+
+                        bounds.Transform(worldMatrix);
+
+                        if (!CullInstances || VisibilityGroup.FrustumContainsBox(ref cameraFrustum, ref bounds, true))
                         {
-                            renderData.TransformData.Add(worldMatrix);
+                            var index = Interlocked.Increment(ref renderData.Count) - 1;
+                            renderData.TransformData[index] = worldMatrix;
                         }
                     }
                 }
-            }
+            });
         }
     }
 
-    public class TerrainVegetationRenderData : IDisposable
+    public class TerrainVegetationRenderData
     {
-        public FastList<Matrix> TransformData { get; set; } = new FastList<Matrix>();
-        public TerrainVegetationPage[] Pages { get; set; }
-
-        public Texture Mask { get; set; }
-        public Image MaskImage { get; set; }
-
-        public void Dispose()
-        {
-            MaskImage?.Dispose();
-            MaskImage = null;
-        }
+        public Matrix[] TransformData = new Matrix[0];
+        public int Count = 0;
+        public TerrainVegetationPage[] Pages;
     }
 
     public class TerrainVegetationPage
     {
         public Vector3 WorldPosition;
-        public FastList<Matrix> Instances = new FastList<Matrix>();
-
+        public Int2 PagePosition;
+        public FastList<Matrix> Instances;
+        
         public override string ToString()
              => WorldPosition.ToString();
     }

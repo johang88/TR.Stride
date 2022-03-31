@@ -1,30 +1,23 @@
-﻿
-namespace TR.Stride.Ocean
+﻿namespace TR.Stride.Ocean
 {
     shader OceanEmissive 
         : ComputeColor, OceanShadingCommon, MaterialPixelStream, NormalStream, PositionStream4, Transformation, DepthBase, ShaderBase, Global, OpaqueBase
     {
-        float pow5(float f)
-        {
-            return f * f * f * f * f;
-        }
-
         override float4 Compute()
         {
             // Sample depth buffer
 		    float2 screenPos = streams.ShadingPosition.xy;
 		    float2 screenSpaceUv = float2(screenPos.x / ViewSize.x, screenPos.y / ViewSize.y);
-		    float sceneDepthVS = ComputeDepthFromUV(screenSpaceUv);
+
+            // Sample scene depth
+            streams.sceneDepthVS = ComputeDepthFromUV(screenSpaceUv);
 
             // Compute view space depth
 		    float depthPS = streams.ShadingPosition.z;
-		    float depthVS = ComputeDepthFromZProj(depthPS);
-            float2 depthUV = streams.ShadingPosition.xy;
+            streams.depthVS = ComputeDepthFromZProj(depthPS);
 
-            if (sceneDepthVS <= depthVS)
+            if (streams.sceneDepthVS <= streams.depthVS)
                 discard;
-
-            float alpha = saturate(abs(sceneDepthVS - depthVS));
 
             float4 derivatives = Derivatives_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0);
             if (Lod == 0 || Lod == 1)
@@ -38,68 +31,42 @@ namespace TR.Stride.Ocean
 
             float2 slope = float2(derivatives.x / (1 + derivatives.z), derivatives.y / (1 + derivatives.w));
             float3 worldNormal = normalize(float3(-slope.x, 1, -slope.y));
-
             streams.meshNormalWS = streams.normalWS = worldNormal;
 
-            float jacobian = 0;
+            streams.jacobian = 0;
             if (Lod == 0)
             {
-                jacobian = 
+                streams.jacobian = 
                     Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x
                     + Turbulence_c1.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale1).x
                     + Turbulence_c2.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale2).x;
-                jacobian = min(1, max(0, (-jacobian + FoamBiasLOD2) * FoamScale));
+                streams.jacobian = min(1, max(0, (-streams.jacobian + FoamBiasLOD2) * FoamScale));
             }
             else if (Lod == 1)
             {
-                jacobian = 
+                streams.jacobian = 
                     Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x
                     + Turbulence_c1.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale1).x;
-                jacobian = min(1, max(0, (-jacobian + FoamBiasLOD1) * FoamScale));
+                streams.jacobian = min(1, max(0, (-streams.jacobian + FoamBiasLOD1) * FoamScale));
             }
             else
             {
-                jacobian = Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x;
-                jacobian = min(1, max(0, (-jacobian + FoamBiasLOD0) * FoamScale));
+                streams.jacobian = Turbulence_c0.Sample(AnisotropicRepeatSampler, streams.worldUV / LengthScale0).x;
+                streams.jacobian = min(1, max(0, (-streams.jacobian + FoamBiasLOD0) * FoamScale));
             }
 
-            float depthDifference = max(0, sceneDepthVS - depthVS - 1);
+            float depthDifference = max(0, streams.sceneDepthVS - streams.depthVS - 1);
             float foam = FoamTexture.Sample(AnisotropicRepeatSampler, streams.worldUV).x;
-            jacobian += max(0, ContactFoam * saturate(max(0, foam - depthDifference) * 5) * 0.9);
+            streams.jacobian += max(0, ContactFoam * saturate(max(0, foam - depthDifference) * 5) * 0.9);
 
-            streams.matDiffuse = lerp(0, FoamColor, jacobian);
-            streams.matDiffuse.a = alpha;
+            streams.matDiffuse = lerp(0, FoamColor, streams.jacobian);
+            streams.matDiffuse.a = 1;
 
             float3 viewVector = Eye.xyz - streams.PositionWS.xyz;
             float distanceGloss = lerp(1 - Roughness, MaxGloss, 1 / (1 + length(viewVector) * RoughnessScale));
-            streams.matGlossiness = lerp(distanceGloss, 0, jacobian);
+            streams.matGlossiness = lerp(distanceGloss, 0, streams.jacobian);
 
-            float3 viewDir = normalize(viewVector);
-
-            float3 H = normalize(-worldNormal + -LightDirectionWS);
-            float ViewDotH = pow5(saturate(dot(viewDir, -H))) * 30 * SSSStrength;
-            float3 color = lerp(Color, saturate(Color + SSSColor.xyz * ViewDotH * streams.lodScales.w), streams.lodScales.z);
-
-            float fresnel = dot(worldNormal, viewDir);
-            fresnel = saturate(1 - fresnel);
-            fresnel =  0.02f + 0.98f * pow5(fresnel);
-            
-            float3 emissive = lerp(color * (1 - fresnel), 0, jacobian);
-            
-            const float IOR = 1.325f;
-            float3 refracted = refract(Eye.xyz, worldNormal.xyz, IOR);
-            float refractionDistanceScale = pow(1.0f - saturate((depthVS - NearClipPlane) / FarClipPlane), 5);
-
-            float refractionStrength = pow(0.1, (Lod + 1));
-
-            float2 bend = streams.ShadingPosition.xy + worldNormal.xz * RefractionStrength;
-            float2 refractionUV = bend.xy / ViewSize.xy;
-
-            alpha = saturate(abs(sceneDepthVS - depthVS) * RefractionDistanceMultiplier);
-            float3 refraction = GetOpaqueColor(refractionUV);
-            emissive += lerp(refraction * ShoreColor, Color, alpha);
-
-            return float4(emissive, 1);
+            return float4(1, 1, 1, 1);
         }
     };
 }

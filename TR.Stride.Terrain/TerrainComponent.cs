@@ -24,7 +24,7 @@ namespace TR.Stride.Terrain
     [DataContract(nameof(TerrainComponent))]
     [Display("Terrain", Expand = ExpandRule.Once)]
     [DefaultEntityComponentRenderer(typeof(TerrainProcessor))]
-    public class TerrainComponent : StartupScript
+    public class TerrainComponent : ScriptComponent
     {
         [DataMember(0)]
         public Material Material { get; set; }
@@ -41,6 +41,14 @@ namespace TR.Stride.Terrain
 
         [DataMember(30)]
         public bool CastShadows { get; set; }
+
+        [DataMemberIgnore]
+        internal bool ShouldRecreateMesh { get; set; }
+
+        public void RecreateMesh()
+        {
+            ShouldRecreateMesh = true;
+        }
 
         public float GetHeightAt(float x, float z)
         {

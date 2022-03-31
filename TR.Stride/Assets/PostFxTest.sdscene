@@ -164,3 +164,4 @@ Hierarchy:
                         CloudScale: 0.0001
                         CloudSpeed: 0.01
                         Cloudiness: 0.8
+                        CloudTexture: null

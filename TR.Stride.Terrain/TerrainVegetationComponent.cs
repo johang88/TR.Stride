@@ -28,23 +28,7 @@ namespace TR.Stride.Terrain
         private TerrainComponent _terrain;
         [DataMember(10)] public TerrainComponent Terrain { get { return _terrain; } set { _terrain = value; IsDirty = true; } }
 
-        private Texture _mask;
-        /// <summary>
-        /// Mask to use when randomly placing instances
-        /// </summary>
-        [DataMember(30)] public Texture Mask { get { return _mask; } set { _mask = value; IsDirty = true; } }
-
-
-        private ColorChannel _maskChannel;
-        /// <summary>
-        /// Channel of the mask texture to use for placement
-        /// </summary>
-        [DataMember(40), DefaultValue(ColorChannel.R)] public ColorChannel MaskChannel { get { return _maskChannel; } set { _maskChannel = value; IsDirty = true; } }
-
         private float _density = 1.0f;
-        /// <summary>
-        /// A multiplier to the density provided by the mask channel
-        /// </summary>
         [DataMember(50), DefaultValue(1.0f)] public float Density { get { return _density; } set { _density = value; IsDirty = true; } }
 
         private float _minScale = 0.5f;
@@ -68,18 +52,19 @@ namespace TR.Stride.Terrain
         private int _seed;
         [DataMember(100)] public int Seed { get { return _seed; } set { _seed = value; IsDirty = true; } }
 
-        /// <summary>
-        /// Maximum distance the vegetation is visible
-        /// </summary>
         [DataMember(120), DefaultValue(64.0f)]
         public float ViewDistance { get; set; } = 64.0f;
 
-        /// <summary>
-        /// Should distance scaling be used or not.
-        /// If true then the models will fade ut by scaling to 0 when approaching the maximum view distance
-        /// </summary>
         [DataMember(130), DefaultValue(true)]
         public bool UseDistanceScaling { get; set; } = true;
+
+        private bool _rotateToTerrainNormal = true;
+        [DataMember(140), DefaultValue(true)]
+        public bool RotateToTerrainNormal { get => _rotateToTerrainNormal; set { _rotateToTerrainNormal = value; IsDirty = true; } }
+
+        private int _pageSize = 16;
+        [DataMember(150), DefaultValue(16)]
+        public int PageSize { get => _pageSize; set { _pageSize = value; IsDirty = true; } }
 
         [DataMemberIgnore] public bool IsDirty { get; internal set; }
     }

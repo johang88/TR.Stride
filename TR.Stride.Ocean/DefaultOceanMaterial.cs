@@ -28,14 +28,13 @@ namespace TR.Stride.Ocean
                 Attributes = new MaterialAttributes
                 {
                     // Setup shaders
-                    Emissive = new MaterialEmissiveMapFeature
+                    Emissive = new MaterialOceanEmissiveMapFeature
                     {
                         EmissiveMap = new ComputeShaderClassColor
                         {
                             MixinReference = "OceanEmissive" // TODO: Use transaparent feature instead
                         },
-                        Intensity = new ComputeFloat(1.0f),
-                        UseAlpha = false
+                        Intensity = new ComputeFloat(1.0f)
                     },
                     Displacement = new MaterialDisplacementMapFeature
                     {

@@ -1,0 +1,54 @@
+﻿namespace TR.Stride.Ocean
+{
+    shader MaterialOceanSurfaceEmissiveShading 
+        : IMaterialSurfacePixel, MaterialPixelShadingStream, OceanShadingCommon, PositionStream4, NormalStream, Transformation, DepthBase, ShaderBase, Global, OpaqueBase
+    {
+        float pow5(float f)
+        {
+            return f * f * f * f * f;
+        }
+
+        override void Compute()
+        {
+            // Sample depth buffer
+		    float2 screenPos = streams.ShadingPosition.xy;
+		    float2 screenSpaceUv = float2(screenPos.x / ViewSize.x, screenPos.y / ViewSize.y);
+
+            float3 viewVector = Eye.xyz - streams.PositionWS.xyz;
+            float3 viewDir = normalize(viewVector);
+
+            float3 H = normalize(-streams.normalWS + -LightDirectionWS);
+            float ViewDotH = pow5(saturate(dot(viewDir, -H))) * 30 * SSSStrength;
+            float3 color = lerp(Color, saturate(Color + SSSColor.xyz * ViewDotH * streams.lodScales.w), streams.lodScales.z);
+
+            float fresnel = dot(streams.normalWS, viewDir);
+            fresnel = saturate(1 - fresnel);
+            fresnel =  0.02f + 0.98f * pow5(fresnel);
+            
+            const float IOR = 1.325f;
+            float3 refracted = refract(Eye.xyz, streams.normalWS.xyz, IOR);
+            float refractionDistanceScale = pow(1.0f - saturate((streams.depthVS - NearClipPlane) / FarClipPlane), 5);
+
+            float refractionStrength = pow(0.1, (Lod + 1));
+
+            float2 bend = streams.ShadingPosition.xy + streams.normalWS.xz * RefractionStrength;
+            float2 refractionUV = bend.xy / ViewSize.xy;
+
+            float shoreAlpha = saturate(abs(streams.sceneDepthVS - streams.depthVS) * RefractionDistanceMultiplier);
+
+            float3 refraction = GetOpaqueColor(refractionUV);
+
+            color += lerp(refraction * ShoreColor, Color, shoreAlpha);
+            float3 emissive = lerp(color * (1 - fresnel), 0, streams.jacobian);
+
+            float3 sceneColor = GetOpaqueColor(screenSpaceUv);
+
+            float alpha = saturate(abs(streams.sceneDepthVS - streams.depthVS));
+
+            float3 org = streams.shadingColor.xyz;
+            float3 result = lerp(sceneColor, org + emissive, smoothstep(0, 1, alpha));
+
+            streams.shadingColor = float4(result, 1);
+        }
+    };
+}
