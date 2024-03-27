@@ -161,6 +161,7 @@ SharedRenderers:
             Enabled: false
             RequiredApis: {}
             Overlays: {}
+            RequestPassthrough: false
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}
@@ -184,6 +185,7 @@ SharedRenderers:
             Enabled: false
             RequiredApis: {}
             Overlays: {}
+            RequestPassthrough: false
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}
