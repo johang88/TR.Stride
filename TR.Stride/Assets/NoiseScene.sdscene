@@ -1,0 +1,211 @@
+!SceneAsset
+Id: e9591d10-d6a1-49bc-a9cd-8b93e38911a5
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! e5b1ae6b-fc86-48cf-9557-5363c71c8cc7
+        - ref!! 1adabf8c-ae45-4e19-b7bc-f6a33a791b6f
+        - ref!! 589f23ab-e8a7-4231-97b0-3910d2dbe171
+        - ref!! e15a2a1d-d60f-46d8-9280-dc76b18fe879
+        - ref!! 8eaf4bee-6775-4c07-af74-38f0e29889b7
+        - ref!! 14d3bca6-2a65-4791-9015-dc4fc06a2db2
+    Parts:
+        -   Entity:
+                Id: 14d3bca6-2a65-4791-9015-dc4fc06a2db2
+                Name: Terrain
+                Components:
+                    661adcd444b93a30196f61c8f0797e5a: !TransformComponent
+                        Id: 9e7337ae-f4ac-49ad-ac6e-06c66f5f8539
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    3588b01c6a61776b39490004cb1d0887: !NoiseTerrainComponent
+                        Id: a13c9342-c76a-490f-92ea-61568fffa713
+                        Material: f7e47621-bcca-4b58-a19a-36efa5ec5831:Terrain/Terrain_material
+                        NoiseData:
+                            HeightRange: {X: 1.0, Y: 7.0}
+                            Size: {X: 512, Y: 512}
+                            NoiseSettings:
+                                Type: Perlin
+                                RotationType3D: None
+                                Frequency: 0.01
+                                Seed: 1337
+                                FractalType: FBm
+                                FractalGain: 0.5
+                                FractalLacunarity: 2
+                                FractalOctaves: 3
+                                FractalWeightedStrength: 0.5
+                                FractalPingPongStrength: 2.0
+                                CellularDistance: EuclideanSq
+                                CellularReturnType: Distance
+                                CellularJitter: 1.0
+                        Size: 512.0
+                        CastShadows: false
+        -   Folder: Atmosphere
+            Entity:
+                Id: 1adabf8c-ae45-4e19-b7bc-f6a33a791b6f
+                Name: Atmosphere
+                Components:
+                    848151c1ce41c1bb81fb3891ee87f3b3: !TransformComponent
+                        Id: 7d166009-7665-454e-b1dc-1005be80e980
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    a84c1741d3ceac964d5bbe5d1031bf50: !TR.Stride.Atmosphere.AtmosphereComponent,TR.Stride.Atmosphere
+                        Id: 3aff7eed-005c-45d9-aef0-4bedbe7a6589
+                        Sun: ref!! 5ce302bd-edb9-461c-a7b3-3a63b44d8cc4
+                        Sky: ref!! faacb633-4bf6-4e81-b6f5-2f0d92f34b54
+                        PlanetRadius: 6360.0
+                        AtmosphereHeight: 100.0
+                        MiePhase: 0.8
+                        MieScatteringScale: 0.00692
+                        MieScatteringCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
+                        MieAbsorptionScale: 0.00077
+                        MieAbsorptionCoefficient: {R: 0.5764706, G: 0.5764706, B: 0.5764706}
+                        RayleighScatteringScale: 0.03624
+                        RayleighScatteringCoefficient: {R: 0.22343749, G: 0.39041588, B: 0.8125}
+                        AbsorptionExctinctionScale: 0.00199
+                        AbsorptionExctinctionCoefficient: {R: 0.3254902, G: 0.94509804, B: 0.043137256}
+                        AbsorptionDensity0LayerWidth: 25.0
+                        AbsorptionDensity0ConstantTerm: -0.6666667
+                        AbsorptionDensity0LinearTerm: 0.06666667
+                        AbsorptionDensity1ConstantTerm: 2.6666667
+                        AbsorptionDensity1LinearTerm: -0.06666667
+                        RayleighScaleHeight: 8.0
+                        MieScaleHeight: 1.2
+                        GroundAlbedo: {R: 0.1125, G: 0.1125, B: 0.1125}
+                        SunLuminanceFactor: 20.0
+                        RenderSunDisk: true
+                        AerialPerspectiveDistanceScale: 100.0
+                        StrideToAtmosphereUnitScale: 0.001
+                        MultipleScatteringFactor: 1.0
+                        AtmosphereScatteringVolumeKmPerSlice: 0.25
+                        EnableClouds: false
+                        CloudScale: 0.0001
+                        CloudSpeed: 0.01
+                        Cloudiness: 0.8
+        -   Folder: Atmosphere
+            Entity:
+                Id: 589f23ab-e8a7-4231-97b0-3910d2dbe171
+                Name: Ambient
+                Components:
+                    9c5903c3c429ef41687d2eb80c84fca7: !TransformComponent
+                        Id: 6d61e4e9-564a-4541-aa82-b1b2e8b1dea4
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d59d21e61452c516a71069fff64fe606: !LightComponent
+                        Id: faacb633-4bf6-4e81-b6f5-2f0d92f34b54
+                        Type: !LightSkybox
+                            Skybox: 22ec7478-64dc-464f-a9b1-8e89110288e9:Skybox
+                        Intensity: 2.0
+        -   Entity:
+                Id: 8eaf4bee-6775-4c07-af74-38f0e29889b7
+                Name: Ocean
+                Components:
+                    519c2cd1f1f800da4c449c345a0fba8a: !TransformComponent
+                        Id: fc60a12e-f5de-4c65-abe5-12ba3caaafd6
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    985aa7b0c54656baf3e6d03eb86b2942: !TR.Stride.Ocean.OceanComponent,TR.Stride.Ocean
+                        Id: cd23a45f-2dc7-4cbf-9c9e-b03b676bc3f2
+                        WavesSettings:
+                            Local:
+                                Scale: 1.0
+                                WindSpeed: 0.5
+                                WindDirection: 60.0
+                                Fetch: 100000.0
+                                SpreadBlend: 1.0
+                                Swell: 0.2
+                                PeakEnhancement: 3.3
+                                ShortWavesFade: 0.01
+                            Swell:
+                                Scale: 0.0
+                                WindSpeed: 0.5
+                                WindDirection: 0.0
+                                Fetch: 300000.0
+                                SpreadBlend: 1.0
+                                Swell: 1.0
+                                PeakEnhancement: 3.3
+                                ShortWavesFade: 0.01
+                        AlwaysRecalculateInitials: true
+                        Material: !TR.Stride.Ocean.DefaultOceanMaterial,TR.Stride.Ocean
+                            LodScale: 6.0
+                            SSSColor: {R: 0.1541919, G: 0.8857628, B: 0.990566, A: 1.0}
+                            FoamColor: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+                            ContactFoam: 1.0
+                            FoamTexture: 14d96665-4850-4a11-8fe7-2478998bd73b:FoamTexture
+                            Roughness: 0.3082
+                            Color: {R: 0.03457636, G: 0.1229746, B: 0.1981132}
+                            Sun: ref!! 5ce302bd-edb9-461c-a7b3-3a63b44d8cc4
+                        Mesh: !TR.Stride.Ocean.DefaultOceanMesh,TR.Stride.Ocean {}
+        -   Entity:
+                Id: e15a2a1d-d60f-46d8-9280-dc76b18fe879
+                Name: Camera
+                Components:
+                    98a39798e410d70f0910d6c9f27d57ac: !TransformComponent
+                        Id: de8bca30-9b21-4080-af28-aff04902f92e
+                        Position: {X: -0.94584465, Y: 8.803342, Z: -30.686745}
+                        Rotation: {X: 0.0, Y: 0.99807674, Z: 0.0, W: 0.06199062}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    b66dd7950f1f71e708dcf771b29841d6: !CameraComponent
+                        Id: dc08b0ad-f630-4f63-afc5-12f4a1e3ecb1
+                        Name: null
+                        Projection: Perspective
+                        FarClipPlane: 5000.0
+                        Slot: d75902e9-539b-4ac1-aaa7-580efc5ac7fd
+                    0dfa09a9ff6ecb8dad9f67e943d2964a: !TR.Stride.BasicCameraController,TR.Stride
+                        Id: 98babd0f-7bcc-4efa-ba57-9c0ca131d65f
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 20.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    dabee121a92a319be54bbbf5d6195ee6: !TR.Stride.GameProfiler,TR.Stride
+                        Id: da1206c8-4f44-4567-b67a-ea8a19595069
+                        Enabled: false
+                        TextColor: {R: 144, G: 238, B: 144, A: 255}
+                        RefreshTime: 500.0
+                        SortingMode: ByName
+                        FilteringMode: GpuEvents
+                        ResultPage: 1
+        -   Folder: Atmosphere
+            Entity:
+                Id: e5b1ae6b-fc86-48cf-9557-5363c71c8cc7
+                Name: Sun
+                Components:
+                    6ccd660d13d99e9b55ac02402a3d43ea: !TransformComponent
+                        Id: d89a53fd-5293-4ffd-9146-1e2f2a7018b9
+                        Position: {X: 0.0, Y: 3.583897, Z: -186.84956}
+                        Rotation: {X: -0.14134651, Y: 0.12200008, Z: -0.031050934, W: 0.9819231}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    3c7b800cd00ed3e48b50efcdab0505b5: !LightComponent
+                        Id: 5ce302bd-edb9-461c-a7b3-3a63b44d8cc4
+                        Type: !AtmosphereLightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow: !LightDirectionalShadowMap
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf {}
+                                Size: XLarge
+                                DepthRange:
+                                    IsAutomatic: false
+                                    ManualMaxDistance: 512.0
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic
+                                    PSSMFactor: 0.1
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+                            Atmosphere: ref!! 3aff7eed-005c-45d9-aef0-4bedbe7a6589
+                        Intensity: 20.0
