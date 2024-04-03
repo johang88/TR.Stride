@@ -6,12 +6,10 @@ using Stride.Graphics;
 using Stride.Physics;
 using Stride.Rendering;
 using Stride.Rendering.Materials;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
+using TR.Stride.Terrain.Processors;
 
-namespace TR.Stride.Terrain
+namespace TR.Stride.Terrain.Components
 {
     /// <summary>
     /// Manages a single layer of vegetation. 

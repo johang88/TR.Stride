@@ -1,17 +1,13 @@
 ﻿using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
 using Stride.Engine;
-using Stride.Games;
 using Stride.Graphics;
 using Stride.Physics;
 using Stride.Rendering;
-using Stride.Rendering.LightProbes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using TR.Stride.Terrain.Components;
 using Buffer = Stride.Graphics.Buffer;
 
-namespace TR.Stride.Terrain
+namespace TR.Stride.Terrain.Processors
 {
     /// <summary>
     /// Generates height map models for any terrain components,

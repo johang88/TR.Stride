@@ -13,8 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TR.Stride.Terrain.Components;
 
-namespace TR.Stride.Terrain
+namespace TR.Stride.Terrain.Processors
 {
     public class TerrainVegetationProcessor : EntityProcessor<TerrainVegetationComponent, TerrainVegetationRenderData>, IEntityComponentRenderProcessor
     {

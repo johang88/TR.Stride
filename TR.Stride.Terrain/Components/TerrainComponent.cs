@@ -2,16 +2,12 @@
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Design;
-using Stride.Graphics;
 using Stride.Physics;
 using Stride.Rendering;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+using TR.Stride.Terrain.Processors;
 
 
-namespace TR.Stride.Terrain
+namespace TR.Stride.Terrain.Components
 {
     /// <summary>
     /// Terrain data used by the TerrainProcessor, just attach to an entity and you are good to go.
