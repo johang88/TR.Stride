@@ -152,7 +152,7 @@ namespace TR.Stride.Atmosphere
             pipelineState.BlendState.AlphaToCoverageEnable = false;
             pipelineState.BlendState.IndependentBlendEnable = false;
 
-            ref var blendState0 = ref pipelineState.BlendState.RenderTarget0;
+            ref var blendState0 = ref pipelineState.BlendState.RenderTargets[0];
 
             blendState0.BlendEnable = true;
 

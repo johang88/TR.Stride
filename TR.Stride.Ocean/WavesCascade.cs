@@ -164,7 +164,7 @@ namespace TR.Stride.Ocean
 
             void GenerateMipsMaps(Texture texture)
             {
-                for (var i = 0; i < texture.MipLevels - 1; i++)
+                for (var i = 0; i < texture.MipLevelCount - 1; i++)
                 {
                     // Copy source mip to staging texture
                     commandList.CopyRegion(texture, i, null, _mipStagingTexture, i);
