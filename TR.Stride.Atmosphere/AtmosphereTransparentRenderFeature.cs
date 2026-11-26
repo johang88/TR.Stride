@@ -83,7 +83,8 @@ namespace TR.Stride.Atmosphere
                     continue;
 
                 var material = renderMesh.MaterialPass;
-                var shouldRenderAtmosphereForRenderObject = material.HasTransparency && _shouldRenderAtmosphere;
+                var disableAerialPerspective = material.Parameters.Get(AtmosphereMaterialKeys.DisableAerialPerspective);
+                var shouldRenderAtmosphereForRenderObject = material.HasTransparency && _shouldRenderAtmosphere && !disableAerialPerspective;
 
                 for (int i = 0; i < effectSlotCount; ++i)
                 {
