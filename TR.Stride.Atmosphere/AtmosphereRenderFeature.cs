@@ -66,6 +66,7 @@ namespace TR.Stride.Atmosphere
 
         private LambertianPrefilteringSH _lamberFiltering = null;
         private RadiancePrefilteringGGX _specularRadiancePrefilterGGX = null;
+        private readonly HashSet<Skybox> _atmosphereSkyboxesInitialized = new HashSet<Skybox>();
 
         public AtmosphereComponent Atmosphere { get; private set; }
 
@@ -330,6 +331,15 @@ namespace TR.Stride.Atmosphere
                         coefficients[i] = coefficients[i] * SphericalHarmonics.BaseCoefficients[i];
                     }
 
+                    // A loaded skybox can have a diffuse SH array layout from a different shader order.
+                    // Recreate its parameter collection once so the new coefficient array gets the correct capacity.
+                    if (_atmosphereSkyboxesInitialized.Add(lightSkybox.Skybox))
+                    {
+                        lightSkybox.Skybox.DiffuseLightingParameters = new ParameterCollection();
+                    }
+
+                    lightSkybox.Skybox.DiffuseLightingParameters.Set(SkyboxKeys.Shader,
+                        new ShaderClassSource("SphericalHarmonicsEnvironmentColor", _lamberFiltering.HarmonicOrder));
                     lightSkybox.Skybox.DiffuseLightingParameters.Set(SphericalHarmonicsEnvironmentColorKeys.SphericalColors, coefficients);
 
                     if (_specularRadiancePrefilterGGX == null)

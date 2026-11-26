@@ -2,7 +2,7 @@
 Id: 5ba86f1a-cfea-4b17-b227-31e638b6014e
 SerializedVersion: {Stride: 3.1.0.1}
 Tags: []
-Archetype: 823a81bf-bac0-4552-9267-aeed499c40df:DefaultGraphicsCompositorLevel10
+Archetype: 823a81bf-bac0-4552-9267-aeed499c40df:/Stride.Engine/DefaultGraphicsCompositorLevel10
 Cameras:
     de2e75c3b2b23e54162686363f3f138e:
         Id: d75902e9-539b-4ac1-aaa7-580efc5ac7fd
@@ -56,7 +56,7 @@ RenderFeatures:
                 EffectName: StrideForwardShadingEffect.ShadowMapCasterCubeMap
             106341b76db9fcda6a033dad16aa708b: !Stride.Rendering.MeshTransparentRenderStageSelector,Stride.Rendering
                 OpaqueRenderStage: ref!! 71ad5e30-4791-4e12-825d-af59d9bb598d
-                EffectName: StrideForwardShadingEffect.ShadowMapCaster
+                EffectName: StrideForwardShadingEffect.ZPrepass
         PipelineProcessors:
             d70f5aee0616e4ab25081ceaf643290c: !Stride.Rendering.MeshPipelineProcessor,Stride.Rendering
                 TransparentRenderStage: ref!! ee0a9342-d8bb-4463-99e5-f15c4883f834
@@ -161,7 +161,6 @@ SharedRenderers:
             Enabled: false
             RequiredApis: {}
             Overlays: {}
-            RequestPassthrough: false
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}
@@ -185,7 +184,6 @@ SharedRenderers:
             Enabled: false
             RequiredApis: {}
             Overlays: {}
-            RequestPassthrough: false
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}

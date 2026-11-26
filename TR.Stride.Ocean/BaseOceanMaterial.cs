@@ -43,6 +43,9 @@ namespace TR.Stride.Ocean
 
         [DataMember(33), Display(name: "Color", category: CategorySurface)] public Color3 Color { get; set; } = new Color3(0.03457636f, 0.1229746f, 0.1981132f);
 
+        [DataMember(34), Display(name: "Apply atmosphere aerial perspective", category: CategorySurface), DefaultValue(false)]
+        public bool ApplyAtmosphereAerialPerspective { get; set; }
+
         [DataMember(40)] public LightComponent Sun { get; set; }
 
         public abstract Material CreateMaterial(GraphicsDevice graphicsDevice, int lod);
@@ -51,6 +54,7 @@ namespace TR.Stride.Ocean
         {
             foreach (var material in materials)
             {
+                material.Passes[0].Parameters.Set(AtmosphereMaterialKeys.DisableAerialPerspective, !ApplyAtmosphereAerialPerspective);
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Displacement_c0, cascades[0].Displacement);
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Displacement_c1, cascades[1].Displacement);
                 material.Passes[0].Parameters.Set(OceanShadingCommonKeys.Displacement_c2, cascades[2].Displacement);
